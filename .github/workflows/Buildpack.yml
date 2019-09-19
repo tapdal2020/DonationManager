@@ -1,0 +1,13 @@
+name: Buildpack
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Buildpack Action
+      uses: crswty/buildpack-action@v0.1.0
+      env:
+        IMAGE_NAME: jasonkolodziej/csce431-fall2019:app-start
+        PUBLISH: true

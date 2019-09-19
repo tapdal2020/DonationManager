@@ -29,6 +29,8 @@ jobs:
       with:
         ruby-version: 2.5.5
     - name: Build and test with Rake
+      env:
+        DNS_CSCE431_DATABASE_PASSWORD: ${{ secrets.RootPassword }}
       run: |
         gem install mysql2 -v '0.5.2' --source 'https://rubygems.org/'
         gem install bundler

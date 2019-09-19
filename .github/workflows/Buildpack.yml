@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: docker-login
+      uses: "actions/docker/login@master"
+      env:
+       DOCKER_USERNAME: ${{ secrets.DockerUser }}
+       DOCKER_PASSWORD: ${{ secrets.DockerPassword }}
     - name: Buildpack Action
       uses: crswty/buildpack-action@v0.1.0
       env:

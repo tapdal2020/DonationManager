@@ -21,7 +21,8 @@ jobs:
         mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course you can use secrets, too
         mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
-      run: apt-get install libmysqlclient-dev
+      run: |
+        apt-get install libmysqlclient-dev
     - name: Set up Ruby 2.5.5
       uses: actions/setup-ruby@v1
       with:

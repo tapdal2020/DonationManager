@@ -14,7 +14,11 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: dmsAppRoot
+<<<<<<< HEAD
   password: <%= ENV['bvjs_dms_DATABASE_PASSWORD'] %>
+=======
+  password: <%= ENV['BVJS_DMS_DATABASE_PASSWORD'] %>
+>>>>>>> 79d2308b9ec4180ae94fa256571220eb42ff9649
   host: localhost
 
 development:
@@ -51,4 +55,8 @@ production:
   <<: *default
   database: bvjs_dms_production
   username: bvjs_dms
+<<<<<<< HEAD
   password: <%= ENV['bvjs_dms_DATABASE_PASSWORD'] %>
+=======
+  password: <%= ENV['BVJS_DMS_DATABASE_PASSWORD'] %>
+>>>>>>> 79d2308b9ec4180ae94fa256571220eb42ff9649

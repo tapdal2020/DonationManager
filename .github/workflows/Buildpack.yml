@@ -9,8 +9,8 @@ jobs:
     - name: docker-login
       uses: "actions/docker/login@master"
       env:
-       DOCKER_USERNAME: ${{ secrets.DockerUser }}
-       DOCKER_PASSWORD: ${{ secrets.DockerPassword }}
+       DOCKER_USERNAME: ${{ secrets.DockerHubUser }}
+       DOCKER_PASSWORD: ${{ secrets.DockerHubPassword }}
     - name: Buildpack Action
       uses: crswty/buildpack-action@v0.1.0
       env:

@@ -7,3 +7,6 @@ Donor Management System (Project Kodiak) - For Ritchey : CSCE 431 Agile Team Dev
 * Jonathan Pape
 * Taylor Williamson
 * Jacob Mink
+
+
+Testing privileges by modifying readme

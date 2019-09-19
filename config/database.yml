@@ -14,19 +14,19 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: dmsAppRoot
-  password: <%= ENV['DNS_CSCE431_DATABASE_PASSWORD'] %>
+  password: <%= ENV['bvjs_dms_DATABASE_PASSWORD'] %>
   host: localhost
 
 development:
   <<: *default
-  database: dns_csce431_development
+  database: bvjs_dms_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: dns_csce431_test
+  database: bvjs_dms_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: dns_csce431_production
-  username: dns_csce431
-  password: <%= ENV['DNS_CSCE431_DATABASE_PASSWORD'] %>
+  database: bvjs_dms_production
+  username: bvjs_dms
+  password: <%= ENV['bvjs_dms_DATABASE_PASSWORD'] %>

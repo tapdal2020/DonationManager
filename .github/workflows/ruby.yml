@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup MySQL
       uses: mirromutth/mysql-action@v1.1
-       with:
+      with:
 #         host port: 3800 # Optional, default value is 3306. The port of host
 #         container port: 3307 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld

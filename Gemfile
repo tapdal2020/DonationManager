@@ -5,8 +5,6 @@ ruby '2.5.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.0'
-# Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
@@ -36,6 +34,7 @@ end
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
+  gem 'sqlite3', '~> 1.4' #git: "https://github.com/sparklemotion/sqlite3-ruby"
 end
 
 group :test do
@@ -46,5 +45,11 @@ group :test do
   gem 'webdrivers'
 end
 
+group :production do
+  gem 'pg' # for Heroku deployment
+end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'devise'

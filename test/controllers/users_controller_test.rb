@@ -6,7 +6,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "creates user" do 
-    user_params = users(:one).attributes
+    user_params = user_params = { first_name: "New", last_name: "User", email: "testa@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
     user_params[:password] = "fake"
     user_params[:password_confirmation] = "fake"
 
@@ -36,6 +36,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     user_params[:street_address_line_1] = nil
 
     assert_no_difference('User.count', "Should fail to create when street_address_line_2 is present but line 1 is not") { post users_url, params: { "user" => user_params } }
+  end
+
+  test "cannot duplicate email" do
+    user_params = { first_name: "New", last_name: "User", email: "jacob@fake.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", street_address_line_2: "house", city: "Austin", state: "TX", zip_code: "78726" }
+
+    assert_no_difference('User.count', "Should fail to create with a duplicated email address") { post users_url, params: { "user" => user_params } }
   end
 
 end

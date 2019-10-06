@@ -1,9 +1,24 @@
-# DMS ~ Donor Management System
-Donor Management System (Project Kodiak) - For Dr. Ritchey : CSCE 431 Agile Team Developers { Amped Null Set } @ [Check Sprints](https://ice.jasonkolodziej.com)
+# README
 
-# Group Members
-* Jason Kolodziej
-* Clayton Draughon
-* Jonathan Pape
-* Taylor Williamson
-* Jacob Mink
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...

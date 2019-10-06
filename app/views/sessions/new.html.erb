@@ -1,3 +1,22 @@
 <h1>Log In</h1>
 
-https://medium.com/@ashleymcolletti/add-authentication-to-your-rails-app-with-bcrypt-a53917252159
+<% flash.each do |key, value| %>
+    <div class="flash <%= key %>"><%= value %></div>
+    <br />
+<% end %>
+
+<%= form_for(:user, url: { controller: 'sessions', action: 'create' }) do |f| %>
+    <table>
+        <tr>
+            <td>Email address:</td><td><%= f.text_field :email %></td>
+        </tr>
+        <tr>
+            <td>Password:</td><td><%= f.password_field :password %></td>
+        </tr>
+    </table>
+    <br />
+    <%= f.submit "Log In" %>
+<% end %>
+
+
+<%= link_to "Register", new_user_path %>

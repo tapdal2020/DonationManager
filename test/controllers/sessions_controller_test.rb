@@ -4,4 +4,25 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end
+
+  test "successful login" do
+    user = User.new({ first_name: "New", last_name: "User", email: "test@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" })
+    user.save
+
+    session_params = { email: user.email, password: user.password }
+
+    post sessions_url, params: { "user" => session_params }
+    assert_equal(user.id, session[:user_id])
+  end
+
+  test "failed login" do
+    user = User.new({ first_name: "New", last_name: "User", email: "test@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" })
+    user.save
+
+    session_params = { email: user.email, password: "wrong#{user.password}" }
+
+    post sessions_url, params: { "user" => session_params }
+    assert_not_equal(user.id, session[:user_id])
+  end
+
 end

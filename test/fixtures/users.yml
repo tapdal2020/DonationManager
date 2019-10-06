@@ -1,23 +1,22 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  first_name: MyString
-  last_name: MyString
-  email: MyString
-  password_digest: MyString
-  street_address_line_1: MyString
-  street_address_line_2: MyString
-  city: MyString
-  state: MyString
-  zip_code: MyString
+  first_name: "Jacob"
+  last_name: "Mink"
+  email: "jacob@fake.com"
+  street_address_line_1: "Home"
+  street_address_line_2: ""
+  city: "College Station"
+  state: "TX"
+  zip_code: "77840"
 
 two:
-  first_name: MyString
-  last_name: MyString
-  email: MyString
-  password_digest: MyString
-  street_address_line_1: MyString
-  street_address_line_2: MyString
-  city: MyString
-  state: MyString
-  zip_code: MyString
+  first_name: "Clayton"
+  last_name: "Draughon"
+  email: "clayton@fake.com"
+  street_address_line_1: "Home"
+  street_address_line_2: ""
+  city: "College Station"
+  state: "TX"
+  zip_code: "77840"
+  admin: true

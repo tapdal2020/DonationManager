@@ -75,18 +75,8 @@ GEM
     childprocess (3.0.0)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
-<<<<<<< HEAD
-    devise (4.7.1)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
-    erubi (1.8.0)
-=======
     diff-lcs (1.3)
     erubi (1.9.0)
->>>>>>> master
     ffi (1.11.1-x64-mingw32)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -107,12 +97,8 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.12.2)
     msgpack (1.3.1-x64-mingw32)
-<<<<<<< HEAD
-    nio4r (2.5.1)
-=======
     mysql2 (0.5.2-x64-mingw32)
     nio4r (2.5.2)
->>>>>>> master
     nokogiri (1.10.4-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     orm_adapter (0.5.0)
@@ -155,12 +141,6 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     regexp_parser (1.6.0)
-<<<<<<< HEAD
-    responders (3.0.0)
-      actionpack (>= 5.0)
-      railties (>= 5.0)
-    rubyzip (1.2.4)
-=======
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -175,7 +155,6 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.3)
     rubyzip (1.3.0)
->>>>>>> master
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -197,11 +176,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-<<<<<<< HEAD
-    sqlite3 (1.4.1)
-=======
     test_helper (0.0.1)
->>>>>>> master
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -249,14 +224,6 @@ DEPENDENCIES
   capybara (>= 2.15)
   devise
   jbuilder (~> 2.7)
-<<<<<<< HEAD
-  pg
-  puma (~> 3.11)
-  rails (~> 6.0.0)
-  sass-rails (~> 5)
-  selenium-webdriver
-  sqlite3 (~> 1.4)
-=======
   mysql2
   puma (~> 3.11)
   rails (~> 6.0.0)
@@ -265,7 +232,6 @@ DEPENDENCIES
   selenium-webdriver
   test_helper
   transaction_retry
->>>>>>> master
   turbolinks (~> 5)
   tzinfo-data
   web-console (>= 3.3.0)

@@ -1,13 +1,9 @@
 default: &default
-<<<<<<< HEAD
-  adapter: sqlite3
-=======
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: root
   password: <%= ENV.fetch("MYSQL_ROOT_PWD") { "root" }%>
->>>>>>> master
 
 development:
   <<: *default
@@ -22,8 +18,4 @@ test:
 
 production:
   <<: *default
-<<<<<<< HEAD
-  database: bvjs_dms_production
-=======
   database: production
->>>>>>> master

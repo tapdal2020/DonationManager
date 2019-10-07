@@ -6,14 +6,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "creates user" do 
-    user_params = user_params = { first_name: "New", last_name: "User", email: "testa@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
+    user_params = { first_name: "New", last_name: "User", email: "testa@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
     user_params[:password] = "fake"
     user_params[:password_confirmation] = "fake"
 
     assert_difference('User.count', 1, "Should create user with all parameters") { post users_url, params: { "user" => user_params } }
   end
 
-  [:first_name, :last_name, :email, :password, :street_address_line_1, :city, :state, :zip_code].each do |item|
+  [:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code].each do |item|
     test "fail without #{item}" do    
       user_params = { first_name: "New", last_name: "User", email: "test@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
       user_params[item] = nil  

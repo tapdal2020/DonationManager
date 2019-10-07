@@ -10,7 +10,6 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :city
       t.string :state
       t.string :zip_code
-      t.boolean :admin, default: false
 
       t.timestamps
     end

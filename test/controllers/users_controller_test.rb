@@ -13,21 +13,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_difference('User.count', 1, "Should create user with all parameters") { post users_url, params: { "user" => user_params } }
   end
 
-  [:first_name, :last_name, :email, :password].each do |item|
+  [:first_name, :last_name, :email, :password, :street_address_line_1, :city, :state, :zip_code].each do |item|
     test "fail without #{item}" do    
       user_params = { first_name: "New", last_name: "User", email: "test@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
       user_params[item] = nil  
 
       assert_no_difference('User.count', "Should fail to create when #{item} is not present") { post users_url, params: { "user" => user_params } }
-    end
-  end
-
-  [:street_address_line_1, :city, :state, :zip_code].each do |item|
-    test "fail to create without #{item} without admin" do
-      user_params = { first_name: "New", last_name: "User", email: "test@test.com", password: "mypass", password_confirmation: "mypass", street_address_line_1: "Home", city: "Austin", state: "TX", zip_code: "78726" }
-      user_params[item] = nil  
-
-      assert_no_difference('User.count', "Should fail to create when #{item} is not present when user is not admin") { post users_url, params: { "user" => user_params } }
     end
   end
 

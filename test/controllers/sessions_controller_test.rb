@@ -26,20 +26,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "successful admin login" do
-    admin = Admin.new({ email: "admin@admin.com", password: "admin", password_confirmation: "admin" })
-    admin.save
+    admin = users(:three)
 
-    session_params = { email: admin.email, password: admin.password }
+    session_params = { email: admin.email, password: 'user' }
 
     post sessions_url, params: { "user" => session_params }
     assert_equal(admin.id, session[:user_id])
   end
 
   test "failed admin login" do
-    admin = Admin.new({ email: "admin@admin.com", password: "admin", password_confirmation: "admin" })
-    admin.save
+    admin = users(:three)
 
-    session_params = { email: admin.email, password: "wrong#{admin.password}" }
+    session_params = { email: admin.email, password: "notmypassword" }
 
     post sessions_url, params: { "user" => session_params }
     assert_not_equal(admin.id, session[:user_id])

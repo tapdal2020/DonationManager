@@ -7,7 +7,8 @@ class ApplicationController < ActionController::Base
     end
 
     def current_admin
-        @current_user ||= Admin.find_by(id: session[:user_id]) if session[:user_id]
+        @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+        return @current_user if @current_user && @current_user.admin
     end
 
     def authenticate_user!

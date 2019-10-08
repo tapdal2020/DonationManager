@@ -19,6 +19,7 @@ two:
   city: "College Station"
   state: "TX"
   zip_code: "77840"
+  password_digest: <%= BCrypt::Password.create('user') %>
 
 three:
   first_name: "Jason"
@@ -30,3 +31,4 @@ three:
   state: "TX"
   zip_code: "77840"
   password_digest: <%= BCrypt::Password.create('user') %>
+  admin: true

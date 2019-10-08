@@ -19,4 +19,16 @@ two:
   city: "College Station"
   state: "TX"
   zip_code: "77840"
+  password_digest: <%= BCrypt::Password.create('user') %>
+
+three:
+  first_name: "Jason"
+  last_name: "Kolodziej"
+  email: "jason@fake.com"
+  street_address_line_1: "Home"
+  street_address_line_2: ""
+  city: "College Station"
+  state: "TX"
+  zip_code: "77840"
+  password_digest: <%= BCrypt::Password.create('user') %>
   admin: true

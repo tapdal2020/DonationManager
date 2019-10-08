@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
     def new
-        @session = Session.new
+        
     end
 
     def create
@@ -16,10 +16,5 @@ class SessionsController < ApplicationController
             flash.keep
             render 'new'
         end
-
-    end
-    
-    def current_user 
-        @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
     end
 end

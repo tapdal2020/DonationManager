@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
     protect_from_forgery with: :exception
+    # before_action :check_timeout!
 
     helper_method :current_user
     def current_user 
@@ -18,4 +19,14 @@ class ApplicationController < ActionController::Base
     def authenticate_admin!
         redirect_to new_session_path unless current_admin
     end
+
+    # def check_timeout!
+    #     if session[:last_auth] && session[:last_auth] < Rails.configuration.timeout
+    #         session[:user_id] = nil
+    #         session[:last_auth] = nil
+    #         redirect_to sessions_url and return
+    #     else
+    #         session[:last_auth] = Time.now
+    #     end
+    # end
 end

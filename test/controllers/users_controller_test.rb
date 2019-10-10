@@ -58,4 +58,34 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  # test "create last authentication on action" do
+  #   user = users(:two)
+
+  #   post sessions_url, params: { "user" => { email: user.email, password: 'user' } }
+
+  #   assert_not_nil(session[:last_auth])
+  # end
+
+  # test "update last authentication on action" do
+  #   user = users(:two)
+
+  #   post sessions_url, params: { "user" => { email: user.email, password: 'user' } }
+
+  #   last_auth = session[:last_auth]
+
+  #   sleep(2)
+
+  #   assert_not_equal(last_auth, session[:last_auth], 'session authentication should have been updated') { get users_url }
+  # end
+
+  # test "back to sign in on timeout" do
+  #   user = users(:two)
+
+  #   post sessions_url, params: { "user" => { email: user.email, password: 'user' } }
+
+  #   sleep(6)
+
+  #   assert_redirected_to(sessions_url) { get new_user_url }
+  # end
+
 end

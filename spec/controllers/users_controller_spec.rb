@@ -64,4 +64,23 @@ RSpec.describe UsersController do
             end
         end
     end
+
+    describe 'Session Expiry' do
+        before do
+            @user = users(:two)
+            old_controller = @controller
+            @controller = SessionsController.new
+            post :create, params: { "user" => { email: @user.email, password: 'user' } }
+            @controller = old_controller
+            @time = Time.now
+        end
+
+        it 'should reject actions outside session time limit' do
+            invalid_time = @time + 5.hours
+            allow(Time).to receive(:now).and_return(invalid_time)
+            
+            get :show, params: { id: @user.id }
+            expect(response).to redirect_to(new_session_path)
+        end
+    end
 end

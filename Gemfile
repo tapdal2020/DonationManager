@@ -37,6 +37,8 @@ group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'sqlite3', '~> 1.4' #git: "https://github.com/sparklemotion/sqlite3-ruby"
+  gem 'rspec-rails', '~> 4.0.0.beta2'
+  gem 'rails-controller-testing'
 end
 
 group :test do
@@ -47,7 +49,8 @@ group :test do
   gem 'webdrivers'
 
   gem 'test_helper'
-  gem 'rspec'
+  gem 'rspec-rails', '~> 4.0.0.beta2'
+  gem 'rails-controller-testing'
 end
 
 group :production do

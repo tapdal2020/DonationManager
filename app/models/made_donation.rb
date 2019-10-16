@@ -1,0 +1,2 @@
+class MadeDonation < ApplicationRecord
+end

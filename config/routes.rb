@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources :donation_transaction do
     collection do
       post :checkout
+      put :success
+      put :cancelled
     end
   end
 

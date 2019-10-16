@@ -1,4 +1,6 @@
 # app/services/paypal_service.rb
+include ActionView::Helpers::NumberHelper
+require 'paypal-sdk-rest'
 
 class PaypalService
   def initialize(params)
@@ -6,10 +8,11 @@ class PaypalService
     @return_url = params[:return_url]
     @cancel_url = params[:cancel_url]
     @money = params[:money]
-    @currency = @transaction.currency
+    @currency = @transaction[:currency]
   end
    
   def create_instant_payment
+    puts number_with_precision(@money, precision: 2), 'money honey'
     payment = PayPal::SDK::REST::Payment.new({
       intent: "sale",
       payer: { payment_method: "paypal" },
@@ -36,8 +39,8 @@ class PaypalService
     # for your buyers when getting their approval.
   def get_item_list
     arr = []
-    @transaction.items.each do |item|
-      arr << { name: item.name, price: item.price, currency: item: currency, quantity: item.quantity }
+    @transaction[:items].each do |item|
+      arr << { name: item[:name], price: item[:price], currency: item[:currency], quantity: item[:quantity] }
     end
     # ...
   end

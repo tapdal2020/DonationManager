@@ -3,7 +3,6 @@ class CreateMadeDonations < ActiveRecord::Migration[6.0]
     create_table :made_donations do |t|
       t.string :donor_email
       t.string :payment_id, null: false
-      t.timestamps
       t.decimal :price, precision: 6, scale: 2, default: 0.00
       t.timestamps
     end

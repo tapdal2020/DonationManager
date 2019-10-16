@@ -1,1 +1,10 @@
 <h1>Donate to Brazos Valley Jazz Society</h1>
+<%= form_for(:donation, url: { controller: 'donation_transaction', action: 'checkout' }) do |f| %>
+    <table>
+        <tr>
+            <td>Donation Amount:</td><td><%= f.number_field :donation_amount, {:value => 1.00, :min => 1.00} %></td>
+        </tr>
+    </table>
+    <br />
+    <%= f.submit "Donate" %>
+<% end %>

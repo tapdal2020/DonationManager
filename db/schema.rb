@@ -13,9 +13,11 @@
 ActiveRecord::Schema.define(version: 2019_10_16_140757) do
 
   create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
-    t.string "donor_email"
+    t.integer "user_id", null: false
     t.string "payment_id", null: false
     t.decimal "price", precision: 6, scale: 2, default: "0.0"
+    t.string "payer_id"
+    t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+    before_action :authenticate_user!, only: [:destroy]
 
     def create
         session_info = params["user"]
@@ -14,4 +15,11 @@ class SessionsController < ApplicationController
             render 'new'
         end
     end
+
+    def destroy
+        session[:user_id] = nil
+        session[:last_access] = nil
+        redirect_to new_session_path
+    end
+
 end

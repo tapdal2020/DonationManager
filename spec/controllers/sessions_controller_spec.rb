@@ -52,4 +52,34 @@ RSpec.describe SessionsController do
             end
         end
     end
+
+    describe 'DELETE destroy' do
+        it 'should redirect to login when no user is logged in' do
+            delete :destroy, params: { "id" => 0 }
+
+            expect(response).to redirect_to(new_session_path)
+            expect(session[:user_id]).to be(nil)
+            expect(session[:last_auth]).to be(nil)
+        end
+
+        context 'when a current user is logged in' do
+            before do
+                @user = users(:two)
+                @session_params = { email: @user.email, password: 'user' }
+                post :create, params: { "user" => @session_params }
+            end
+
+            it 'should remove session user_id if a user is logged in' do
+                delete :destroy, params: { "id" => @user.id }
+
+                expect(session[:user_id]).to be(nil)
+            end
+
+            it 'should remove session last_auth if a user is logged in' do
+                delete :destroy, params: { "id" => @user.id }
+
+                expect(session[:last_auth]).to be(nil)
+            end
+        end
+    end
 end

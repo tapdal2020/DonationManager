@@ -1,4 +1,6 @@
 class DonationTransactionController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     redirect_to new_donation_transaction_path
   end

@@ -1,4 +1,8 @@
 class DonationTransactionController < ApplicationController
+  def index
+    redirect_to new_donation_transaction_path
+  end
+
   def new
     if params.has_key?(:token) && params.has_key?(:paymentId) && params.has_key?(:PayerID)
     # passed upon success

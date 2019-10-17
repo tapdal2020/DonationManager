@@ -59,7 +59,7 @@ RSpec.describe SessionsController do
 
             expect(response).to redirect_to(new_session_path)
             expect(session[:user_id]).to be(nil)
-            expect(session[:last_auth]).to be(nil)
+            expect(session[:last_access]).to be(nil)
         end
 
         context 'when a current user is logged in' do
@@ -75,10 +75,10 @@ RSpec.describe SessionsController do
                 expect(session[:user_id]).to be(nil)
             end
 
-            it 'should remove session last_auth if a user is logged in' do
+            it 'should remove session last_access if a user is logged in' do
                 delete :destroy, params: { "id" => @user.id }
 
-                expect(session[:last_auth]).to be(nil)
+                expect(session[:last_access]).to be(nil)
             end
         end
     end

@@ -4,4 +4,6 @@ class MadeDonation < ApplicationRecord
     validates :price, presence: true, numericality: { greater_than: 0.00, only_integer: false }
     validates :token, presence: false, uniqueness: true
     validates :payer_id, presence: false
+
+    belongs_to :user
 end

@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     end
 
     def index
-        puts 'calling user#index function'
+        #puts 'calling user#index function'
     end
 
     def show

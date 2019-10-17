@@ -68,3 +68,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'transaction_retry'
+
+gem 'simplecov', require: false, group: :test

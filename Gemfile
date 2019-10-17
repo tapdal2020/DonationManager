@@ -26,6 +26,9 @@ gem 'paypal-sdk-rest'
 # Donor visualization
 gem 'chartkick'
 
+# Code analyzer
+gem 'rubycritic', '~> 2.9', '>= 2.9.1'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

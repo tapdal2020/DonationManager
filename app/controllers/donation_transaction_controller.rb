@@ -30,10 +30,10 @@ class DonationTransactionController < ApplicationController
   def checkout
     # get the user buy id
     @user = User.find(session[:user_id])
-    # get the amount from the forms
-    @item = build_item(params[:donation][:donation_amount])
-    @transaction = build_transaction([@item])
     @money = params[:donation][:donation_amount]
+    # get the amount from the forms
+    @item = build_item(@money)
+    @transaction = build_transaction([@item])
     # check whether there was an error happened when created the payment
     if (@payment = new_paypal_service).error.nil?
       # record the payment id provided by PayPal for future use
@@ -41,7 +41,7 @@ class DonationTransactionController < ApplicationController
       @donation = MadeDonation.new({user_id: @user.id, payment_id: @payment.id, price: @money, token: @payment.token})
       # validate the user before saving
       @donation.save(context: :user)
-      puts @donation.attributes, 'donation'
+      # puts @donation.attributes, 'donation'
       # redirect_to 'https://google.com'
       # return
       # The url to redirect the buyer
@@ -61,6 +61,7 @@ class DonationTransactionController < ApplicationController
   def success
     # puts "!!!SUCCESS!!!", params, "!!!SUCCESS!!!"
     payment_id = params.fetch(:paymentId, nil)
+    @PayerID = params[:PayerID]
     if payment_id.present?
       @transaction = MadeDonation.find_by(payment_id: payment_id)
       if @transaction.nil?
@@ -68,13 +69,13 @@ class DonationTransactionController < ApplicationController
       else
         @payment = execute_paypal_payment({
           token: payment_id, payment_id: payment_id,
-          payer_id: params[:PayerID]})
+          payer_id: @PayerID})
       end
     end
     # ...
     if @transaction && @payment && @payment.success?
       # set transaction status to success and save some data
-      @transaction.update(payer_id: params[:PayerID])
+      @transaction.update(payer_id: @PayerID)
       flash.now[:alert] = "Donation Succeeded"
     else
       # show error message

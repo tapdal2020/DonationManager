@@ -81,6 +81,10 @@ GEM
     childprocess (3.0.0)
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
+    codecov (0.1.15)
+      json
+      simplecov
+      url
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
@@ -265,6 +269,7 @@ GEM
       thread_safe (~> 0.1)
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
+    url (0.3.2)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -301,6 +306,7 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   chartkick
+  codecov
   jbuilder (~> 2.7)
   mysql2
   paypal-sdk-rest

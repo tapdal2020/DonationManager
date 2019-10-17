@@ -1,0 +1,29 @@
+test: &default
+  # These are test credentials underneath Jason A. Kolodziej
+  # Credentials for REST APIs
+  client_id: AU_D0EnR1UhhORDu2FFYLurVd-rtZYHzV4XlM3sZQwxUHHWZGBP45F-zHhLWd1fIF0yMU_zXZzBlu-ws
+  client_secret: EMeAxUV8TzrsJwmZEr78ZqSBkxZOyVpTwbsb1lTDcrPjnd4CYfQSdaNGf5ixLbniQBwOHVHLG3bloIuw
+
+  # Mode can be 'live' or 'sandbox'
+  mode: sandbox
+
+  # Credentials for Classic APIs
+  app_id: APP-80W284485P519543T
+  username: jsb-givwl406927_api1.business.example.com
+  password: KMQHRKBNHALWW966
+  signature: A7eILSBR8DQSrnk.ZoUC9cPNANVcAuCSw2AC7p6WwfW-BPObrSkF.u7g
+  # # With Certificate
+  # cert_path: "config/cert_key.pem"
+  sandbox_email_address: sb-givwl406927@business.example.com
+
+  # # IP Address
+  # ip_address: 127.0.0.1
+  # # HTTP Proxy
+  # http_proxy: http://proxy-ipaddress:3129/
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+  mode: live

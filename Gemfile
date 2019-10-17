@@ -71,3 +71,4 @@ gem 'transaction_retry'
 
 gem 'simplecov', require: false, group: :test
 gem 'codecov', require: false, group: :test
+gem 'railroady', group: :development

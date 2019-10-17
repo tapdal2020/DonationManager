@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
     end
 
     def valid_session
-        puts session[:last_access]
         session[:last_access] && 1.hours.since(session[:last_access].to_datetime) > Time.now
     end
 

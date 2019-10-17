@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
     before_action :authenticate_user!, except: [:new, :create]
+    helper_method :sort_column, :sort_direction
     
     def new
         @user = User.new
@@ -20,7 +21,16 @@ class UsersController < ApplicationController
     end
 
     def show
-
+        # make sure the user is NOT accessing another user's page
+        request = params[:id].to_i
+        with = session[:user_id].to_i
+        if (request != with)
+            render 'unauthorized'
+        else
+            @html_donation_title = (is_currently_admin?) ? 'Donation Administrator' : 'Donations Overview'
+            @my_donations = (is_currently_admin?) ? MadeDonation.all : MadeDonation.where("user_id = ?", request)
+            @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
+        end
     end
 
     def edit
@@ -32,6 +42,16 @@ class UsersController < ApplicationController
     end
 
     private
+    def sort_column
+        MadeDonation.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
+    end
+    def sort_direction
+        %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"
+    end
+
+    def is_currently_admin?
+        User.find(params[:id]).admin?
+    end
 
     def user_params
         if current_admin

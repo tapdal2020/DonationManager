@@ -4,6 +4,5 @@ class User < ApplicationRecord
     validates :email, presence: true, uniqueness: { case_sensitive: true }
     validates :password, confirmation: true, presence: true
     validates :password_confirmation, presence: true
-
     validates :street_address_line_1, presence: true, if: :street_address_line_2?
 end

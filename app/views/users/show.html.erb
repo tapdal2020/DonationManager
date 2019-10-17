@@ -1,0 +1,30 @@
+<h1><%=@html_donation_title%></h1>
+<%= button_to 'Make a Donation', {:controller => 'donation_transaction', :action => 'new', :user_id=> session[:user_id]} , :method=>:get%>
+<%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
+<style>
+table, th, td {
+  border: 0.5px solid black;
+}
+</style>
+<table>
+  <thead>
+    <tr>
+      <th><b><%= sortable "created_at", "Timestamp"%></b></th>
+      <th><b><%= sortable "price", "Donated Amount"%></b></th>
+      <th><b><%=sortable "payment_id", "Paypal Transaction ID"%></b></th>
+      <th><b><%=sortable "payer_id","Paypal Payer ID"%></b></th>
+      
+    </tr>
+  </thead>
+ 
+  <tbody>
+    <% @my_donations.each do |donation| %>
+      <tr>
+        <td><%= donation.created_at %></td>
+        <td><%= number_to_currency(donation.price) %></td>
+        <td><%= donation.payment_id %></td>
+        <td><%= donation.payer_id %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

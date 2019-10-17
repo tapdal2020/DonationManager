@@ -3,22 +3,25 @@
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
-Things you may want to cover:
+Set-up for Amp Nullset:
+---
+make sure `mysql` is installed.
 
-* Ruby version
+set the password to user `root` in mysql listed in configs with command.
 
-* System dependencies
+`mysqladmin -u root password _____`
 
-* Configuration
+login to mysql
+> `CREATE DATABASE test; CREATE DATABASE development; CREATE DATABASE production;`
+> 
+> `\q` to quit
 
-* Database creation
+`bundle install` requires ruby 2.5.5
 
-* Database initialization
+`rake db:migrate`
 
-* How to run the test suite
+`rake db:seed`
 
-* Services (job queues, cache servers, search engines, etc.)
+`rails s`
 
-* Deployment instructions
-
-* ...
+you also might need to  `yarn install --check-files`

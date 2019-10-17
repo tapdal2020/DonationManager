@@ -12,7 +12,8 @@ class ApplicationController < ActionController::Base
     end
 
     def valid_session
-        session[:last_access] && session[:last_access] + 1.hours > Time.now
+        puts session[:last_access]
+        session[:last_access] && 1.hours.since(session[:last_access].to_datetime) > Time.now
     end
 
     def authenticate_user!

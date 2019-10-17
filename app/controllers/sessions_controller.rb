@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
         if user && user.authenticate(session_info["password"])
             session[:user_id] = user.id
             session[:last_access] = Time.now
-            redirect_to 'http://google.com'
+            redirect_to new_donation_transaction_path
         else
             flash.now[:alert] = "Email or password invalid"
             flash.keep

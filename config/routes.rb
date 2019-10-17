@@ -2,6 +2,11 @@ Rails.application.routes.draw do
 
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
+  resources :donation_transaction do
+    collection do
+      post :checkout
+    end
+  end
 
   root 'sessions#new'
 

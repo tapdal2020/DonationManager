@@ -83,4 +83,23 @@ RSpec.describe UsersController do
             expect(response).to redirect_to(new_session_path)
         end
     end
+
+    describe 'Remember Me' do
+        before do
+            @user = users(:two)
+            old_controller = @controller
+            @controller = SessionsController.new
+            post :create, params: { "user" => { email: @user.email, password: 'user', rememberme: true } }
+            @controller = old_controller
+            @time = Time.now
+        end
+
+        it 'should accept actions outside session time limit if remember me was checked on login' do
+            invalid_time = @time + 5.hours
+            allow(Time).to receive(:now).and_return(invalid_time)
+            
+            get :show, params: { id: @user.id }
+            expect(response).not_to redirect_to(new_session_path)
+        end
+    end
 end

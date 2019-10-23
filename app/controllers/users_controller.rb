@@ -18,6 +18,7 @@ class UsersController < ApplicationController
 
     def index
         #puts 'calling user#index function'
+        return @user = User.all.order(:last_name)
     end
 
     def show
@@ -34,7 +35,7 @@ class UsersController < ApplicationController
     end
 
     def edit
-
+    
     end
 
     def update

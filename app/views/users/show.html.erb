@@ -1,7 +1,10 @@
 <h1><%=@html_donation_title%></h1>
 <%= button_to 'Make a Donation', {:controller => 'donation_transaction', :action => 'new', :user_id=> session[:user_id]} , :method=>:get%>
+<%= if(current_user.admin)
+      button_to 'View Users', {:controller => 'users',:action => 'index', :user_id=> session[:user_id]}, :method=>:get
+    end%>
 <%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
-<%= button_to 'View Users', {:controller => 'users', :action => 'index', :user_id=> session[:user_id]} , :method=>:get%>
+
 <style>
 table, th, td {
   border: 0.5px solid black;

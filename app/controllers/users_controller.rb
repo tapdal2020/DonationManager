@@ -35,11 +35,15 @@ class UsersController < ApplicationController
     end
 
     def edit
-    
+
     end
 
     def update
 
+    end
+
+    def is_currently_admin?
+        User.find(params[:id]).admin?
     end
 
     private
@@ -48,10 +52,6 @@ class UsersController < ApplicationController
     end
     def sort_direction
         %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"
-    end
-
-    def is_currently_admin?
-        User.find(params[:id]).admin?
     end
 
     def user_params

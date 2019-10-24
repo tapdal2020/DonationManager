@@ -1,0 +1,32 @@
+<h2> All Users</h2>
+
+<style>
+table, th, td {
+  border: 0.5px solid black;
+}
+</style>
+<table>
+  <thead>
+    <tr>
+      <th><b><%= sortable "first_name", "First Name"%></b></th>
+      <th><b><%= sortable "last name", "Last Name"%></b></th>
+      <th><b><%=sortable "email", "Email"%></b></th>
+      <th><b><%= sortable "admin", "Admin?"%></b></th>
+      <th><b><%""%></b></th>
+      
+    </tr>
+  </thead>
+ 
+  <tbody>
+    <% @user.each do |user| %>
+      <tr>
+        <td><%= user.first_name %></td>
+        <td><%= user.last_name%></td>
+        <td><%= user.email%></td>
+       	<td><%= user.admin%></td>
+        <td><%=button_to 'EDIT', {:controller => 'users', #add action
+         :user_id=> session[:user_id]} , :method=>:get%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

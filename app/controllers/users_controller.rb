@@ -76,13 +76,10 @@ class UsersController < ApplicationController
         %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"
     end
 
-<<<<<<< HEAD
-=======
     def is_currently_admin?
         current_admin
     end
 
->>>>>>> feature/admin-crud-user
     def user_params
         if current_admin
             params.require("user").permit(:email, :password, :password_confirmation, :admin)

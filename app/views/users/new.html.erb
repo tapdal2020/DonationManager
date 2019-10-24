@@ -31,7 +31,7 @@
         <tr>
             <td>Zip Code:</td><td><%= f.text_field :zip_code %></td>
         </tr>
-        <% if current_admin %>
+        <% if is_currently_admin? %>
             <tr>
                 <td>Admin?</td><td><%= f.check_box :admin %></td>
             </tr>

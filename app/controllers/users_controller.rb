@@ -19,15 +19,18 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         
         if @user.save(context: current_admin ? :admin : :user)
-            redirect_to new_session_path and return
+            if current_admin
+                redirect_to user_path(current_admin.id) and return
+            else
+                redirect_to new_session_path and return
+            end
         else
             render 'new' and return
         end
     end
 
     def index
-        #puts 'calling user#index function'
-        return @user = User.all.order(:last_name)
+        @users = User.all.order(:last_name)
     end
 
     def show
@@ -64,6 +67,7 @@ class UsersController < ApplicationController
         @user.save(update_params)
     end
 
+    helper_method :is_currently_admin?
     def is_currently_admin?
         User.find(params[:id]).admin?
     end

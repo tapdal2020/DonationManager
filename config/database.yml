@@ -4,7 +4,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: localhost
   username: root
-  password: "Tapdal2020"
+  password: "root"
 
 development:
   <<: *default
@@ -18,11 +18,11 @@ test:
   database: test
   host: localhost
   username: root
-  password: "Tapdal2020"
+  password: "root"
 
 production:
   <<: *default
   database: production
   host: localhost
   username: root
-  password: "Tapdal2020"
+  password: "root"

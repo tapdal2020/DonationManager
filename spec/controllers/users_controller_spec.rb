@@ -16,7 +16,6 @@ RSpec.describe UsersController do
 
         context 'given all arguments except admin' do
             it 'should create a new user' do
-
                 expect { post :create, params: { "user" => user_params } }.to change(User, :count).by(1)
             end
         end
@@ -30,6 +29,13 @@ RSpec.describe UsersController do
             end
         end
 
+        it 'should fail to create a new user with admin' do
+            spoof_params = user_params
+            spoof_params[:admin] = true
+
+            expect { post :create, params: { "user" => spoof_params } }.to change(User, :count).by(0)
+        end
+
         context 'given street_address_line_2 but not street_address_line_1' do
             it 'should fail to create a new user' do
                 incomplete_params = user_params
@@ -37,6 +43,19 @@ RSpec.describe UsersController do
                 incomplete_params[:street_address_line_1] = nil
 
                 expect { post :create, params: { "user" => incomplete_params } }.to change(User, :count).by(0)
+            end
+        end
+
+        context 'given a user is logged in' do
+            it 'should redirect to user(:id)' do
+                @user = users(:two)
+                old_controller = @controller
+                @controller = SessionsController.new
+                post :create, params: { "user" => { email: @user.email, password: 'user' } }
+                @controller = old_controller
+                
+                post :create, params: { "user" => user_params }
+                expect(response).to redirect_to(user_path(session[:user_id]))
             end
         end
 

@@ -3,6 +3,23 @@ require "rails_helper"
 RSpec.describe UsersController do
     fixtures :users
 
+    def login_user
+        @user = users(:two)
+        old_controller = @controller
+        @controller = SessionsController.new
+        post :create, params: { "user" => { email: @user.email, password: 'user' } }
+        @controller = old_controller
+        @user
+    end
+
+    def login_admin
+        main_admin = users(:three)
+        old_controller = @controller
+        @controller = SessionsController.new
+        post :create, params: { "user" => { email: main_admin.email, password: 'user' } }
+        @controller = old_controller
+        main_admin
+    end
 
     describe 'GET new' do
         it 'should assign @user' do
@@ -48,11 +65,7 @@ RSpec.describe UsersController do
 
         context 'given a user is logged in' do
             it 'should redirect to user(:id)' do
-                @user = users(:two)
-                old_controller = @controller
-                @controller = SessionsController.new
-                post :create, params: { "user" => { email: @user.email, password: 'user' } }
-                @controller = old_controller
+                login_user
                 
                 post :create, params: { "user" => user_params }
                 expect(response).to redirect_to(user_path(session[:user_id]))
@@ -62,11 +75,7 @@ RSpec.describe UsersController do
         context 'given an existing admin user is logged in' do
             let(:admin_params) { { email: "newadmin@admin.com", password: "admin", password_confirmation: "admin", admin: true } }
             before do
-                main_admin = users(:three)
-                old_controller = @controller
-                @controller = SessionsController.new
-                post :create, params: { "user" => { email: main_admin.email, password: 'user' } }
-                @controller = old_controller
+                @main_admin = login_admin
             end
 
             it 'should create a new admin with only the required arguments' do
@@ -86,11 +95,7 @@ RSpec.describe UsersController do
 
     describe 'Session Expiry' do
         before do
-            @user = users(:two)
-            old_controller = @controller
-            @controller = SessionsController.new
-            post :create, params: { "user" => { email: @user.email, password: 'user' } }
-            @controller = old_controller
+            @user = login_user
             @time = Time.now
         end
 
@@ -100,6 +105,160 @@ RSpec.describe UsersController do
             
             get :show, params: { id: @user.id }
             expect(response).to redirect_to(new_session_path)
+        end
+    end
+
+    describe 'GET edit' do
+        it 'should not allow access if no user is logged in' do
+            get :edit, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is logged in ' do
+            before do
+                @user = login_user
+            end
+
+            it 'should render edit template if a user is logged in and the user requests to edit themself' do
+                get :edit, params: { id: @user.id }
+                expect(subject).to render_template(:edit)
+            end
+
+            it 'should not render edit template if a user is logged in and the user requests to edit another user' do
+                get :edit, params: { id: @user.id + 1 }
+                expect(subject).to_not render_template(:edit)
+                expect(subject).to render_template('unauthorized')
+            end
+
+            it 'should find the current user' do
+                get :edit, params: { id: @user.id }
+                expect(assigns(:user)).to be_a(User)
+            end
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should render edit template for the admin' do
+                get :edit, params: { id: @main_admin.id }
+                expect(subject).to render_template(:edit)
+            end
+
+            it 'should render edit template for another user' do
+                get :edit, params: { id: users(:one).id }
+                expect(subject).to render_template(:edit)
+            end
+        end
+    end
+
+    describe 'PUT update' do
+        it 'should not allow access if no user is logged in' do
+            put :update, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is logged in' do
+            before do
+                @user = login_user
+            end
+
+            it 'should allow the user to update their own information' do
+                update_params = { first_name: 'updated', last_name: 'user', email: 'idontexistyet@test.com', street_address_line_1: 'mystreet', city: 'home', state: 'tx', zip_code: '77777', street_address_line_2: 'apt 200' }
+
+                put :update, params: { id: @user.id, "user" => update_params }
+                expect(response).to redirect_to(user_path(@user.id))
+            end
+
+            it 'should not allow a user to change their own admin status' do
+                update_params = { admin: true }
+
+                put :update, params: { id: @user.id, "user" => update_params }
+                @user.reload
+                expect(@user.admin).to be(false)               
+            end
+
+            it 'should not allow duplicate emails' do
+                update_params = { email: "jacob@fake.com" }
+
+                put :update, params: { id: @user.id, "user" => update_params }
+                expect(subject).to render_template('edit')
+            end
+
+            it 'should not allow a user to update another user' do
+                update_params = { first_name: 'updated', last_name: 'user', email: 'idontexistyet@test.com', street_address_line_1: 'mystreet', city: 'home', state: 'tx', zip_code: '77777', street_address_line_2: 'apt 200' }
+
+                put :update, params: { id: @user.id + 1, "user" => update_params }
+                expect(subject).to render_template('unauthorized')
+            end
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to update themself' do
+                update_params = { first_name: 'updated', last_name: 'admin', email: 'idontexistyet@admin.com', street_address_line_1: 'mystreet', city: 'home', state: 'tx', zip_code: '77777', street_address_line_2: 'apt 200' }
+
+                put :update, params: { id: @main_admin.id, "user" => update_params }
+                @main_admin.reload
+
+                expect(response).to redirect_to(users_path)
+                expect(@main_admin.first_name).to eq('updated')
+                expect(@main_admin.last_name).to eq('admin')
+            end
+
+            it 'should allow admin to update another user to an admin' do
+                update_params = { admin: true }
+                @new_admin = users(:one)
+
+                put :update, params: { id: @new_admin.id, "user" => update_params }
+                @new_admin.reload
+
+                expect(response).to redirect_to(users_path)
+                expect(@new_admin.admin).to be(true)
+            end
+        end
+    end
+
+    describe 'DELETE destroy' do
+        it 'should not allow access if no user is logged in' do
+            delete :destroy, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is logged in' do
+            before do
+                @tuser = login_user
+            end
+
+            it 'should allow a user to delete themself' do
+                expect { delete :destroy, params: { id: @tuser.id } }.to change(User, :count).by(-1)
+            end
+
+            it 'should not allow a user to delete another user' do
+                expect { delete :destroy, params: { id: users(:one).id } }.to change(User, :count).by(0)
+                expect(subject).to render_template('unauthorized')
+            end
+
+            it 'should render edit on failure to delete'
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to delete themself' do
+                expect { delete :destroy, params: { id: @main_admin.id } }.to change(User, :count).by(-1)
+            end
+
+            it 'should allow an admin to delete another user' do
+                expect { delete :destroy, params: { id: users(:one).id } }.to change(User, :count).by(-1)
+                expect(subject).to redirect_to(users_path)
+            end
         end
     end
 end

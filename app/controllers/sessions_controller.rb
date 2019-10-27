@@ -21,7 +21,6 @@ class SessionsController < ApplicationController
     end
 
     def destroy
-        puts "I got called"
         session[:user_id] = nil
         session[:last_access] = nil
         redirect_to new_session_path and return

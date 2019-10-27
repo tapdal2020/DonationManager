@@ -10,7 +10,7 @@ table, th, td {
     <tr>
       <th><b><%= sortable "first_name", "First Name"%></b></th>
       <th><b><%= sortable "last name", "Last Name"%></b></th>
-      <th><b><%=sortable "email", "Email"%></b></th>
+      <th><b><%= sortable "email", "Email"%></b></th>
       <th><b><%= sortable "admin", "Admin?"%></b></th>
       <th><b><%""%></b></th>
       
@@ -18,14 +18,13 @@ table, th, td {
   </thead>
  
   <tbody>
-    <% @user.each do |user| %>
+    <% @users.each do |u| %>
       <tr>
-        <td><%= user.first_name %></td>
-        <td><%= user.last_name%></td>
-        <td><%= user.email%></td>
-       	<td><%= user.admin%></td>
-        <td><%=button_to 'EDIT', {:controller => 'users', #add action
-         :user_id=> session[:user_id]} , :method=>:get%></td>
+        <td><%= u.first_name %></td>
+        <td><%= u.last_name %></td>
+        <td><%= u.email %></td>
+       	<td><%= u.admin %></td>
+        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get %></td>
       </tr>
     <% end %>
   </tbody>

@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     end
 
     def index
-        @users = User.all.order(:last_name)
+        @users = User.all.order(sort_column + ' ' + sort_direction)
     end
 
     def show
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
             render 'unauthorized' and return
         end
 
-        @user = user.find(params[:id])
+        @user = User.find(params[:id])
     end
 
     def update
@@ -64,7 +64,27 @@ class UsersController < ApplicationController
             render 'unauthorized' and return
         end
         
-        @user.save(update_params)
+        @user = User.find(params[:id])
+        if @user.update(update_params)
+            redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
+        else
+            render 'edit'
+        end
+    end
+
+    def destroy
+        request = params[:id].to_i
+        with = session[:user_id].to_i
+        if request != with && !current_admin
+            render 'unauthorized' and return
+        end
+
+        @user = User.find(params[:id])
+        if @user.destroy
+            redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
+        else
+            render 'edit' and return
+        end
     end
 
     helper_method :is_currently_admin?
@@ -77,7 +97,7 @@ class UsersController < ApplicationController
         MadeDonation.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
     end
     def sort_direction
-        %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"
+        %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
     end
 
     def is_currently_admin?

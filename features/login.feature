@@ -5,6 +5,10 @@ Feature: Login
 
     Background:
         Given I am on the home page
+        And the following users exist
+            | first_name | last_name | email | password | password_confirmation | street_address_line_1 | city | state | zip_code | admin |
+            | user | test | user@test.com | user | user | home | austin | tx | 78726 | false |
+            | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
 
     Scenario:
         Then I should see "Log In"
@@ -20,8 +24,8 @@ Feature: Login
 
         Examples:
             | type  | email             | password  | result                    |
-            | user  | me@user.com       | user      | Donations Overview        |
-            | admin | root@admin.com    | root      | Donation Administrator    |
+            | user  | user@test.com       | user      | Donations Overview        |
+            | admin | admin@test.com    | admin      | Donation Administrator    |
 
     Scenario:
         When I fill in "user_email" with "non_existent@email.com"
@@ -29,7 +33,13 @@ Feature: Login
         And I press "Log In"
         Then the login should fail
 
-    Scenario:
-        Given I am signed in
+    Scenario Outline:
+        Given I am signed in as a <role>
         When I am on the home page
-        Then I should be redirected to the user page
+        Then I should be redirected to the <role> page
+
+        Examples:
+            | role |
+            | user |
+            | admin |
+

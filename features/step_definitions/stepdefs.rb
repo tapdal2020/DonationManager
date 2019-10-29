@@ -2,7 +2,7 @@ require 'cucumber/rspec/doubles'
 
 Given(/^the following users exist$/) do |table|
     table.hashes.each do |user|
-        User.create(user)
+        User.create!(user)
     end
 end
 
@@ -14,11 +14,16 @@ Given(/^I have clicked "(.*)"$/) do |link|
     click_link link
 end
 
-Given(/^I am signed in$/) do
+Given(/^I am signed in as a (user|admin)$/) do |role|
     visit root_path
-    fill_in 'user_email', with: 'me@user.com'
-    fill_in 'user_password', with: 'user'
+    fill_in 'user_email', with: "#{role}@test.com"
+    fill_in 'user_password', with: "#{role}"
     click_button 'Log In'
+end
+
+Given("I have not interacted with my account for {int} hours") do |int|
+    invalid_time = Time.now + int.hours + 2.seconds
+    allow(Time).to receive(:now).and_return(invalid_time)
 end
 
 When(/^I fill in "(.*)" with "(.*)"$/) do |label, entry|
@@ -52,16 +57,9 @@ When(/^I fill in new user information missing (.*)?$/) do |item|
     end
 end
 
-When("I try to perform an action but have not interacted with my account for {int} hours") do |int|
-    invalid_time = Time.now + int.hours + 2.seconds
-    allow(Time).to receive(:now).and_return(invalid_time)
-end
-
-Then(/^I should be redirected to the login page$/) do
+When(/^I try to make a donation$/) do
     click_button 'Make a Donation'
     allow(Time).to receive(:now).and_call_original
-
-    expect(page).to have_content('Log In')
 end
 
 Then(/^I should see "(.*)"$/) do |item|
@@ -76,6 +74,12 @@ Then(/^the login should fail$/) do
     expect(page).to have_content('Email or password invalid')
 end
 
-Then(/^I should be redirected to the user page$/) do
-    expect(page).to have_content('Donations Overview')
+Then(/^I should be redirected to the (.*) page$/) do |role|
+    if role == 'user'
+        expect(page).to have_content('Donations Overview')
+    elsif role == 'admin'
+        expect(page).to have_content('Donation Administrator')
+    elsif role == 'login'
+        expect(page).to have_content('Log In')
+    end
 end

@@ -38,8 +38,12 @@ When(/^I click "(.*)"$/) do |link|
     click_link link
 end
 
-When (/^I fill in new user information$/) do
+When (/^I fill in new (user|admin) information$/) do |role|
+    puts role
     entries = { 'user_first_name' => 'FirstName', 'user_last_name' => 'LastName', 'user_email' => 'firstlast@email.com', 'user_password' => 'user', 'user_password_confirmation' => 'user', 'user_street_address_line_1' => 'home', 'user_city' => 'College Station', 'user_state' => 'TX', 'user_zip_code' => '77840' }
+    
+    check('user_admin') if role == 'admin'
+
     entries.each do |item, value|
         fill_in item, with: value
     end

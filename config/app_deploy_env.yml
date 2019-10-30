@@ -1,0 +1,9 @@
+# Rename this file to app_deploy_env.yml
+# Add the App's front face host name i.e. (https://cool-app.app.heroku.com/)
+# This file should be listed in .gitignore to keep your settings secret!
+# Each entry gets set as a local environment variable.
+# This file overrides ENV variables in the Unix shell.
+# For example, setting:
+
+APP_HOSTNAME_PRODUCTION: 'https://ughugh.herokuapp.com/'
+APP_HOSTNAME_TEST: 'http://localhost:3000/'

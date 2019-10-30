@@ -1,4 +1,3 @@
-require 'socket';
 class DonationTransactionController < ApplicationController
   before_action :authenticate_user!
 
@@ -7,7 +6,6 @@ class DonationTransactionController < ApplicationController
   end
 
   def new
-    print get_instance_ip
     if params.has_key?(:token) && params.has_key?(:paymentId) && params.has_key?(:PayerID)
     # passed upon success
     # !-> PARAMS <-!
@@ -98,9 +96,7 @@ class DonationTransactionController < ApplicationController
   end
     
   private
-    def get_instance_ip 
-      Socket.getifaddrs.map(&:addr).select(&:ipv4?).map(&:ip_address).select { |x| x !~ /\A127/ }
-    end
+
     def new_paypal_service
       PaypalService.new({
         transaction: @transaction,
@@ -111,11 +107,13 @@ class DonationTransactionController < ApplicationController
     end
 
     def paypal_transaction_cancel_url
-      'http://localhost:3000/donation_transaction/new'
+      url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
+      url+= 'donation_transaction/new'
     end
 
     def paypal_transaction_success_url
-      'http://localhost:3000/donation_transaction/new'
+      url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
+      url+= 'donation_transaction/new'
     end
 
     def build_item p

@@ -2,8 +2,9 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
   username: root
-  password: <%= ENV.fetch("MYSQL_ROOT_PWD") { "root" }%>
+  password: "root"
 
 development:
   <<: *default
@@ -15,7 +16,13 @@ development:
 test:
   <<: *default
   database: test
+  host: localhost
+  username: root
+  password: "root"
 
 production:
   <<: *default
   database: production
+  host: localhost
+  username: root
+  password: "root"

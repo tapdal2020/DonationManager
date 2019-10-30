@@ -58,6 +58,9 @@ group :test do
   gem 'test_helper'
   gem 'rspec-rails', '~> 4.0.0.beta2'
   gem 'rails-controller-testing'
+
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
 end
 
 group :production do

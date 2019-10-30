@@ -1,6 +1,11 @@
 <h1><%=@html_donation_title%></h1>
-<%= button_to 'Make a Donation', {:controller => 'donation_transaction', :action => 'new', :user_id=> session[:user_id]} , :method=>:get%>
-<%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
+<%= button_to 'Make a Donation', { controller: 'donation_transaction', action: 'new', user_id: session[:user_id] } , method: :get %>
+<% if is_currently_admin? %>
+      <%= button_to 'View Users', { controller: 'users', action: 'index', user_id: session[:user_id] }, method: :get %>
+      <%= button_to 'Create New User', { controller: 'users', action: 'new' }, method: :get %>
+<% end %>
+<%= button_to "Logout", session_path(current_user.id), method: :delete %>
+
 <style>
 table, th, td {
   border: 0.5px solid black;
@@ -11,9 +16,8 @@ table, th, td {
     <tr>
       <th><b><%= sortable "created_at", "Timestamp"%></b></th>
       <th><b><%= sortable "price", "Donated Amount"%></b></th>
-      <th><b><%=sortable "payment_id", "Paypal Transaction ID"%></b></th>
-      <th><b><%=sortable "payer_id","Paypal Payer ID"%></b></th>
-      
+      <th><b><%= sortable "payment_id", "Paypal Transaction ID"%></b></th>
+      <th><b><%= sortable "payer_id","Paypal Payer ID"%></b></th>
     </tr>
   </thead>
  

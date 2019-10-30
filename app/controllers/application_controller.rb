@@ -16,12 +16,20 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate_user!
-        redirect_to new_session_path and return unless current_user && valid_session
+        unless current_user && valid_session
+            session[:user_id] = nil
+            session[:last_access] = nil
+            redirect_to new_session_path and return
+        end
         session[:last_access] = Time.now
     end
 
     def authenticate_admin!
-        redirect_to new_session_path and return unless current_admin && valid_session
+        unless current_admin && valid_session
+            session[:user_id] = nil
+            session[:last_access] = nil
+            redirect_to new_session_path and return
+        end
         session[:last_access] = Time.now
     end
 end

@@ -1,0 +1,31 @@
+<h2> All Users</h2>
+
+<style>
+table, th, td {
+  border: 0.5px solid black;
+}
+</style>
+<table>
+  <thead>
+    <tr>
+      <th><b><%= sortable "first_name", "First Name"%></b></th>
+      <th><b><%= sortable "last name", "Last Name"%></b></th>
+      <th><b><%= sortable "email", "Email"%></b></th>
+      <th><b><%= sortable "admin", "Admin?"%></b></th>
+      <th><b><%""%></b></th>
+      
+    </tr>
+  </thead>
+ 
+  <tbody>
+    <% @users.each_with_index do |u,i| %>
+      <tr>
+        <td><%= u.first_name %></td>
+        <td><%= u.last_name %></td>
+        <td><%= u.email %></td>
+       	<td><%= u.admin %></td>
+        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get, name: "EDIT_#{i}" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

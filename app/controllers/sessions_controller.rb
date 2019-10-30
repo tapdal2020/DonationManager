@@ -1,5 +1,9 @@
 class SessionsController < ApplicationController
-    before_action :authenticate_user!, only: [:destroy]
+    def new
+        if current_user
+            redirect_to user_path(current_user.id) and return
+        end
+    end
 
     def create
         session_info = params["user"]
@@ -19,7 +23,7 @@ class SessionsController < ApplicationController
     def destroy
         session[:user_id] = nil
         session[:last_access] = nil
-        redirect_to new_session_path
+        redirect_to new_session_path and return
     end
 
 end

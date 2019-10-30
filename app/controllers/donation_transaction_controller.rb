@@ -18,7 +18,7 @@ class DonationTransactionController < ApplicationController
     # {"token"=>"EC-7W133018A56947646", "controller"=>"donation_transaction", "action"=>"new"}
     # !-> PARAMS <-!
       cancelled
-    elsif (! User.exists?(session[:user_id]))
+    elsif (!User.exists?(session[:user_id]))
       redirect_to new_session_path
       return
     else

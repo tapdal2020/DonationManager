@@ -3,6 +3,19 @@ require "rails_helper"
 RSpec.describe SessionsController do
     fixtures :users
 
+    describe 'GET new' do
+        before do
+            @user = users(:two)
+            @session_params = { email: @user.email, password: 'user' }
+            post :create, params: { "user" => @session_params }
+        end
+
+        it 'should redirect to user_path if already loggin in' do
+            get :new
+            expect(response).to redirect_to(user_path(@user.id))
+        end
+    end
+
     describe 'POST create' do
         context 'given existing user attempting to login' do
             before do

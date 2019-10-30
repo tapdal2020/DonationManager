@@ -10,18 +10,6 @@ Feature: Admin CRUD Users
             | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
         And I am signed in as a admin
 
-    Scenario Outline:
-        When I press "View Users"
-        Then I should see "<header>"
-        And I should see "EDIT" button
-
-        Examples:
-            | header |
-            | First Name |
-            | Last Name |
-            | Email |
-            | Admin? |
-
     Scenario:
         When I press "Create New User"
         Then I should see "Create New User"

@@ -9,12 +9,12 @@ test: &default
 
   # Credentials for Classic APIs
   app_id: APP-80W284485P519543T
-  username: jsb-givwl406927_api1.business.example.com
+  username: sb-givwl406927_api1.business.example.com
   password: KMQHRKBNHALWW966
   signature: A7eILSBR8DQSrnk.ZoUC9cPNANVcAuCSw2AC7p6WwfW-BPObrSkF.u7g
   # # With Certificate
   # cert_path: "config/cert_key.pem"
-  sandbox_email_address: sb-givwl406927@business.example.com
+  sandbox_email_address: root@dms-user.com
 
   # # IP Address
   # ip_address: 127.0.0.1

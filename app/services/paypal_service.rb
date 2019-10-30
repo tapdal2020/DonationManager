@@ -12,7 +12,7 @@ class PaypalService
   end
    
   def create_instant_payment
-    puts number_with_precision(@money, precision: 2), 'money honey'
+    # puts number_with_precision(@money, precision: 2), 'money honey'
     payment = PayPal::SDK::REST::Payment.new({
       intent: "sale",
       payer: { payment_method: "paypal" },

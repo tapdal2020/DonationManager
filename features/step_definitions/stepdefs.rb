@@ -66,6 +66,14 @@ When(/^I try to make a donation$/) do
     allow(Time).to receive(:now).and_call_original
 end
 
+When(/^I check "(.*)"$/) do |item|
+    check(item)
+end
+
+When(/^I uncheck "(.*)"$/) do |item|
+    uncheck(item)
+end
+
 Then(/^I should see "(.*)"$/) do |item|
     expect(page).to have_content(item)
 end

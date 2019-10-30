@@ -18,13 +18,13 @@ table, th, td {
   </thead>
  
   <tbody>
-    <% @users.each do |u| %>
+    <% @users.each_with_index do |u,i| %>
       <tr>
         <td><%= u.first_name %></td>
         <td><%= u.last_name %></td>
         <td><%= u.email %></td>
        	<td><%= u.admin %></td>
-        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get %></td>
+        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get, name: "EDIT_#{i}" %></td>
       </tr>
     <% end %>
   </tbody>

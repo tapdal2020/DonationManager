@@ -34,3 +34,61 @@ Feature: Admin CRUD users
             | role |
             | user |
             | admin |
+
+    Scenario Outline:
+        When I press "View Users"
+        And I press "EDIT_0"
+        Then I should see "<label>"
+
+        Examples:
+            | label |
+            | First name: |
+            | Last name: |
+            | Email address: |
+            | Street Address: |
+            | City: |
+            | State: |
+            | Zip Code: |
+            | Admin? | 
+
+    Scenario Outline:
+        When I press "View Users"
+        And I press "EDIT_1"
+        And I fill in "<field>" with "<value>"
+        And I press "Save"
+        Then I should see "All Users"
+    
+        Examples:
+            | field | value |
+            | user_first_name | NewName |
+            | user_last_name | NewName |
+            | user_email | newemail@test.com |
+            | user_street_address_line_1 | NewHome |
+            | user_street_address_line_2 | Apt. 0 |
+            | user_city | New Austin |
+            | user_state | LA |
+            | user_zip_code | 77101 |
+
+    Scenario:
+        When I press "View Users"
+        And I press "EDIT_1"
+        And I check "user_admin"
+        And I press "Save"
+        Then I should see "All Users"
+        When I press "EDIT_1"
+        And I uncheck "user_admin"
+        And I press "Save"
+        Then I should see "All Users"
+
+    Scenario:
+        When I press "View Users"
+        And I press "EDIT_1"
+        And I press "DELETE"
+        Then I should see "All Users"
+
+
+
+    
+
+
+    

@@ -73,6 +73,9 @@ class UsersController < ApplicationController
     end
 
     def destroy
+        puts "Request: #{params[:id]}"
+        puts "With: #{params[:user_id]}"
+        puts "Admin: #{current_admin.admin?}"
         request = params[:id].to_i
         with = session[:user_id].to_i
         if request != with && !current_admin
@@ -80,7 +83,9 @@ class UsersController < ApplicationController
         end
 
         @user = User.find(params[:id])
+        puts "Found: #{@user.id}"
         if @user.destroy
+            puts "Destroyed!"
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
             render 'edit' and return

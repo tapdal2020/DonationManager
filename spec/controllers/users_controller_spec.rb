@@ -108,6 +108,76 @@ RSpec.describe UsersController do
         end
     end
 
+    describe 'GET show' do
+        it 'should not allow access if no user is logged in' do
+            get :show, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is logged in' do
+            before do
+                @user = login_user
+            end
+
+            it 'should allow a user to view their own page' do
+                get :show, params: { id: @user.id }
+                expect(response).not_to render_template('unauthorized')
+                expect(assigns(:html_donation_title)).to eq('Donations Overview')
+                expect(assigns(:my_donations)).to eq(@user.made_donations)
+            end
+
+            it 'should not allow a user to view another user\'s page' do
+                get :show, params: { id: users(:one).id }
+                expect(subject).to render_template('unauthorized')
+            end
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to view their page' do
+                get :show, params: { id: @main_admin.id }
+                expect(response).not_to render_template('unauthorized')
+                expect(assigns(:html_donation_title)).to eq('Donation Administrator')
+                MadeDonation.all.each do |x|
+                    expect(assigns(:my_donations)).to include(x)
+                end
+            end
+
+            it 'should not allow admins to view user page' do
+                get :show, params: { id: users(:one).id }
+                expect(subject).to render_template('unauthorized')
+            end
+        end
+    end
+
+    describe 'GET index' do
+        it 'should not allow access if no admin is logged in' do
+            get :index
+            expect(response).to redirect_to(new_session_path)
+            
+            login_user
+            get :index
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to view all the users' do
+                get :index
+                expect(response).not_to redirect_to(new_session_path)
+                User.all.each do |u|
+                    expect(assigns(:users)).to include(u)
+                end
+            end
+        end
+    end
+
     describe 'GET edit' do
         it 'should not allow access if no user is logged in' do
             get :edit, params: { id: 0 }

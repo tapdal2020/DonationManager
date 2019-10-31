@@ -18,9 +18,6 @@ class DonationTransactionController < ApplicationController
     # {"token"=>"EC-7W133018A56947646", "controller"=>"donation_transaction", "action"=>"new"}
     # !-> PARAMS <-!
       cancelled
-    elsif (!User.exists?(session[:user_id]))
-      redirect_to new_session_path
-      return
     else
       @donation = MadeDonation.new
     end
@@ -29,7 +26,7 @@ class DonationTransactionController < ApplicationController
 
   def checkout
     # get the user buy id
-    @user = User.find(session[:user_id])
+    @user = current_user
     @money = params[:donation][:donation_amount]
     # get the amount from the forms
     @item = build_item(@money)
@@ -46,7 +43,7 @@ class DonationTransactionController < ApplicationController
       # return
       # The url to redirect the buyer
       @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
-      redirect_to @redirect_url
+      redirect_to @redirect_url and return
       # save other @payment data if you need
     else
       # if the payment is not created successfully,
@@ -65,7 +62,7 @@ class DonationTransactionController < ApplicationController
     if payment_id.present?
       @transaction = MadeDonation.find_by(payment_id: payment_id)
       if @transaction.nil?
-        render 'something_wrong'
+        render 'something_wrong' and return
       else
         @payment = execute_paypal_payment({
           token: payment_id, payment_id: payment_id,
@@ -88,7 +85,7 @@ class DonationTransactionController < ApplicationController
     # puts "??!USER CANCELLED!??", params, "??!USER CANCELLED!??"
     @transaction = MadeDonation.find_by(token: params[:token])
     if @transaction.nil?
-      render 'something_wrong'
+      render 'something_wrong' and return
     else
       @transaction.destroy
       flash.now[:alert] = "Donation Cancelled"

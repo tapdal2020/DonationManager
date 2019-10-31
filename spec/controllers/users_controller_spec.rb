@@ -313,7 +313,11 @@ RSpec.describe UsersController do
                 expect(subject).to render_template('unauthorized')
             end
 
-            it 'should render edit on failure to delete'
+            it 'should render edit on failure to delete' do
+                allow_any_instance_of(User).to receive(:destroy).and_return(nil)
+                delete :destroy, params: { id: @tuser.id }
+                expect(subject).to render_template('edit')
+            end
         end
 
         context 'given an admin is logged in' do

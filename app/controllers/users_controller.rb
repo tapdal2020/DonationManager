@@ -66,7 +66,7 @@ class UsersController < ApplicationController
         if @user.update(update_params)
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
-            render 'edit'
+            render 'edit' and return
         end
     end
 
@@ -78,7 +78,9 @@ class UsersController < ApplicationController
         end
 
         @user = User.find(params[:id])
-        if @user.destroy
+        x = @user.destroy
+        puts "destroy: #{x}"
+        if x
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
             render 'edit' and return

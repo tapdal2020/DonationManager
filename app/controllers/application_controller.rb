@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
     end
 
     def valid_session
-        (session[:last_access] && (1.hours.since(session[:last_access].to_datetime) > Time.now)) unless session[:rememberme] == 1
+        puts "1: #{session[:last_access]}"
+        puts "2: #{1.hours.since(session[:last_access].to_datetime) > Time.now}"
+        puts "3: #{session[:rememberme]} #{session[:rememberme].class}"
+        session[:last_access] && ((1.hours.since(session[:last_access].to_datetime) > Time.now) || session[:rememberme] == "1")
     end
 
     def authenticate_user!

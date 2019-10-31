@@ -331,6 +331,7 @@ RSpec.describe UsersController do
             end
         end
     end
+    
     describe 'Remember Me' do
         before do
             @user = users(:two)

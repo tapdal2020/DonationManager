@@ -62,6 +62,16 @@ Given("paypal will authorize payment of {int} dollars") do |int|
           }).to_return(status: 200, body: "", headers: {})
 end
 
+Given "I have received and followed a password reset link" do
+    visit root_path
+    click_link "Forgot password?"
+    fill_in "email", with: "user@test.com"
+    click_button "Reset Password"
+    
+    token = User.find_by_email("user@test.com").password_reset_token
+    visit edit_password_reset_path(token)
+end
+
 When(/^I fill in "(.*)" with "(.*)"$/) do |label, entry|
     fill_in(label, with: entry)
 end

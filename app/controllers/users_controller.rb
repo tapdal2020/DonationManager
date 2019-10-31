@@ -78,9 +78,7 @@ class UsersController < ApplicationController
         end
 
         @user = User.find(params[:id])
-        x = @user.destroy
-        puts "destroy: #{x}"
-        if x
+        if @user.destroy
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
             render 'edit' and return

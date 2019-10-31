@@ -21,6 +21,14 @@ Given(/^I am signed in as a (user|admin)$/) do |role|
     click_button 'Log In'
 end
 
+Given(/^I am signed in as a (user|admin) with remember me$/) do |role|
+    visit root_path
+    fill_in 'user_email', with: "#{role}@test.com"
+    fill_in 'user_password', with: "#{role}"
+    check('user_rememberme')
+    click_button 'Log In'
+end
+
 Given("I have not interacted with my account for {int} hours") do |int|
     invalid_time = Time.now + int.hours + 2.seconds
     allow(Time).to receive(:now).and_return(invalid_time)
@@ -138,5 +146,7 @@ Then(/^I should be redirected to the (.*) page$/) do |role|
         expect(page).to have_content('Donation Administrator')
     elsif role == 'login'
         expect(page).to have_content('Log In')
+    elsif role == 'donations'
+        expect(page).to have_content('Donate to Brazos Valley Jazz Society')
     end
 end

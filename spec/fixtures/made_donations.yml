@@ -4,8 +4,16 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
+one: # {}
+   user_id: "1"
+   payment_id: "FAKE_PAYMENT-1"
+   price: "1.00"
+   token: "token_transaction_1"
+   payer_id: "payer_id_user_1"
 #
-two: {}
-# column: value
+two: # {}
+  user_id: "2"
+  payment_id: "FAKE_PAYMENT-2"
+  price: "2.00"
+  token: "token_transaction_2"
+  payer_id: "payer_id_user_2"

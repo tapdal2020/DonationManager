@@ -27,8 +27,11 @@ class UsersController < ApplicationController
         if (request != with)
             render 'unauthorized'
         else
+            @present_admin = is_currently_admin?
             @html_donation_title = (is_currently_admin?) ? 'Donation Administrator' : 'Donations Overview'
-            @my_donations = (is_currently_admin?) ? MadeDonation.all : MadeDonation.where("user_id = ?", request)
+            # if and admin bring in users to show their email on table
+            @my_donations = (is_currently_admin?) ? MadeDonation.joins(:user) : MadeDonation.where("user_id = ?", request)
+            @donations_chart = @my_donations.monthly_donations
             @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
         end
     end
@@ -43,7 +46,12 @@ class UsersController < ApplicationController
 
     private
     def sort_column
-        MadeDonation.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
+        if !is_currently_admin?
+            MadeDonation.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
+        else
+            # gather the user columns too
+            (MadeDonation.column_names + User.column_names).include?(params[:sort]) ? params[:sort] : "created_at"
+        end
     end
     def sort_direction
         %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"

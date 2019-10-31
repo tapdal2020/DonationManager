@@ -313,7 +313,11 @@ RSpec.describe UsersController do
                 expect(subject).to render_template('unauthorized')
             end
 
-            it 'should render edit on failure to delete'
+            it 'should render edit on failure to delete' do
+                allow_any_instance_of(User).to receive(:destroy).and_return(nil)
+                delete :destroy, params: { id: @tuser.id }
+                expect(subject).to render_template('edit')
+            end
         end
 
         context 'given an admin is logged in' do
@@ -331,4 +335,24 @@ RSpec.describe UsersController do
             end
         end
     end
+    
+    describe 'Remember Me' do
+        before do
+            @user = users(:two)
+            old_controller = @controller
+            @controller = SessionsController.new
+            post :create, params: { "user" => { email: @user.email, password: 'user', rememberme: 1 } }
+            @controller = old_controller
+            @time = Time.now
+        end
+
+        it 'should accept actions outside session time limit if remember me was checked on login' do
+            invalid_time = @time + 5.hours
+            allow(Time).to receive(:now).and_return(invalid_time)
+            
+            get :show, params: { id: @user.id }
+            expect(response).not_to redirect_to(new_session_path)
+        end
+    end
+
 end

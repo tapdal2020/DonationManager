@@ -28,6 +28,7 @@ class PaypalService
     
   def self.execute_payment(payment_id, payer_id)
       payment = PayPal::SDK::REST::Payment.find(payment_id)
+      puts "type: #{payment.class}"
       payment.execute(payer_id: payer_id) unless payment.error
       payment
   end

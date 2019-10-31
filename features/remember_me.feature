@@ -1,7 +1,7 @@
-Feature: Login Timeout
+Feature: Remember Me
     As a user or admin
-    I want my login to time out
-    In order to protect my account
+    I want the tool to remember me
+    In order to log in faster
 
     Background:
         Given the following users exist
@@ -10,10 +10,10 @@ Feature: Login Timeout
             | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
 
     Scenario Outline:
-        Given I am signed in as a <role>
+        Given I am signed in as a <role> with remember me
         And I have not interacted with my account for 1 hours
         When I try to make a donation
-        Then I should be redirected to the login page
+        Then I should be redirected to the donations page
 
         Examples:
             | role |

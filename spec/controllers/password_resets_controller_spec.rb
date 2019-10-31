@@ -70,6 +70,12 @@ RSpec.describe PasswordResetsController, type: :controller do
       put :update, params: { id: @reset_token }
       expect(response).to redirect_to(new_password_reset_path)
     end
+    
+    it 'should render edit on fail to update' do
+      allow_any_instance_of(User).to receive(:update).and_return(nil)
+      put :update, params: { id: @reset_token, user: { password: 'newpass', password_confirmation: 'newpass' } }
+      expect(subject).to render_template('edit')
+    end
   end
 
 end

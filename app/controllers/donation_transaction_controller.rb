@@ -103,11 +103,13 @@ class DonationTransactionController < ApplicationController
     end
 
     def paypal_transaction_cancel_url
-      'http://localhost:3000/donation_transaction/new'
+      url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
+      url+= 'donation_transaction/new'
     end
 
     def paypal_transaction_success_url
-      'http://localhost:3000/donation_transaction/new'
+      url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
+      url+= 'donation_transaction/new'
     end
 
     def build_item p

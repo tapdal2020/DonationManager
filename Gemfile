@@ -25,6 +25,9 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'paypal-sdk-rest'
 # Donor visualization
 gem 'chartkick'
+gem 'highcharts-rails'
+# Easy grouping on data
+gem 'groupdate'
 
 # Code analyzer
 gem 'rubycritic', '~> 2.9', '>= 2.9.1'

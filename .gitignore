@@ -39,3 +39,4 @@ db/schema.rb
 coverage/assets/*
 coverage/*.html
 coverage/.resultset.json*
+db/schema.rb

@@ -141,7 +141,7 @@ RSpec.describe UsersController do
                 get :show, params: { id: @main_admin.id }
                 expect(response).not_to render_template('unauthorized')
                 expect(assigns(:html_donation_title)).to eq('Donation Administrator')
-                MadeDonation.all.each do |x|
+                MadeDonation.joins(:user).each do |x|
                     expect(assigns(:my_donations)).to include(x)
                 end
             end

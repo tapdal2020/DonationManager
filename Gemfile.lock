@@ -137,7 +137,11 @@ GEM
     gherkin (5.1.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    groupdate (4.2.0)
+      activesupport (>= 5)
     hashdiff (1.0.0)
+    highcharts-rails (6.0.3)
+      railties (>= 3.1)
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -347,6 +351,8 @@ DEPENDENCIES
   codecov
   cucumber-rails
   database_cleaner
+  groupdate
+  highcharts-rails
   jbuilder (~> 2.7)
   mysql2
   paypal-sdk-rest

@@ -15,6 +15,9 @@ table, th, td {
   <thead>
     <tr>
       <th><b><%= sortable "created_at", "Timestamp"%></b></th>
+      <% if is_currently_admin? %>
+      <th><b><%= sortable "email", "User Account"%></b></th>
+      <% end %>
       <th><b><%= sortable "price", "Donated Amount"%></b></th>
       <th><b><%= sortable "payment_id", "Paypal Transaction ID"%></b></th>
       <th><b><%= sortable "payer_id","Paypal Payer ID"%></b></th>
@@ -25,6 +28,9 @@ table, th, td {
     <% @my_donations.each do |donation| %>
       <tr>
         <td><%= donation.created_at %></td>
+        <% if is_currently_admin? %>
+        <td><%= donation.user.email %></td>
+        <% end %>
         <td><%= number_to_currency(donation.price) %></td>
         <td><%= donation.payment_id %></td>
         <td><%= donation.payer_id %></td>
@@ -32,3 +38,4 @@ table, th, td {
     <% end %>
   </tbody>
 </table>
+<%=line_chart @donations_chart, prefix: "$",width: "800px", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#581818']%>

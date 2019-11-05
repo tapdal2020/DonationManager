@@ -150,3 +150,7 @@ Then(/^I should be redirected to the (.*) page$/) do |role|
         expect(page).to have_content('Donate to Brazos Valley Jazz Society')
     end
 end
+
+Then(/^I should get a response with content-type "(.*)"$/) do |content_type|
+    expect(page.response_headers['Content-Type']).to eq(content_type)
+end

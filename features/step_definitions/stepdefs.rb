@@ -70,6 +70,47 @@ Given("paypal will authorize payment of {int} dollars") do |int|
           }).to_return(status: 200, body: "", headers: {})
 end
 
+Given "I have made a donation of {int} dollars" do |int|
+    Rails.application.routes.append do
+        get '/cgi-bin/webscr' => "donation_transaction#new"
+    end
+  
+    payment = PayPal::SDK::REST::Payment.new({
+        transaction: {
+            currency: "USD",
+            items: [{
+                name: 'Brazos Valley Jazz Society Donation',
+                quantity: 1,
+                currency: "USD",
+                price: int
+            }]
+        },
+        return_url: 'http://localhost:3000/donation_transaction/new',
+        cancel_url: 'http://localhost:3000/donation_transaction/new',
+        money: int
+    })
+
+    payment.create
+    allow(PaypalService).to receive(:create_instant_payment).and_return(payment)
+
+    Rails.application.reload_routes!
+
+    stub_request(:post, "https://api.sandbox.paypal.com/v1/oauth2/token").with(
+        body: {"grant_type"=>"client_credentials"},
+        headers: {
+        'Accept'=>'*/*',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'Authorization'=>'Basic QVVfRDBFblIxVWhoT1JEdTJGRllMdXJWZC1ydFpZSHpWNFhsTTNzWlF3eFVISFdaR0JQNDVGLXpIaExXZDFmSUYweU1VX3pYWnpCbHUtd3M6RU1lQXhVVjhUenJzSndtWkVyNzhacVNCa3haT3lWcFR3YnNiMWxURGNyUGpuZDRDWWZRU2RhTkdmNWl4TGJuaVFCd09IVkhMRzNibG9JdXc=',
+        'Content-Type'=>'application/x-www-form-urlencoded',
+        'Paypal-Request-Id'=>payment.request_id,
+        'User-Agent'=>'PayPalSDK/PayPal-Ruby-SDK 1.7.3 (paypal-sdk-core 1.7.3; ruby 2.5.5p157-x64-mingw32;OpenSSL 1.1.1b  26 Feb 2019)'
+        }).to_return(status: 200, body: "", headers: {})
+
+    click_button "Make a Donation"
+    fill_in("donation_donation_amount", with: 4)
+    click_button "Donate"    
+end
+
 Given "I have received and followed a password reset link" do
     visit root_path
     click_link "Forgot password?"

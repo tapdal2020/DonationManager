@@ -13,4 +13,17 @@ Feature: Email List
     # https://www.codementor.io/victor_hazbun/export-records-to-csv-files-ruby-on-rails-vda8323q0
     Scenario:
         When I click 'Get Emails'
-        I should 
+        # I have a definition for this on feature/print-receipts branch
+        Then I should I should get a response with content-type 'application/csv'
+
+
+# This is pretty much the only cucumber test you need
+# You'll put more detailed functionality tests in rspec
+# First, write your RSpec tests
+# - need to make sure we can click the button
+# - need to make sure we can get the correct subset of users
+# - etc.
+# Then, create a controller with an index view: rails g EmailLists index
+# Add a button on the admin show page that lets us print all emails
+# Add some selectors that help an admin choose a subset of all emails
+# Then you can start testing against the RSpec and making sure your code does what you wanted it to

@@ -11,14 +11,17 @@ class DonationTransactionController < ApplicationController
     # !-> PARAMS <-!
     # {"paymentId"=>"PAYID-LWTZFDQ5HY60034BT5063747", "token"=>"EC-7NE090679P7478832", "PayerID"=>"D7MH32PSBP23C", "controller"=>"donation_transaction", "action"=>"new"}
     # !-> PARAMS <-!
+      puts "****Success path****"
       success
     elsif params.has_key?(:token)
     # passed upon cancellation
     # !-> PARAMS <-!
     # {"token"=>"EC-7W133018A56947646", "controller"=>"donation_transaction", "action"=>"new"}
     # !-> PARAMS <-!
+      puts "****Cancelled path****"
       cancelled
     else
+      puts "****Default path****"
       @donation = MadeDonation.new
     end
     # puts "!-> PARAMS <-!", params, session[:user_id], "!-> PARAMS <-!"
@@ -42,7 +45,7 @@ class DonationTransactionController < ApplicationController
       # redirect_to 'https://google.com'
       # return
       # The url to redirect the buyer
-      @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
+      @redirect_url = @payment.links.find{ |v| v.method == "REDIRECT" }.href
       redirect_to @redirect_url and return
       # save other @payment data if you need
     else
@@ -87,8 +90,6 @@ class DonationTransactionController < ApplicationController
     if @transaction.nil?
       render 'something_wrong' and return
     else
-      @payment = PayPal::SDK::REST::Payment.find(params[:token])
-      @payment.destroy!
       @transaction.destroy!
       flash.now[:alert] = "Donation Cancelled"
     end
@@ -106,7 +107,7 @@ class DonationTransactionController < ApplicationController
 
     def paypal_transaction_cancel_url
       url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
-      url+= 'donation_transaction/new'
+      url += 'donation_transaction/new'
     end
 
     def paypal_transaction_success_url

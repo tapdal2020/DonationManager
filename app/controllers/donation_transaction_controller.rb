@@ -87,6 +87,8 @@ class DonationTransactionController < ApplicationController
     if @transaction.nil?
       render 'something_wrong' and return
     else
+      @payment = PayPal::SDK::REST::Payment.find(params[:token])
+      @payment.destroy!
       @transaction.destroy!
       flash.now[:alert] = "Donation Cancelled"
     end

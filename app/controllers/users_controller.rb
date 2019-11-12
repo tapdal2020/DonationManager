@@ -19,6 +19,8 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         
         if @user.save(context: current_admin ? :admin : :user)
+            redirect_to recurring_donation_transactions_path(from: 'create') and return unless @user.membership == "" || @user.membership.nil?
+            
             if current_admin
                 redirect_to user_path(current_admin.id) and return
             else
@@ -113,17 +115,17 @@ class UsersController < ApplicationController
 
     def user_params
         if current_admin
-            params.require("user").permit(:email, :password, :password_confirmation, :admin)
+            params.require("user").permit(:email, :password, :password_confirmation, :membership, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
+            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
     end
 
     def update_params
         if current_admin
-            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :admin)
+            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
+            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
     end
     

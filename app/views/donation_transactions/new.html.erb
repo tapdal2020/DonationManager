@@ -3,7 +3,7 @@
 <%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
 
                      
-<%= form_for(:donation, url: { controller: 'donation_transaction', action: 'checkout' }) do |f| %>
+<%= form_for(:donation, url: { controller: 'donation_transactions', action: 'checkout' }) do |f| %>
     <table>
         <tr>
             <td>Donation Amount: $</td><td><%= f.number_field :donation_amount, :value => 1, :min => 1.00, :step => 0.01%></td>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_28_221956) do
+ActiveRecord::Schema.define(version: 2019_11_12_212936) do
 
   create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2019_10_28_221956) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "password_reset_token"
     t.datetime "password_reset_sent_at"
+    t.string "membership"
   end
 
 end

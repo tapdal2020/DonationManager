@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DonationTransactionController do
+RSpec.describe DonationTransactionsController do
   fixtures :users
 
   let(:mock_payment) { double('PayPal::SDK::REST::DataTypes::Payment') }

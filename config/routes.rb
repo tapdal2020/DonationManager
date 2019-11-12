@@ -4,9 +4,10 @@ Rails.application.routes.draw do
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :receipts, only: [:index, :show]
-  resources :donation_transaction do
+  resources :donation_transactions, only: [:index, :new, :edit] do
     collection do
       post :checkout
+      post :recurring
     end
   end
 

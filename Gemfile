@@ -84,3 +84,6 @@ gem 'railroady', group: :development
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'wkhtmltopdf-heroku', '2.12.5.0', group: :production
+
+# email validation
+gem 'validates_email_format_of'

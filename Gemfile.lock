@@ -308,6 +308,8 @@ GEM
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
     url (0.3.2)
+    validates_email_format_of (1.6.3)
+      i18n
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -375,6 +377,7 @@ DEPENDENCIES
   transaction_retry
   turbolinks (~> 5)
   tzinfo-data
+  validates_email_format_of
   web-console (>= 3.3.0)
   webdrivers
   webmock

@@ -87,7 +87,7 @@ class DonationTransactionController < ApplicationController
     if @transaction.nil?
       render 'something_wrong' and return
     else
-      @transaction.destroy
+      @transaction.destroy!
       flash.now[:alert] = "Donation Cancelled"
     end
   end

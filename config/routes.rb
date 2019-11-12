@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :password_resets
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
+  resources :receipts, only: [:index, :show]
   resources :donation_transaction do
     collection do
       post :checkout

@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.0.3)
     actioncable (6.0.0)
       actionpack (= 6.0.0)
       nio4r (~> 2.0)
@@ -58,6 +59,7 @@ GEM
       zeitwerk (~> 2.1, >= 2.1.8)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    afm (0.2.2)
     ast (2.4.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -140,6 +142,7 @@ GEM
     groupdate (4.2.0)
       activesupport (>= 5)
     hashdiff (1.0.0)
+    hashery (2.1.2)
     highcharts-rails (6.0.3)
       railties (>= 3.1)
     i18n (1.7.0)
@@ -182,6 +185,12 @@ GEM
     paypal-sdk-rest (1.7.3)
       multi_json (~> 1.0)
       xml-simple
+    pdf-reader (2.3.0)
+      Ascii85 (~> 1.0.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pg (1.1.4)
     pg (1.1.4-x64-mingw32)
     public_suffix (4.0.1)
@@ -250,6 +259,7 @@ GEM
       rspec-mocks (~> 3.8)
       rspec-support (~> 3.8)
     rspec-support (3.9.0)
+    ruby-rc4 (0.1.5)
     ruby_parser (3.14.0)
       sexp_processor (~> 4.9)
     rubycritic (2.9.4)
@@ -300,6 +310,7 @@ GEM
     transaction_retry (1.0.3)
       activerecord (>= 3.0.11)
       transaction_isolation (>= 1.0.2)
+    ttfunk (1.5.1)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -333,6 +344,9 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
+    wicked_pdf (1.4.0)
+      activesupport
+    wkhtmltopdf-binary (0.12.4)
     xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
@@ -356,6 +370,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   mysql2
   paypal-sdk-rest
+  pdf-reader
   pg
   puma (~> 3.11)
   railroady
@@ -375,6 +390,8 @@ DEPENDENCIES
   webdrivers
   webmock
   webpacker (~> 4.0)
+  wicked_pdf
+  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 2.5.5p157

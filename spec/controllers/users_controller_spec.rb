@@ -354,5 +354,4 @@ RSpec.describe UsersController do
             expect(response).not_to redirect_to(new_session_path)
         end
     end
-
 end

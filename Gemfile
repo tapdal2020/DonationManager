@@ -79,3 +79,11 @@ gem 'transaction_retry'
 gem 'simplecov', require: false, group: :test
 gem 'codecov', require: false, group: :test
 gem 'railroady', group: :development
+
+# generate PDFs
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+gem 'wkhtmltopdf-heroku', '2.12.5.0', group: :production
+
+# email validation
+gem 'validates_email_format_of'

@@ -1,0 +1,16 @@
+<h1>Donations Receipt</h1>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Amount</th>
+    </tr>
+    <% @donations.each do |d| %>
+        <tr>
+            <td><%= d.created_at %></td>
+            <td><%= d.price %></td>
+        </tr>
+    <% end %>
+</table>
+
+<b>TOTAL: <%= "$#{'%.2f' % total}" %></b>

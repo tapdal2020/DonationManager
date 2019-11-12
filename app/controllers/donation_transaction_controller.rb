@@ -102,6 +102,14 @@ class DonationTransactionController < ApplicationController
       }).create_instant_payment
     end
 
+    def new_recurring_paypal_service
+      PaypalService.new({
+        transaction: @transaction,
+        return_url: paypal_transaction_success_url,
+        cancel_url: paypal_transaction_cancel_url
+      }).create_recurring_agreement
+    end
+
     def paypal_transaction_cancel_url
       url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
       url+= 'donation_transaction/new'
@@ -128,7 +136,11 @@ class DonationTransactionController < ApplicationController
     }
     end
 
-    def execute_paypal_payment(params)
+    def execute_paypal_payment params
       PaypalService.execute_payment(params[:payment_id], params[:payer_id])
+    end
+
+    def execute_recurring_payment agreement_token
+      PaypalService.execute_agreement(agreement_token)
     end
 end

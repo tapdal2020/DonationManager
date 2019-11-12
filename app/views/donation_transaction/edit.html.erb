@@ -1,0 +1,19 @@
+<h1>Manage BVJS Subscription</h1>
+<%= form_for(:donation, url: { controller: 'donation_transaction', action: 'recurring' }) do |f| %>
+    <table>
+        <thead>
+            <tr>
+                <th><b>Subscription Types:</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                    <td><%= f.radio_button :donation_type, 'low', :checked => true %> Low Subscription Tier</td>
+                    <td><%= f.radio_button :donation_type, 'med'%> Medium Subscription Tier</td>
+                    <td> <%= f.radio_button :donation_type, 'high' %> High Subscription Tier</td>
+                    <td> <%= f.radio_button :donation_type, 'none' %> No Subscription</td>
+            </tr>
+        </tbody>
+    </table>
+    <%= f.submit "Submit Changes" %>
+<%end%>

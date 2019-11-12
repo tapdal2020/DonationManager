@@ -76,14 +76,14 @@ class PaypalService
  
   def plan_param
     # customize your own plan parameters with:  https://developer.paypal.com/docs/api/payments.billing-plans/#plan_create
-    {
-      name: @product.title,
-      description: @product.description,
-      type: "FIXED",
-      merchant_preferences: { ... },
-      payment_definitions: { ... },
-      ...
-     }
+    # {
+    #   name: @product.title,
+    #   description: @product.description,
+    #   type: "FIXED",
+    #   merchant_preferences: { ... },
+    #   payment_definitions: { ... },
+    #   ...
+    #  }
   end
 
   def agreement_param plan_id

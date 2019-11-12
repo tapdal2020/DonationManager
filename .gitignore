@@ -36,7 +36,5 @@ yarn-debug.log*
 .yarn-integrity
 db/schema.rb
 
-coverage/assets/*
-coverage/*.html
-coverage/.resultset.json*
+coverage/*
 db/schema.rb

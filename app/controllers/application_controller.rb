@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+    # test for any user logging out then clicking back and seeing their donations
+    before_action :set_cache_crusher
     protect_from_forgery with: :exception
 
     helper_method :current_user
@@ -31,5 +33,11 @@ class ApplicationController < ActionController::Base
             redirect_to new_session_path and return
         end
         session[:last_access] = Time.now
+    end
+
+    def set_cache_crusher
+        response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
     end
 end

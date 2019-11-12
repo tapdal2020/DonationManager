@@ -83,3 +83,6 @@ gem 'railroady', group: :development
 # generate PDFs
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+
+# email validation
+gem 'validates_email_format_of'

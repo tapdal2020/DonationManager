@@ -38,6 +38,12 @@ RSpec.describe UsersController do
             end
         end
 
+        it 'should not create user when email is invalid' do
+            bad_params = user_params
+            bad_params[:email] = 'thisisnotemail@tamu'
+            expect { post :create, params: { "user" => bad_params } }.to change(User, :count).by(0)
+        end
+
         [:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code].each do |item|
             it "should fail to create a new user without #{item}" do
                 incomplete_params = user_params
@@ -355,6 +361,7 @@ RSpec.describe UsersController do
             expect(response).not_to redirect_to(new_session_path)
         end
     end
+<<<<<<< HEAD
 
     describe 'GET change_password' do
         it 'should not allow a user to change password if not logged in' do
@@ -450,4 +457,6 @@ RSpec.describe UsersController do
         end
     end
 
+=======
+>>>>>>> master
 end

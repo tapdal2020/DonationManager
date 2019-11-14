@@ -6,5 +6,5 @@
 # This file overrides ENV variables in the Unix shell.
 # For example, setting:
 
-APP_HOSTNAME_PRODUCTION: 'https://pickedapeckofpickledpeppers.herokuapp.com/'
+APP_HOSTNAME_PRODUCTION: 'https://pickedapeckofpickledpeppers2.herokuapp.com/'
 APP_HOSTNAME_TEST: 'http://localhost:3000/'

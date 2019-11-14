@@ -23,11 +23,12 @@ table, th, td {
       <th><b><%= sortable "price", "Donated Amount"%></b></th>
       <th><b><%= sortable "payment_id", "Paypal Transaction ID"%></b></th>
       <th><b><%= sortable "payer_id","Paypal Payer ID"%></b></th>
+      <th><b>Receipt</b></th>
     </tr>
   </thead>
  
   <tbody>
-    <% @my_donations.each do |donation| %>
+    <% @my_donations.each_with_index do |donation, i| %>
       <tr>
         <td><%= donation.created_at %></td>
         <% if is_currently_admin? %>
@@ -36,8 +37,12 @@ table, th, td {
         <td><%= number_to_currency(donation.price) %></td>
         <td><%= donation.payment_id %></td>
         <td><%= donation.payer_id %></td>
+        <td><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, method: :get, name: "VIEW_#{i}" %>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, method: :get %></br>
+
 <%=line_chart @donations_chart, prefix: "$",width: "800px", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#581818']%>

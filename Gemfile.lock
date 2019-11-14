@@ -92,7 +92,7 @@ GEM
     concurrent-ruby (1.1.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.4)
+    crass (1.0.5)
     cucumber (3.1.2)
       builder (>= 2.1.2)
       cucumber-core (~> 3.2.0)
@@ -150,7 +150,7 @@ GEM
     json (2.2.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    loofah (2.3.0)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -172,9 +172,9 @@ GEM
     mysql2 (0.5.2)
     mysql2 (0.5.2-x64-mingw32)
     nio4r (2.5.2)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
-    nokogiri (1.10.4-x64-mingw32)
+    nokogiri (1.10.5-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     parser (2.3.1.2)
       ast (~> 2.2)
@@ -308,6 +308,8 @@ GEM
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
     url (0.3.2)
+    validates_email_format_of (1.6.3)
+      i18n
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -333,6 +335,10 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
+    wicked_pdf (1.4.0)
+      activesupport
+    wkhtmltopdf-binary (0.12.4)
+    wkhtmltopdf-heroku (2.12.5.0)
     xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
@@ -371,10 +377,14 @@ DEPENDENCIES
   transaction_retry
   turbolinks (~> 5)
   tzinfo-data
+  validates_email_format_of
   web-console (>= 3.3.0)
   webdrivers
   webmock
   webpacker (~> 4.0)
+  wicked_pdf
+  wkhtmltopdf-binary
+  wkhtmltopdf-heroku (= 2.12.5.0)
 
 RUBY VERSION
    ruby 2.5.5p157

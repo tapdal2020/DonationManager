@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
   end
   resources :sessions, only: [:new, :create, :destroy]
+  resources :receipts, only: [:index, :show]
   resources :donation_transaction do
     collection do
       post :checkout

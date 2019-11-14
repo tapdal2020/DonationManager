@@ -1,3 +1,5 @@
+require 'csv'
+
 class User < ApplicationRecord
     has_secure_password
     
@@ -25,5 +27,20 @@ class User < ApplicationRecord
       begin
         self[column] = SecureRandom.urlsafe_base64
       end while User.exists?(column => self[column])
+    end
+
+    def self.to_csv
+      attributes = %w{email name membership}
+      CSV.generate(headers: true) do |csv|
+        csv << attributes
+
+        all.each do |user|
+          csv << attributes.map{ |attr| user.send(attr) }
+        end
+      end
+    end
+
+    def name
+      "#{first_name} #{last_name}"
     end
 end

@@ -5,25 +5,24 @@ Feature: Email List
     
     Background:
         Given the following users exist
-            | first_name | last_name | email | password | password_confirmation | street_address_line_1 | city | state | zip_code | admin |
-            | user | test | user@test.com | user | user | home | austin | tx | 78726 | false |
-            | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
+            | first_name | last_name | email | password | password_confirmation | street_address_line_1 | city | state | zip_code | admin | membership |
+            | user | test | user@test.com | user | user | home | austin | tx | 78726 | false | high |
+            | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true | |
         And I am signed in as a admin
 
-    # https://www.codementor.io/victor_hazbun/export-records-to-csv-files-ruby-on-rails-vda8323q0
     Scenario:
-        When I click 'Get Emails'
-        # I have a definition for this on feature/print-receipts branch
-        Then I should I should get a response with content-type 'application/csv'
+        When I press "Get Emails"
+        Then I should see "User Emails"
+        And I should see "Membership Type"
+        And I should see "Generate" button
 
+    Scenario:
+        When I press "Get Emails"
+        And I press "Generate"
+        Then I should see "Email,Name,Membership"
+        And I should see "high"
 
-# This is pretty much the only cucumber test you need
-# You'll put more detailed functionality tests in rspec
-# First, write your RSpec tests
-# - need to make sure we can click the button
-# - need to make sure we can get the correct subset of users
-# - etc.
-# Then, create a controller with an index view: rails g EmailLists index
-# Add a button on the admin show page that lets us print all emails
-# Add some selectors that help an admin choose a subset of all emails
-# Then you can start testing against the RSpec and making sure your code does what you wanted it to
+    Scenario:
+        When I press "Get Emails"
+        And I press "Back"
+        Then I should see "Donation Administrator"

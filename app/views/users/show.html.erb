@@ -3,6 +3,7 @@
 <% if is_currently_admin? %>
       <%= button_to 'View Users', { controller: 'users', action: 'index', user_id: session[:user_id] }, method: :get %>
       <%= button_to 'Create New User', { controller: 'users', action: 'new' }, method: :get %>
+      <%= button_to 'Get Emails', { controller: 'users', action: 'get_emails' }, method: :get %>
 <% end %>
 <%= button_to "Logout", session_path(current_user.id), method: :delete %>
 

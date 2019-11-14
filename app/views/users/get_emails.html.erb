@@ -1,0 +1,33 @@
+<h1>User Emails</h1>
+
+<%= form_for :subset, url: { controller: 'users', action: 'generate_email_list' }, method: :get do |f| %>
+    <table>
+        <tr>
+            <td>Membership Type:</td>
+            <% @names.each do |m| %>
+                <td><%= m %></td><td><%= f.check_box "memberships", { multiple: true, checked: @memberships.nil? || @memberships.include?(m) }, m, false %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <td><%= f.submit 'Generate' %></td>
+        </tr>
+    </table>
+    <br />
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Type</th>
+        </tr>
+        <% @users.each do |u| %>
+            <tr>
+                <td><%= u.email %></td>
+                <td><%= "#{u.first_name} #{u.last_name}" %></td>
+                <td><%= u.membership %></td>
+            </tr>
+        <% end %>
+    </table>
+<% end %>
+
+<br />
+<%= button_to 'Back', user_path(@user.id), method: :get %>

@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
 
   resources :password_resets
-  resources :users
+  resources :users do
+    collection do
+      get :get_emails
+      get :generate_email_list
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
   resources :receipts, only: [:index, :show]
   resources :donation_transactions, only: [:index, :new, :edit] do

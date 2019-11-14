@@ -361,7 +361,6 @@ RSpec.describe UsersController do
             expect(response).not_to redirect_to(new_session_path)
         end
     end
-<<<<<<< HEAD
 
     describe 'GET change_password' do
         it 'should not allow a user to change password if not logged in' do
@@ -457,6 +456,4 @@ RSpec.describe UsersController do
         end
     end
 
-=======
->>>>>>> master
 end

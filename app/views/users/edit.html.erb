@@ -1,3 +1,5 @@
+<h1>Edit Profile</h1>
+
 <%= form_for @user, url: { controller: 'users', action: 'update', id: @user.id } do |f| %>
     <table>
         <tr>
@@ -19,7 +21,7 @@
             <td>City:</td><td><%= f.text_field :city %></td>
         </tr>
         <tr>
-            <td>State:</td><td><%= f.text_field :state %></td>
+            <td>State:</td><td><%= f.select :state, options_for_select(us_states) %></td>
         </tr>
         <tr>
             <td>Zip Code:</td><td><%= f.text_field :zip_code %></td>

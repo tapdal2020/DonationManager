@@ -3,6 +3,7 @@
         <tr>
             <td>First name:</td><td><%= f.text_field :first_name %></td>
         </tr>
+        <tr>
             <td>Last name:</td><td><%= f.text_field :last_name %></td>
         </tr>
         <tr>
@@ -33,4 +34,7 @@
     <%= f.submit "Save" %>
 <% end %>
 
+<%= button_to "Change Password", change_password_user_path(@user.id), method: :get %>
+<br />
+<br />
 <%= button_to "DELETE", user_path(@user.id), method: :delete %>

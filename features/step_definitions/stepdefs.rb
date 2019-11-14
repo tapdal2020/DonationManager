@@ -14,6 +14,10 @@ Given(/^I have clicked "(.*)"$/) do |link|
     click_link link
 end
 
+Given(/^I have pressed "(.*)"$/) do |button|
+    click_button button
+end
+
 Given(/^I am signed in as a (user|admin)$/) do |role|
     visit root_path
     fill_in 'user_email', with: "#{role}@test.com"

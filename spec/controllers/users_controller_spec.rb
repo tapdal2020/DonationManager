@@ -1,4 +1,5 @@
 require "rails_helper"
+require "bcrypt"
 
 RSpec.describe UsersController do
     fixtures :users
@@ -360,4 +361,102 @@ RSpec.describe UsersController do
             expect(response).not_to redirect_to(new_session_path)
         end
     end
+<<<<<<< HEAD
+
+    describe 'GET change_password' do
+        it 'should not allow a user to change password if not logged in' do
+            get :change_password, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        describe 'given a user is logged in' do
+            before do
+                @user = users(:two)
+                old_controller = @controller
+                @controller = SessionsController.new
+                post :create, params: { "user" => { email: @user.email, password: 'user' } }
+                @controller = old_controller
+            end
+
+            it 'should show the change_password page' do
+                get :change_password, params: { id: @user.id }
+                expect(response).to render_template('change_password')
+            end
+
+            it 'should not allow a user to change another user\'s password' do
+                get :change_password, params: { id: users(:one).id }
+                expect(response).to render_template('unauthorized')
+            end
+
+            it 'should find the user' do
+                get :change_password, params: { id: @user.id }
+                expect(assigns(:user).id).to eq(@user.id)
+            end
+        end
+    end
+
+    describe 'PATCH update_password' do
+        it 'should not allow a user to change password if not logged in' do
+            patch :update_password, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is signed in' do
+            before do
+                @user = users(:two)
+                old_controller = @controller
+                @controller = SessionsController.new
+                post :create, params: { "user" => { email: @user.email, password: 'user' } }
+                @controller = old_controller
+            end
+
+            it 'should allow a user to change their password' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to redirect_to(user_path(@user.id))
+                @user.reload
+                expect(@user.authenticate('user')).to be(false)
+                expect(@user.authenticate('newpass123').id).to eq(@user.id)
+            end
+
+            it 'should not allow a user to change another user\'s password' do
+                patch :update_password, params: { id: users(:one).id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('unauthorized')
+            end            
+
+            it 'should not allow a user to change their password if they don\'t know their password' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'notmypassword', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass123')).to be(false)
+            end
+
+            it 'should not allow a user to change their password if they don\'t match the new password and password confirmation' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass321' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass123')).to be(false)
+            end
+
+            it 'should not allow a user to change their password if they don\'t match the new password and password confirmation' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass321', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass321')).to be(false)
+            end
+
+            it 'should re-render the change_password template if the update fails' do
+                allow_any_instance_of(User).to receive(:update).and_return(nil)
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass321')).to be(false)
+            end
+        end
+    end
+
+=======
+>>>>>>> master
 end

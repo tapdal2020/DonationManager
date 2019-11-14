@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
 
   resources :password_resets
-  resources :users
+  resources :users do
+    member do
+      get :change_password, to: 'users#change_password'
+      patch :update_password, to: 'users#update_password'
+    end
+  end
   resources :sessions, only: [:new, :create, :destroy]
   resources :receipts, only: [:index, :show]
   resources :donation_transaction do

@@ -1,8 +1,8 @@
 <h1>Donate to Brazos Valley Jazz Society</h1>
-<%= button_to "Made Donations", user_path(current_user.id), :method=>:get%>
+<%= button_to "Home", user_path(current_user.id), :method=>:get%>
+<%= button_to 'Manage Subscription', { controller: 'donation_transactions', action: 'edit', user_id: session[:user_id] } , method: :get %>
 <%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
-
-                     
+                    
 <%= form_for(:donation, url: { controller: 'donation_transactions', action: 'checkout' }) do |f| %>
     <table>
         <tr>

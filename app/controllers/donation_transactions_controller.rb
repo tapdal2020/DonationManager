@@ -92,7 +92,19 @@ class DonationTransactionsController < ApplicationController
     end
   end
 
+  def edit
+    @subscription_plans = PLAN_CONFIG
+    @subscribed_to = current_user.membership
+  end
+
   def recurring
+    this_t = :authenticate_user! unless !params.has_key?(:user_id)
+    puts "#{params}"
+    subscribe_to = params[:subscription]
+    
+    if (@subscription_change = new_recurring_paypal_service).error.nil?
+    
+    end
     # set up recurring donation!
     # if updating existing user, authenticate
     # otherwise, just do it
@@ -115,6 +127,7 @@ class DonationTransactionsController < ApplicationController
         cancel_url: paypal_transaction_cancel_url
       }).create_recurring_agreement
     end
+
 
     def paypal_transaction_cancel_url
       url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']

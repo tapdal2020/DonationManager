@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
     before_action :authenticate_user!, except: [:new, :create]
-    before_action :authenticate_admin!, only: [:index]
+    before_action :authenticate_admin!, only: [:index, :get_emails, :generate_email_list]
     helper_method :sort_column, :sort_direction
     
     def new
@@ -88,6 +88,28 @@ class UsersController < ApplicationController
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
             render 'edit' and return
+        end
+    end
+
+    def get_emails
+        @users = User.all
+        @user = current_admin
+        @names = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        @memberships = session[:memberships]
+    end
+
+    def generate_email_list
+        if params[:subset]
+            @memberships = params[:subset]["memberships"]
+        else
+            @memberships = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        end
+        session[:memberships] = @memberships
+
+        @users = User.where({ membership: @memberships.collect { |m| (m == 'none') ? nil : m } })
+        respond_to do |format|
+            format.html
+            format.csv { render text: @users.to_csv }
         end
     end
 

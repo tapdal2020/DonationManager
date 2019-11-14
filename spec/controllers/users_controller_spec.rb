@@ -378,4 +378,92 @@ RSpec.describe UsersController do
             expect(response).not_to redirect_to(new_session_path)
         end
     end
+
+    describe 'GET get_emails' do
+        it 'should not allow access if no user is signed in' do
+            get :get_emails
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        it 'should not allow a user to access' do
+            user = login_user
+            get :get_emails
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given an admin is signed in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to access' do
+                get :get_emails
+                expect(response).not_to redirect_to(new_session_path)
+                
+                expect(assigns(:users)).to eq(User.all)
+                expect(assigns(:user).id).to eq(@main_admin.id)
+                ['none', 'med', 'high'].each do |l|
+                    expect(assigns(:names).include? l).to be(true)
+                end
+                expect(assigns(:memberships)).to be_nil
+
+                expect(response).to render_template('get_emails')
+            end
+
+            it 'should remember the memberships selected after a call to generate' do
+                get :get_emails
+                get :generate_email_list, params: { subset: {"memberships" => ['none', 'med'] } }
+
+                get :get_emails
+                ['none', 'med'].each do |l|
+                    expect(assigns(:memberships).include? l).to be(true)
+                end
+            end
+        end
+    end
+
+    describe 'GET generate_email_list' do
+        it 'should not allow access if no user is signed in' do
+            get :generate_email_list
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        it 'should not allow a user to access' do
+            user = login_user
+            get :generate_email_list
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to access' do
+                get :generate_email_list
+                expect(response).not_to redirect_to(new_session_path)
+
+                ['none', 'med', 'high'].each do |l|
+                    expect(assigns(:memberships).include? l).to be(true)
+                end
+                
+                User.all.each do |u|
+                    expect(assigns(:users).include? u).to be(true)
+                end
+            end
+
+            ['none', 'med', 'high'].each do |m|
+                it "should return only the #{m} subset" do
+                    get :generate_email_list, params: { subset: {"memberships" => [m] } }
+
+                    expect(assigns(:memberships).include? m).to be(true)
+                    expect(assigns(:memberships).length).to eq(1)
+
+                    User.where({ membership: m }).each do |u|
+                        expect(assigns(:users).include? u).to be(true)
+                    end
+                end
+            end
+        end
+    end
 end

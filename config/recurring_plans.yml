@@ -1,0 +1,71 @@
+# this is a document for recurring PayPal subscriptions
+# please investigate the following urls below for more information
+# customize your own plan parameters with:  https://developer.paypal.com/docs/api/payments.billing-plans/#plan_create
+# customize you own agreement with: https://developer.paypal.com/docs/api/payments.billing-agreements#agreement_create
+production: &default
+  plan0:
+    name: "high"
+    # The plan description. Maximum length is 127 single-byte alphanumeric characters.
+    description: "This is plan-high description."
+    type: "FIXED" # / INFINITE
+    merchant_pref:
+      setup_fee:
+        #{}
+      cancel_url: "" # added in paypal service ruby
+      return_url: "" # added in paypal service ruby 
+      max_fail_attempts: "0" # default string
+      auto_bill_amount: "NO" # / YES
+      initial_fail_amount_action: "CONTINUE" # / CANCEL
+    payment_definition:
+      id: "0" # max len. 128
+      name: "high-payment"
+      type: "REGULAR" # / TRIAL
+      frequency_interval: "3" # cannot be > 12
+      frequency: "MONTH" # WEEK / DAY / YEAR
+      cycles: "0" # leave for infinite / regular
+      amount: 
+        currency: "" # i.e. USD, set by ruby
+        value: "" # i.e. 1.00, set by ruby
+    # plan billing agreement
+    agreement:
+      name: "agreement to plan0" # max len. 128
+      description: "description of agreement plan0" # max len. 128
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+  plan1:
+    name: "med"
+    # The plan description. Maximum length is 127 single-byte alphanumeric characters.
+    description: "This is plan-med description."
+    type: "INFINITE" # / INFINITE
+    merchant_pref:
+      setup_fee:
+        #{}
+      cancel_url: "" # added in paypal service ruby
+      return_url: "" # added in paypal service ruby 
+      max_fail_attempts: "0" # default string
+      auto_bill_amount: "YES" # / YES
+      initial_fail_amount_action: "CONTINUE" # / CANCEL
+    payment_definition:
+      id: "0" # max len. 128
+      name: "med-payment"
+      type: "REGULAR" # / TRIAL
+      frequency_interval: "1" # cannot be > 12
+      frequency: "MONTH" # WEEK / DAY / YEAR
+      cycles: "0" # leave for infinite / regular
+      amount: 
+        currency: "" # i.e. USD, set by ruby
+        value: "" # i.e. 1.00, set by ruby
+    # plan billing agreement
+    agreement:
+      name: "agreement to plan1" # max len. 128
+      description: "description of agreement plan1" # max len. 128
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+
+development:
+  <<: *default
+
+test:
+  <<: *default

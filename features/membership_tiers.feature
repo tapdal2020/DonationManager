@@ -23,17 +23,17 @@ Feature: Membership Tiers
             | High |
 
     Scenario:
-        Given I am logged in as a user
+        Given I am signed in as a user
         And I am a member
         Then I should see "Edit Membership"
 
     Scenario:
-        Given I am logged in as a user
+        Given I am signed in as a user
         And I am not a member
         Then I should see "Subscribe"
 
     Scenario Outline:
-        Given I am logged in as a user
+        Given I am signed in as a user
         And I am not a member
         When I press "Subscribe"
         Then I should see "Membership Type"
@@ -48,7 +48,7 @@ Feature: Membership Tiers
             | High |
 
     Scenario Outline:
-        Given I am logged in as a user
+        Given I am signed in as a user
         And I am a member
         When I press "Edit Membership"
         Then I should see "Current Membership: "
@@ -63,7 +63,7 @@ Feature: Membership Tiers
             | High |
 
     Scenario Outline:
-        Given I am logged in as a user
+        Given I am signed in as a user
         And I am <qualifier> a member
         When I press "<button>"
         And I select "Low"

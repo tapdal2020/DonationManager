@@ -42,6 +42,7 @@ class DonationTransactionController < ApplicationController
       # redirect_to 'https://google.com'
       # return
       # The url to redirect the buyer
+      @user.send_donation_confirmation(@money) if @user 
       @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
       redirect_to @redirect_url and return
       # save other @payment data if you need

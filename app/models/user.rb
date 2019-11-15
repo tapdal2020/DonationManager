@@ -20,6 +20,10 @@ class User < ApplicationRecord
       save!
       UserMailer.forgot_password(self).deliver# This sends an e-mail with a link for the user to reset the password
     end
+
+    def send_donation_confirmation(money)
+      UserMailer.donation_confirmation(self, money).deliver
+    end
       # This generates a random password reset token for the user
     def generate_token(column)
       begin

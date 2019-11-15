@@ -12,7 +12,7 @@ Feature: Create Donations
 
     Scenario:
         When I press "Make a Donation"
-        Then I should see "Made Donations" button
+        Then I should see "Home" button
         And I should see "Donate" button
         And I should see "Donation Amount:"
 

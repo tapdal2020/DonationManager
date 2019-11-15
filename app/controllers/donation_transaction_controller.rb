@@ -45,7 +45,7 @@ class DonationTransactionController < ApplicationController
       @user.send_donation_confirmation(@money) if @user 
       @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
       redirect_to @redirect_url and return
-      # save other @payment data if you needcom
+      # save other @payment data if you need
     else
       # if the payment is not created successfully,
       # the error message will be saved in @payment.error

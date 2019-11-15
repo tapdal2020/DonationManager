@@ -9,7 +9,6 @@ class UserMailer < ApplicationMailer
 
     def donation_confirmation(user,money)
       @user = user
-      @greeting = " "
       @money=money
       mail to: user.email, :subject => 'BVJS Donation Confirmation'
     end

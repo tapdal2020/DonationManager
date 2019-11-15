@@ -10,13 +10,11 @@ class DonationTransactionsController < ApplicationController
     # passed upon success
     # !-> PARAMS <-!
     # {"paymentId"=>"PAYID-LWTZFDQ5HY60034BT5063747", "token"=>"EC-7NE090679P7478832", "PayerID"=>"D7MH32PSBP23C", "controller"=>"donation_transaction", "action"=>"new"}
-    # !-> PARAMS <-!
       success
     elsif params.has_key?(:token)
     # passed upon cancellation
     # !-> PARAMS <-!
     # {"token"=>"EC-7W133018A56947646", "controller"=>"donation_transaction", "action"=>"new"}
-    # !-> PARAMS <-!
       cancelled
     else
       @donation = MadeDonation.new
@@ -42,9 +40,6 @@ class DonationTransactionsController < ApplicationController
       # validate the user before saving
       @donation.save(context: :user)
       # puts @donation.attributes, 'donation'
-      # redirect_to 'https://google.com'
-      # return
-      # The url to redirect the buyer
       @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
       redirect_to @redirect_url and return
       # save other @payment data if you need
@@ -96,8 +91,12 @@ class DonationTransactionsController < ApplicationController
   end
 
   def edit
+    puts "&&EDIT PARAMS&&==","#{params}"
+    # to show the current plans
     @subscription_plans = PLAN_CONFIG
-    @subscribed_to = current_user.membership
+    @handle_token = params[:token]
+    handle_recur_token if @handle_token
+    @subscribed_to = current_user.membership and return
   end
 
   def recurring
@@ -105,18 +104,20 @@ class DonationTransactionsController < ApplicationController
     puts "#{params}"
     @user = current_user
     subscribe_to = params[:subscription]
+    @user.update(membership: subscribe_to["subscribe"]) if subscribe_to["subscribe"] == "None" and render 'edit'
     @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone
     if (@subscription_change = new_recurring_paypal_service).error.nil?
       # Because the agreement's id hasn't been generated yet.
       # (the id will be generated after we execute the agreement)
       # You should save the @subscription_change.token in your transaction
-      
       puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
+      puts "^^SUB ID^^", "#{@subscription_change.token}"
       @transaction.update(payment_no: @subscription_change.token)
       @donation = MadeDonation.new({user_id: @user.id, 
-        payment_id: @subscription_change.id, 
-        price: @transaction["payment_definitions"][0]["amount"]["value"], 
-        token: @subscription_change.token})
+        payment_id: @subscription_change.token, 
+        price: @transaction["payment_definitions"][0]["amount"]["value"],
+        token: @subscription_change.token,
+        payer_id: @transaction["name"]})
       # validate the user before saving
       @donation.save(context: :user)
       # The url to redirect the buyer
@@ -124,6 +125,7 @@ class DonationTransactionsController < ApplicationController
       # save other @subscription_change data if you need
       redirect_to @redirect_url and return
       # on sucess Paypal will repspond ==> token=EC-6KK985826M006452E to success_url
+      # on user cancellation Paypal will respond ==> token=EC-1BL82517H7178791W to cancel_url
       
     else
       puts "%%%%PAYMENT ERROR%%%%", @payment.error
@@ -132,13 +134,14 @@ class DonationTransactionsController < ApplicationController
     # if updating existing user, authenticate
     # otherwise, just do it
   end
-    
+
+   
   private
     def new_paypal_service
       PaypalService.new({
         transaction: @transaction,
-        return_url: paypal_transaction_success_url,
-        cancel_url: paypal_transaction_cancel_url,
+        return_url: paypal_transaction_success_url('new'),
+        cancel_url: paypal_transaction_cancel_url('new'),
         money: @money
       }).create_instant_payment
     end
@@ -146,20 +149,20 @@ class DonationTransactionsController < ApplicationController
     def new_recurring_paypal_service
       PaypalService.new({
         transaction: @transaction,
-        return_url: paypal_transaction_success_url,
-        cancel_url: paypal_transaction_cancel_url
+        return_url: paypal_transaction_success_url(current_user.id.to_s()+'/edit'),
+        cancel_url: paypal_transaction_cancel_url(current_user.id.to_s()+'/edit')
       }).create_recurring_agreement
     end
 
 
-    def paypal_transaction_cancel_url
+    def paypal_transaction_cancel_url fn
       url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
-      url+= 'donation_transactions/new'
+      url+= (fn) ? 'donation_transactions/'+fn : 'donation_transactions'
     end
 
-    def paypal_transaction_success_url
+    def paypal_transaction_success_url fn
       url = (Rails.env.test? || Rails.env.development?) ? ENV['APP_HOSTNAME_TEST'] : ENV['APP_HOSTNAME_PRODUCTION']
-      url+= 'donation_transactions/new'
+      url+= (fn) ? 'donation_transactions/'+fn : 'donation_transactions'
     end
 
     def build_item p
@@ -169,6 +172,39 @@ class DonationTransactionsController < ApplicationController
       currency: "USD",
       price: p
     }
+    end
+
+    def handle_recur_token
+      #find the started Record
+      @user = current_user
+      @transaction = MadeDonation.find_by(payment_id: @handle_token)
+      if @transaction.nil?
+        render 'something_wrong' and return
+      else
+        @payment = execute_recurring_payment(@handle_token)
+        if @payment.success?
+          # Remember to save the agreement's id for future use!
+          puts "PAYMENT_PLAN^^^", "#{@payment.id}", "#{@payment.state}", "#{@payment.payer.payer_info.payer_id}"
+          update_membership = @transaction.payer_id
+          @user.update(membership: update_membership)
+          @transaction.update(payment_id: @payment.payer.payer_info.payer_id)
+          # @transaction.success!
+          # save other data if need
+        else
+          # @transaction.fail!
+          # Show error messages by using @payment.error to the user
+          flash.now[:alert] = @payment.error
+          puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
+          # ...
+        end
+      end
+    end
+
+    def find_plan_by_agreement_name name
+      PLAN_CONFIG.each do |plan_key, plan_val|
+        return plan_val["name"] if plan_val["agreement"]["name"] == name
+      end
+      'None'
     end
 
     def build_transaction it

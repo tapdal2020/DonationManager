@@ -62,6 +62,13 @@ class PaypalService
     agreement # the log will be saved in this object if there's error
   end
    
+  def self.cancel_agreement(agreement_id)
+    # Use the id to execute this agreement
+    agreement = PayPal::SDK::REST::Agreement.new(id: agreement_id)
+    agreement.cancel unless agreement.error
+    agreement # the log will be saved in this object if there's error
+  end
+
   private
     # PayPal will also check all the currencies and subtotals
     # whether are match to the currency and total amount in payment object.

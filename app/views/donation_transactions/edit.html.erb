@@ -1,7 +1,7 @@
 <h1>Manage BVJS Subscription</h1>
-<%= button_to "Home", user_path(current_user.id), :method=>:get%>
-<%= button_to 'Make a Donation', { controller: 'donation_transactions', action: 'new', user_id: session[:user_id] } , method: :get %>
-<%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
+<%= button_to "Home", user_path(current_user.id), :method => :get%>
+<%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
+<%= button_to "Logout", session_path(current_user.id), :method => :delete %>
 <h3>Current Subscription</h3>
 <h4><b><%=@subscribed_to%></b></h4>
 <%= form_for(:subscription, url: { controller: 'donation_transactions', action: 'recurring' }) do |membership| %>
@@ -13,9 +13,9 @@
         </thead>
         <tbody>
             <tr>
-                <% @subscription_plans.values.each do |plan| %>
+                <% @subscription_plans.each do |plan_key, plan_val| %>
                 <%# get each key value %>
-                    <td><%=membership.radio_button :subscribe, , :checked => (@subscribed_to == plan["name"])%> <%=plan.fetch("name")%></td>
+                    <td><%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"])%> <%=plan_val.to_s()%></td>
                 <% end %>
                 <td> <%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
             </tr>

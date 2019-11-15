@@ -1,6 +1,7 @@
 # app/services/paypal_service.rb
 include ActionView::Helpers::NumberHelper
 require 'paypal-sdk-rest'
+require 'time'
 
 class PaypalService
   def initialize params
@@ -39,6 +40,13 @@ class PaypalService
       payment
   end
 
+  def create_agreement(plan)
+    agreement = PayPal::SDK::REST::Agreement.new(agreement_param(plan.id))
+    agreement.create
+    # If any error occured, the message will be saved in agreement.error
+    agreement
+  end
+
   def create_recurring_agreement
     plan = create_and_active_recurring_plan
     if plan && plan.success?
@@ -75,27 +83,46 @@ class PaypalService
  
   def plan_param
     # customize your own plan parameters with:  https://developer.paypal.com/docs/api/payments.billing-plans/#plan_create
-    {
-      name: @product.title,
-      description: @product.description,
-      type: "FIXED",
-      merchant_preferences: { ... },
-      payment_definitions: { ... },
-      ...
-     }
+    # {
+    #   name: @product.title,
+    #   description: @product.description,
+    #   type: "FIXED",
+    #   merchant_preferences: { ... },
+    #   payment_definitions: { ... },
+    #   ...
+    #  }
+    plan_only = deep_copy(@transaction)
+    plan_only.delete("agreement")
+    plan_only["merchant_preferences"]["cancel_url"] = @cancel_url
+    plan_only["merchant_preferences"]["return_url"] = @return_url    
+    puts "%%%%PLAN PARAMERTERS%%%","#{plan_only}" 
+    plan_only
   end
 
   def agreement_param plan_id
     # customize you own agreement with: https://developer.paypal.com/docs/api/payments.billing-agreements#agreement_create
-    {
-      name: @product.title,
-      description: @product.description,
-      # you can set up different start date according to the product
-      # or just set it to the time right after you create this agreement.
-      # In ISO8601 Format:  YYYY-MM-DDTHH:MM:SSTimeZone
-      start_date: get_agreement_start_date,
-      payer: { payment_method: "paypal" },
-      plan: { id: plan_id }
-    }
+    # {
+    #   name: @product.title,
+    #   description: @product.description,
+    #   # you can set up different start date according to the product
+    #   # or just set it to the time right after you create this agreement.
+    #   # In ISO8601 Format:  YYYY-MM-DDTHH:MM:SSTimeZone
+    #   start_date: get_agreement_start_date,
+    #   payer: { payment_method: "paypal" },
+    #   plan: { id: plan_id }
+    # }
+    puts "***TRANSACTION&&&&^^^^", "#{@transaction}"
+    puts  "****BEFORE TIME OF AGREEMENT****", Time.now.iso8601
+    only_agreement = deep_copy(@transaction)
+    only_agreement = only_agreement["agreement"]
+    only_agreement["start_date"] = (Time.now + 15.minutes).iso8601
+    only_agreement["plan"]["id"] = plan_id
+    puts "%%%%AGREEMENT PARAMERTERS%%%","#{only_agreement}"
+    only_agreement
   end
+
+  def deep_copy(o)
+    Marshal.load(Marshal.dump(o))
+  end
+
 end

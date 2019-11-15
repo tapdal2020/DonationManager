@@ -8,7 +8,7 @@ production: &default
     # The plan description. Maximum length is 127 single-byte alphanumeric characters.
     description: "This is plan-high description."
     type: "FIXED" # / INFINITE
-    merchant_pref:
+    merchant_preferences:
       setup_fee:
         #{}
       cancel_url: "" # added in paypal service ruby
@@ -16,16 +16,16 @@ production: &default
       max_fail_attempts: "0" # default string
       auto_bill_amount: "NO" # / YES
       initial_fail_amount_action: "CONTINUE" # / CANCEL
-    payment_definition:
-      id: "0" # max len. 128
-      name: "high-payment"
-      type: "REGULAR" # / TRIAL
-      frequency_interval: "3" # cannot be > 12
-      frequency: "MONTH" # WEEK / DAY / YEAR
-      cycles: "0" # leave for infinite / regular
-      amount: 
-        currency: "" # i.e. USD, set by ruby
-        value: "" # i.e. 1.00, set by ruby
+    payment_definitions:
+      -
+        name: "high-payment"
+        type: "REGULAR" # / TRIAL
+        frequency_interval: "3" # cannot be > 12
+        frequency: "MONTH" # WEEK / DAY / YEAR
+        cycles: "0" # leave for infinite / regular
+        amount: 
+          currency: "USD" # i.e. USD
+          value: "2.00" # i.e. 1.00
     # plan billing agreement
     agreement:
       name: "agreement to plan0" # max len. 128
@@ -33,12 +33,14 @@ production: &default
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
         payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
   plan1:
     name: "med"
     # The plan description. Maximum length is 127 single-byte alphanumeric characters.
     description: "This is plan-med description."
     type: "INFINITE" # / INFINITE
-    merchant_pref:
+    merchant_preferences:
       setup_fee:
         #{}
       cancel_url: "" # added in paypal service ruby
@@ -46,16 +48,16 @@ production: &default
       max_fail_attempts: "0" # default string
       auto_bill_amount: "YES" # / YES
       initial_fail_amount_action: "CONTINUE" # / CANCEL
-    payment_definition:
-      id: "0" # max len. 128
-      name: "med-payment"
-      type: "REGULAR" # / TRIAL
-      frequency_interval: "1" # cannot be > 12
-      frequency: "MONTH" # WEEK / DAY / YEAR
-      cycles: "0" # leave for infinite / regular
-      amount: 
-        currency: "" # i.e. USD, set by ruby
-        value: "" # i.e. 1.00, set by ruby
+    payment_definitions:
+      -
+        name: "med-payment"
+        type: "REGULAR" # / TRIAL
+        frequency_interval: "1" # cannot be > 12
+        frequency: "MONTH" # WEEK / DAY / YEAR
+        cycles: "0" # leave for infinite / regular
+        amount: 
+          currency: "USD" # i.e. USD
+          value: "1.00" # i.e. 1.00
     # plan billing agreement
     agreement:
       name: "agreement to plan1" # max len. 128
@@ -63,6 +65,8 @@ production: &default
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
         payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal Services
 
 development:
   <<: *default

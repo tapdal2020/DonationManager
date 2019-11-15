@@ -1,10 +1,10 @@
 <h1><%=@html_donation_title%></h1>
-<%= button_to 'Make a Donation', { controller: 'donation_transactions', action: 'new', id: session[:user_id] }, method: :get %>
-<%= button_to 'Manage Subscription', { controller: 'donation_transactions', action: 'edit', id: session[:user_id] } %>
+<%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
+<%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
 <% if is_currently_admin? %>
-      <%= button_to 'View Users', { controller: 'users', action: 'index', id: session[:user_id] }, method: :get %>
-      <%= button_to 'Create New User', { controller: 'users', action: 'new' }, method: :get %>
-      <%= button_to 'Get Emails', { controller: 'users', action: 'get_emails' }, method: :get %>
+      <%= button_to 'View Users', users_path(current_user.id), :method => :get %>
+      <%= button_to 'Create New User', new_user_path(), :method => :get %>
+      <%= button_to 'Get Emails', get_emails_users_path(), :method => :get %>
 <% end %>
 <%= button_to "Logout", session_path(current_user.id), method: :delete %>
 

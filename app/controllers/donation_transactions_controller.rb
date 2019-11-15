@@ -35,7 +35,10 @@ class DonationTransactionsController < ApplicationController
     if (@payment = new_paypal_service).error.nil?
       # record the payment id provided by PayPal for future use
       @transaction.update(payment_id: @payment.id)
-      @donation = MadeDonation.new({user_id: @user.id, payment_id: @payment.id, price: @money, token: @payment.token})
+      @donation = MadeDonation.new({user_id: @user.id,
+        payment_id: @payment.id,
+        price: @money,
+        token: @payment.token})
       # validate the user before saving
       @donation.save(context: :user)
       # puts @donation.attributes, 'donation'
@@ -100,10 +103,30 @@ class DonationTransactionsController < ApplicationController
   def recurring
     this_t = :authenticate_user! unless !params.has_key?(:user_id)
     puts "#{params}"
+    @user = current_user
     subscribe_to = params[:subscription]
-    
+    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone
     if (@subscription_change = new_recurring_paypal_service).error.nil?
-    
+      # Because the agreement's id hasn't been generated yet.
+      # (the id will be generated after we execute the agreement)
+      # You should save the @subscription_change.token in your transaction
+      
+      puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
+      @transaction.update(payment_no: @subscription_change.token)
+      @donation = MadeDonation.new({user_id: @user.id, 
+        payment_id: @subscription_change.id, 
+        price: @transaction["payment_definitions"][0]["amount"]["value"], 
+        token: @subscription_change.token})
+      # validate the user before saving
+      @donation.save(context: :user)
+      # The url to redirect the buyer
+      @redirect_url = @subscription_change.links.find{|v| v.method == "REDIRECT" }.href
+      # save other @subscription_change data if you need
+      redirect_to @redirect_url and return
+      # on sucess Paypal will repspond ==> token=EC-6KK985826M006452E to success_url
+      
+    else
+      puts "%%%%PAYMENT ERROR%%%%", @payment.error
     end
     # set up recurring donation!
     # if updating existing user, authenticate

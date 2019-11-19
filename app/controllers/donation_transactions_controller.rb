@@ -104,7 +104,15 @@ class DonationTransactionsController < ApplicationController
     puts "#{params}"
     @user = current_user
     subscribe_to = params[:subscription]
-    @user.update(membership: subscribe_to["subscribe"]) if subscribe_to["subscribe"] == "None" and render 'edit'
+    if subscribe_to["subscribe"] == @user.membership
+      # fix this 
+      flash.now[:alert] = "No changes made"
+      return
+    end 
+    if subscribe_to["subscribe"] == 'None'
+      response = PaypalService.cancel_agreement(@user.recurring_id)
+      @user.update(membership: "None") and @user.recurring_record.update(recurring: false) if response.success? # else render 'something_wrong'
+    end
     @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone
     if (@subscription_change = new_recurring_paypal_service).error.nil?
       # Because the agreement's id hasn't been generated yet.
@@ -117,7 +125,8 @@ class DonationTransactionsController < ApplicationController
         payment_id: @subscription_change.token, 
         price: @transaction["payment_definitions"][0]["amount"]["value"],
         token: @subscription_change.token,
-        payer_id: @transaction["name"]})
+        payer_id: @transaction["name"],
+        recurring: true})
       # validate the user before saving
       @donation.save(context: :user)
       # The url to redirect the buyer
@@ -178,22 +187,28 @@ class DonationTransactionsController < ApplicationController
       #find the started Record
       @user = current_user
       @transaction = MadeDonation.find_by(payment_id: @handle_token)
+      # started transaction was not found
       if @transaction.nil?
         render 'something_wrong' and return
       else
+        # execute the payment
         @payment = execute_recurring_payment(@handle_token)
         if @payment.success?
           # Remember to save the agreement's id for future use!
           puts "PAYMENT_PLAN^^^", "#{@payment.id}", "#{@payment.state}", "#{@payment.payer.payer_info.payer_id}"
+          # initially the plan the user selected was set to `payer_id`
           update_membership = @transaction.payer_id
           @user.update(membership: update_membership)
-          @transaction.update(payment_id: @payment.payer.payer_info.payer_id)
+          @transaction.update(payment_id: @payment.id)
+          @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
+          flash.now[:alert] = @payment.state
           # @transaction.success!
           # save other data if need
         else
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
           flash.now[:alert] = @payment.error
+          # @payment.error["name"] = "INVALID TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
         end

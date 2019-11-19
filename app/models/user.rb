@@ -40,6 +40,20 @@ class User < ApplicationRecord
       end
     end
 
+    def recurring_id
+      made_donations.each do |donation|
+        return donation.payment_id if donation.recurring
+      end
+      nil
+    end
+
+    def recurring_record
+      made_donations.each do |donation|
+        return donation if donation.recurring
+      end
+      nil
+    end
+
     def name
       "#{first_name} #{last_name}"
     end

@@ -1,20 +1,33 @@
 class DonationTransactionsController < ApplicationController
-  before_action :authenticate_user!, except: [:recurring]
-
+  before_action :authenticate_user!, except: [:recurring, :index]
+  protect_from_forgery :except => [:index] #Otherwise the request from PayPal wouldn't make it to the controller
   def index
+    # puts "&&&INDEX PARAMS&&====","#{permitted_paypal_params}"
+    # example of message coming from paypal
+    # {"payment_cycle"=>"Monthly", "txn_type"=>"recurring_payment_profile_cancel", "last_name"=>"User", "next_payment_date"=>"N/A",
+    # "residence_country"=>"US", "initial_payment_amount"=>"0.00", "currency_code"=>"USD",
+    # "time_created"=>"18:43:45 Nov 18, 2019 PST", "verify_sign"=>"ASai6Zx.zbenDTXHaNV6Igqh3h3aAuBzmJvNMWdwZCz1vrYpZghjQh8y",
+    # "period_type"=>" Regular", "payer_status"=>"verified", "test_ipn"=>"1", "tax"=>"0.00", "payer_email"=>"user@dms-user.com",
+    # "first_name"=>"DMS", "receiver_email"=>"root@dms-user.com", "payer_id"=>"D7MH32PSBP23C", "product_type"=>"1", "shipping"=>"0.00",
+    # "amount_per_cycle"=>"1.00", "profile_status"=>"Cancelled", "charset"=>"windows-1252", "notify_version"=>"3.9", "amount"=>"1.00",
+    # "outstanding_balance"=>"0.00", "recurring_payment_id"=>"I-EE5J6KLNXG90", "product_name"=>"description of agreement plan1",
+    # "ipn_track_id"=>"b0d58559a2730"}
+    # http query of this is
+    # "amount=1.00&amount_per_cycle=1.00&charset=windows-1252&currency_code=USD&first_name=DMS&initial_payment_amount=0.00&ipn_track_id=b0d58559a2730&last_name=User&next_payment_date=N%2FA&notify_version=3.9&outstanding_balance=0.00&payer_email=user%40dms-user.com&payer_id=D7MH32PSBP23C&payer_status=verified&payment_cycle=Monthly&period_type=%20Regular&product_name=description%20of%20agreement%20plan1&product_type=1&profile_status=Cancelled&receiver_email=root%40dms-user.com&recurring_payment_id=I-EE5J6KLNXG90&residence_country=US&shipping=0.00&tax=0.00&test_ipn=1&time_created=18%3A43%3A45%20Nov%2018%2C%202019%20PST&txn_type=recurring_payment_profile_cancel&verify_sign=ASai6Zx.zbenDTXHaNV6Igqh3h3aAuBzmJvNMWdwZCz1vrYpZghjQh8y"
+    PaypalService.paypal_ipn(permitted_paypal_params) and head :ok if permitted_paypal_params["verify_sign"]
     redirect_to new_donation_transaction_path
   end
 
   def new
     if params.has_key?(:token) && params.has_key?(:paymentId) && params.has_key?(:PayerID)
     # passed upon success
-    # !-> PARAMS <-!
-    # {"paymentId"=>"PAYID-LWTZFDQ5HY60034BT5063747", "token"=>"EC-7NE090679P7478832", "PayerID"=>"D7MH32PSBP23C", "controller"=>"donation_transaction", "action"=>"new"}
+    # {"paymentId"=>"PAYID-LWTZFDQ5HY60034BT5063747", "token"=>"EC-7NE090679P7478832",
+    # "PayerID"=>"D7MH32PSBP23C", "controller"=>"donation_transaction", "action"=>"new"}
       success
     elsif params.has_key?(:token)
     # passed upon cancellation
-    # !-> PARAMS <-!
-    # {"token"=>"EC-7W133018A56947646", "controller"=>"donation_transaction", "action"=>"new"}
+    # {"token"=>"EC-7W133018A56947646",
+    # "controller"=>"donation_transaction", "action"=>"new"}
       cancelled
     else
       @donation = MadeDonation.new
@@ -46,7 +59,7 @@ class DonationTransactionsController < ApplicationController
     else
       # if the payment is not created successfully,
       # the error message will be saved in @payment.error
-      @message = @payment.error
+      flash[:alert] = @payment.error
       # Show the error message to user
     end
    # puts "!TRANSACTION DETAILS!", @transaction, "!TRANSACTION DETAILS!"
@@ -91,7 +104,7 @@ class DonationTransactionsController < ApplicationController
   end
 
   def edit
-    puts "&&EDIT PARAMS&&==","#{params}"
+    # puts "&&EDIT PARAMS&&==","#{params}"
     # to show the current plans
     @subscription_plans = PLAN_CONFIG
     @handle_token = params[:token]
@@ -104,22 +117,15 @@ class DonationTransactionsController < ApplicationController
     puts "#{params}"
     @user = current_user
     subscribe_to = params[:subscription]
-    if subscribe_to["subscribe"] == @user.membership
-      # fix this 
-      flash.now[:alert] = "No changes made"
-      return
-    end 
-    if subscribe_to["subscribe"] == 'None'
-      response = PaypalService.cancel_agreement(@user.recurring_id)
-      @user.update(membership: "None") and @user.recurring_record.update(recurring: false) if response.success? # else render 'something_wrong'
-    end
+    handle_no_subscription_change and return if subscribe_to["subscribe"] == @user.membership
+    handle_user_agreement_cancellation and return if subscribe_to["subscribe"] == 'None'
     @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone
     if (@subscription_change = new_recurring_paypal_service).error.nil?
       # Because the agreement's id hasn't been generated yet.
       # (the id will be generated after we execute the agreement)
       # You should save the @subscription_change.token in your transaction
-      puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
-      puts "^^SUB ID^^", "#{@subscription_change.token}"
+      # puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
+      # puts "^^SUB ID^^", "#{@subscription_change.token}"
       @transaction.update(payment_no: @subscription_change.token)
       @donation = MadeDonation.new({user_id: @user.id, 
         payment_id: @subscription_change.token, 
@@ -137,7 +143,7 @@ class DonationTransactionsController < ApplicationController
       # on user cancellation Paypal will respond ==> token=EC-1BL82517H7178791W to cancel_url
       
     else
-      puts "%%%%PAYMENT ERROR%%%%", @payment.error
+      flash[:alert] = @payment.error and return
     end
     # set up recurring donation!
     # if updating existing user, authenticate
@@ -201,18 +207,36 @@ class DonationTransactionsController < ApplicationController
           @user.update(membership: update_membership)
           @transaction.update(payment_id: @payment.id)
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
-          flash.now[:alert] = @payment.state
+          flash.now[:alert] = update_membership + " " + @payment.state
           # @transaction.success!
           # save other data if need
         else
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
+          @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error["name"] == "INVALID TOKEN"
           flash.now[:alert] = @payment.error
           # @payment.error["name"] = "INVALID TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
         end
       end
+    end
+
+    def handle_user_agreement_cancellation
+      response = PaypalService.cancel_agreement(@user.recurring_id)
+      if response.success?
+        @user.update(membership: "None")
+        @user.recurring_record.update(recurring: false)
+      else 
+        render 'something_wrong'
+      end
+      return
+    end
+
+    def handle_no_subscription_change
+      redirect_to edit_donation_transaction_path(current_user.id)
+      # fix this 
+      flash[:alert] = "No changes made"
     end
 
     def find_plan_by_agreement_name name
@@ -235,6 +259,39 @@ class DonationTransactionsController < ApplicationController
 
     def execute_recurring_payment agreement_token
       PaypalService.execute_agreement(agreement_token)
+    end
+
+    def permitted_paypal_params
+      params.permit(
+      :payment_type, :payment_date, :payment_status,
+      :payment_cycle, 
+      :txn_type, :txn_id, :parent_txn_id,
+      :last_name, 
+      :next_payment_date, 
+      :residence_country, 
+      :initial_payment_amount, 
+      :currency_code, 
+      :time_created, 
+      :verify_sign, 
+      :period_type, 
+      :payer_status, 
+      :test_ipn, 
+      :tax, 
+      :payer_email, 
+      :first_name, 
+      :receiver_email, 
+      :payer_id, 
+      :product_type, 
+      :shipping, 
+      :amount_per_cycle, 
+      :profile_status, 
+      :charset, 
+      :notify_version, 
+      :amount, 
+      :outstanding_balance, 
+      :recurring_payment_id, 
+      :product_name, 
+      :ipn_track_id)
     end
     
 end

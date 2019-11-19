@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2019_11_19_014208) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "password_reset_token"
     t.datetime "password_reset_sent_at"
-    t.string "membership"
+    t.string "membership", default: "None"
   end
 
 end

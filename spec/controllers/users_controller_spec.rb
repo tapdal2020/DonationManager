@@ -452,7 +452,7 @@ RSpec.describe UsersController do
                 end
             end
 
-            ['none', 'med', 'high'].each do |m|
+            ['None', 'med', 'high'].each do |m|
                 it "should return only the #{m} subset" do
                     get :generate_email_list, params: { subset: {"memberships" => [m] } }
 

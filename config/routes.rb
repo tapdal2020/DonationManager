@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   resources :receipts, only: [:index, :show]
   resources :donation_transactions, only: [:index, :new, :edit] do
     collection do
+      post '/', to: 'donation_transactions#index', as: ''
+    end
+      # post '/donation_transactions', to: 'donation_transactions#index'
+    collection do
       post :checkout
       post :recurring
     end

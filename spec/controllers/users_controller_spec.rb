@@ -44,6 +44,12 @@ RSpec.describe UsersController do
             expect { post :create, params: { "user" => bad_params } }.to change(User, :count).by(0)
         end
 
+        it 'should not create a user when zipcode is non-numerical' do
+            bad_params = user_params
+            bad_params[:zip_code] = 'abcde'
+            expect { post :create, params: { "user" => bad_params } }.to change(User, :count).by(0)
+        end
+
         [:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code].each do |item|
             it "should fail to create a new user without #{item}" do
                 incomplete_params = user_params

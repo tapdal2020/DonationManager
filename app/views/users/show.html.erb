@@ -23,6 +23,7 @@ table, th, td {
       <th><b><%= sortable "price", "Donated Amount"%></b></th>
       <th><b><%= sortable "payment_id", "Paypal Transaction ID"%></b></th>
       <th><b><%= sortable "payer_id","Paypal Payer ID"%></b></th>
+      <th><b><%= sortable "recurring","Recurring Payment"%></b></th>
       <th><b>Receipt</b></th>
     </tr>
   </thead>
@@ -37,6 +38,7 @@ table, th, td {
         <td><%= number_to_currency(donation.price) %></td>
         <td><%= donation.payment_id %></td>
         <td><%= donation.payer_id %></td>
+         <td><%= donation.recurring%>  <%=button_to "Cancel", {controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id}, hidden: !donation.recurring%></td>
         <td><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, method: :get, name: "VIEW_#{i}" %>
       </tr>
     <% end %>

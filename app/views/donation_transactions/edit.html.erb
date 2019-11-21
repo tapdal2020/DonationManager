@@ -6,20 +6,16 @@
 <h4><b><%=@subscribed_to%></b></h4>
 <%= form_for(:subscription, url: { controller: 'donation_transactions', action: 'recurring' }) do |membership| %>
     <table>
-        <thead>
-            <tr>
-                <th><b>Subscription Types:</b></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <% @subscription_plans.each do |plan_key, plan_val| %>
-                <%# get each key value %>
-                    <td><%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"])%> <%=plan_val.to_s()%></td>
-                <% end %>
-                <td> <%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
-            </tr>
-        </tbody>
+        <tr>
+            <th><b>Subscription Tiers:</b></th>
+        </tr>
+        <% @subscription_plans.each do |plan_key, plan_val| %>
+        <%# get each key value %>
+            <tr><td><%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"])%> <%=plan_val.to_s()%></td></tr>
+        <% end %>
+        <tr>
+            <td><%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
+        </tr>
     </table>
     <%= membership.submit "Submit Changes" %>
 <%end%>

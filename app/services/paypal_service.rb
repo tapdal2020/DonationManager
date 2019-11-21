@@ -64,6 +64,7 @@ class PaypalService
   end
    
   def self.cancel_agreement(agreement_id)
+    puts "***PP Service cancelling #{agreement_id}"
     # Use the id to execute this agreement
     agreement = PayPal::SDK::REST::Agreement.new(id: agreement_id)
     agreement.cancel(PayPal::SDK::REST::AgreementStateDescriptor.new(note: "Cancellation")) unless agreement.error

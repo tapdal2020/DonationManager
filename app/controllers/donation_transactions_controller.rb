@@ -38,30 +38,14 @@ class DonationTransactionsController < ApplicationController
   def checkout
     # get the user buy id
     @user = current_user
-    @money = params[:donation][:donation_amount]
-    # get the amount from the forms
-    @item = build_item(@money)
-    @transaction = build_transaction([@item])
-    # check whether there was an error happened when created the payment
-    if (@payment = new_paypal_service).error.nil?
-      # record the payment id provided by PayPal for future use
-      @transaction.update(payment_id: @payment.id)
-      @donation = MadeDonation.new({user_id: @user.id,
-        payment_id: @payment.id,
-        price: @money,
-        token: @payment.token})
-      # validate the user before saving
-      @donation.save(context: :user)
-      # puts @donation.attributes, 'donation'
-      @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
-      redirect_to @redirect_url and return
-      # save other @payment data if you need
+    @money = params[:make_donation][:donation_amount]
+    @payment_frequency = params[:make_donation][:payment_freq]
+    if not @payment_frequency.eql?("ONE") 
+      handle_custom_recurrence
     else
-      # if the payment is not created successfully,
-      # the error message will be saved in @payment.error
-      flash[:alert] = @payment.error
-      # Show the error message to user
+      handle_normal_donation
     end
+    do_redirect and return
    # puts "!TRANSACTION DETAILS!", @transaction, "!TRANSACTION DETAILS!"
   #...
   end
@@ -106,48 +90,34 @@ class DonationTransactionsController < ApplicationController
   def edit
     # puts "&&EDIT PARAMS&&==","#{params}"
     # to show the current plans
-    @subscription_plans = PLAN_CONFIG
+    @subscription_plans = PLAN_CONFIG.except("Custom")
     @handle_token = params[:token]
     handle_recur_token if @handle_token
-    @subscribed_to = current_user.membership and return
+    @subscribed_to = current_user.membership_name and return
   end
 
   def recurring
     this_t = :authenticate_user! unless !params.has_key?(:user_id)
     puts "#{params}"
     @user = current_user
-    subscribe_to = params[:subscription]
-    handle_no_subscription_change and return if subscribe_to["subscribe"] == @user.membership
-    handle_user_agreement_cancellation and return if subscribe_to["subscribe"] == 'None'
-    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone
-    if (@subscription_change = new_recurring_paypal_service).error.nil?
-      # Because the agreement's id hasn't been generated yet.
-      # (the id will be generated after we execute the agreement)
-      # You should save the @subscription_change.token in your transaction
-      # puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
-      # puts "^^SUB ID^^", "#{@subscription_change.token}"
-      @transaction.update(payment_no: @subscription_change.token)
-      @donation = MadeDonation.new({user_id: @user.id, 
-        payment_id: @subscription_change.token, 
-        price: @transaction["payment_definitions"][0]["amount"]["value"],
-        token: @subscription_change.token,
-        payer_id: @transaction["name"],
-        recurring: true})
-      # validate the user before saving
-      @donation.save(context: :user)
-      # The url to redirect the buyer
-      @redirect_url = @subscription_change.links.find{|v| v.method == "REDIRECT" }.href
-      # save other @subscription_change data if you need
-      redirect_to @redirect_url and return
-      # on sucess Paypal will repspond ==> token=EC-6KK985826M006452E to success_url
-      # on user cancellation Paypal will respond ==> token=EC-1BL82517H7178791W to cancel_url
-      
-    else
-      flash[:alert] = @payment.error and return
+    if not params["cancel_id"].nil?
+      @recurring_id = params["cancel_id"].clone
+      puts "cancelling id $$$ #{@recurring_id}"
+      handle_user_agreement_cancellation
+      @redirect_url=user_path(@user.id)
+      do_redirect and return
     end
-    # set up recurring donation!
-    # if updating existing user, authenticate
-    # otherwise, just do it
+    @membership = @user.membership_name
+    # membership - billing agreement id stored for membership
+    @recurring_id = @user.membership_id
+    subscribe_to = params[:subscription]
+    handle_no_subscription_change and return if subscribe_to["subscribe"].eql?(@membership)
+    # else the user is changing the membership, so cancel and update profile
+    handle_user_agreement_cancellation unless @membership.eql?("None")
+    @user.update(membership: "None")
+    @redirect_url = edit_donation_transaction_path(current_user.id) 
+    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone and run_recurring_setup unless subscribe_to["subscribe"].eql?("None")
+    do_redirect and return
   end
 
    
@@ -189,6 +159,36 @@ class DonationTransactionsController < ApplicationController
     }
     end
 
+    def do_redirect
+      redirect_to @redirect_url if not @redirect_url.nil?
+    end
+    
+    def handle_normal_donation
+      # get the amount from the forms
+      @item = build_item(@money)
+      @transaction = build_transaction([@item])
+      # check whether there was an error happened when created the payment
+      if (@payment = new_paypal_service).error.nil?
+        # record the payment id provided by PayPal for future use
+        @transaction.update(payment_id: @payment.id)
+        @donation = MadeDonation.new({user_id: @user.id,
+          payment_id: @payment.id,
+          price: @money,
+          token: @payment.token})
+        # validate the user before saving
+        @donation.save(context: :user)
+        # puts @donation.attributes, 'donation'
+        @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href and return
+        # save other @payment data if you need
+      else
+        # if the payment is not created successfully,
+        # the error message will be saved in @payment.error
+        @redirect_url = nil
+        flash[:alert] = @payment.error and return
+        # Show the error message to user
+      end
+    end
+
     def handle_recur_token
       #find the started Record
       @user = current_user
@@ -203,8 +203,13 @@ class DonationTransactionsController < ApplicationController
           # Remember to save the agreement's id for future use!
           puts "PAYMENT_PLAN^^^", "#{@payment.id}", "#{@payment.state}", "#{@payment.payer.payer_info.payer_id}"
           # initially the plan the user selected was set to `payer_id`
+          custom_plan_name = PLAN_CONFIG["Custom"]["name"]
           update_membership = @transaction.payer_id
-          @user.update(membership: update_membership)
+          # handles figuring out what payment id a membership tier is tied to
+          mem_db = update_membership + " ^ " + @payment.id
+          # we will not update the membership field of the user, given
+          # the user has ran a custom recurring payment
+          @user.update(membership: mem_db) unless update_membership.eql?(custom_plan_name)
           @transaction.update(payment_id: @payment.id)
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
           flash.now[:alert] = update_membership + " " + @payment.state
@@ -222,11 +227,54 @@ class DonationTransactionsController < ApplicationController
       end
     end
 
+    def run_recurring_setup
+      if (@subscription_change = new_recurring_paypal_service).error.nil?
+        # Because the agreement's id hasn't been generated yet.
+        # (the id will be generated after we execute the agreement)
+        # You should save the @subscription_change.token in your transaction
+        # puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
+        # puts "^^SUB ID^^", "#{@subscription_change.token}"
+        @transaction.update(payment_no: @subscription_change.token)
+        @donation = MadeDonation.new({user_id: @user.id, 
+          payment_id: @subscription_change.token, 
+          price: @transaction["payment_definitions"][0]["amount"]["value"],
+          token: @subscription_change.token,
+          payer_id: @transaction["name"],
+          recurring: true})
+        # validate the user before saving
+        @donation.save(context: :user)
+        # The url to redirect the buyer
+        @redirect_url = @subscription_change.links.find{|v| v.method == "REDIRECT" }.href and return
+        # save other @subscription_change data if you need
+        # redirect_to @redirect_url and return
+        # on sucess Paypal will repspond ==> token=EC-6KK985826M006452E to success_url
+        # on user cancellation Paypal will respond ==> token=EC-1BL82517H7178791W to cancel_url
+        
+      else
+        @redirect_url = nil
+        flash[:alert] = @payment.error and return
+      end
+      # set up recurring donation!
+      # if updating existing user, authenticate
+      # otherwise, just do it
+    end
+
+    def handle_custom_recurrence
+      # Clone the custom outline
+      @transaction = PLAN_CONFIG["Custom"].clone
+      # set the values of frequency and amount specified from checkout
+      @transaction["payment_definitions"][0]["amount"]["value"] = @money
+      @transaction["payment_definitions"][0]["frequency"] = @payment_frequency
+      puts "&&CUSTOM RECURRING PAYMENT &&===", "#{@transaction}"
+      run_recurring_setup and return
+    end
+
+
     def handle_user_agreement_cancellation
-      response = PaypalService.cancel_agreement(@user.recurring_id)
+      puts "@@ handling #{@recurring_id}"
+      response = PaypalService.cancel_agreement(@recurring_id)
       if response.success?
-        @user.update(membership: "None")
-        @user.recurring_record.update(recurring: false)
+        @user.recurring_record(@recurring_id).update(recurring: false)
       else 
         render 'something_wrong'
       end

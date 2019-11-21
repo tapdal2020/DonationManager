@@ -40,18 +40,26 @@ class User < ApplicationRecord
       end
     end
 
-    def recurring_id
+    def recurring_id(id)
       made_donations.each do |donation|
-        return donation.payment_id if donation.recurring
+        return donation.payment_id if donation.payment_id.eql?(id) and donation.recurring
       end
       nil
     end
 
-    def recurring_record
+    def recurring_record(id)
       made_donations.each do |donation|
-        return donation if donation.recurring
+        return donation if donation.recurring and donation.payment_id.eql?(id)
       end
       nil
+    end
+
+    def membership_name
+      membership.split(' ^ ')[0]
+    end
+
+    def membership_id
+      (not membership.eql?("None")) ? membership.split(' ^ ')[1] : nil
     end
 
     def name

@@ -21,7 +21,7 @@
             <td>City:</td><td><%= f.text_field :city %></td>
         </tr>
         <tr>
-            <td>State:</td><td><%= f.select :state, options_for_select(us_states) %></td>
+            <td>State:</td><td><%= f.select :state, options_for_select(us_states, selected: @user.state), { include_blank: true } %></td>
         </tr>
         <tr>
             <td>Zip Code:</td><td><%= f.text_field :zip_code %></td>

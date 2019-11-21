@@ -2,7 +2,6 @@ module UsersHelper
 
     def us_states
         [
-          [nil, ''],
           ['AK', 'AK'],
           ['AL', 'AL'],
           ['AR', 'AR'],

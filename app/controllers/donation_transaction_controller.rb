@@ -42,7 +42,6 @@ class DonationTransactionController < ApplicationController
       # redirect_to 'https://google.com'
       # return
       # The url to redirect the buyer
-      @user.send_donation_confirmation(@money) if @user 
       @redirect_url = @payment.links.find{|v| v.method == "REDIRECT" }.href
       redirect_to @redirect_url and return
       # save other @payment data if you need
@@ -57,6 +56,7 @@ class DonationTransactionController < ApplicationController
   end
 
   def success
+    @user = current_user
     # puts "!!!SUCCESS!!!", params, "!!!SUCCESS!!!"
     payment_id = params.fetch(:paymentId, nil)
     @PayerID = params[:PayerID]
@@ -75,6 +75,7 @@ class DonationTransactionController < ApplicationController
       # set transaction status to success and save some data
       @transaction.update(payer_id: @PayerID)
       flash.now[:alert] = "Donation Succeeded"
+      @user.send_donation_confirmation(@transaction.price) if @user
     else
       # show error message
       flash.now[:alert] = @payment.error

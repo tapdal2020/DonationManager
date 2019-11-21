@@ -113,8 +113,8 @@ RSpec.describe DonationTransactionsController do
         @controller = old_controller
       end
 
-      it 'should assign values to create payment' do
-        get :checkout, params: { donation: { donation_amount: 4 } }
+      it 'should assign values to create one-time payment' do
+        get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: "ONE" } }
         expect(assigns(:user)).not_to be_nil
         expect(assigns(:money)).to eq("4")
 

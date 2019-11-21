@@ -94,7 +94,7 @@ class UsersController < ApplicationController
     def get_emails
         @users = User.all
         @user = current_admin
-        @names = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        @names = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
         @memberships = session[:memberships]
     end
 
@@ -102,11 +102,11 @@ class UsersController < ApplicationController
         if params[:subset]
             @memberships = params[:subset]["memberships"]
         else
-            @memberships = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+            @memberships = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
         end
         session[:memberships] = @memberships
 
-        @users = User.where({ membership: @memberships.collect { |m| (m == 'none') ? nil : m } })
+        @users = User.where({ membership: @memberships.collect { |m| m } })
         respond_to do |format|
             format.html
             format.csv { render text: @users.to_csv }

@@ -402,7 +402,7 @@ RSpec.describe UsersController do
                 
                 expect(assigns(:users)).to eq(User.all)
                 expect(assigns(:user).id).to eq(@main_admin.id)
-                ['none', 'med', 'high'].each do |l|
+                ['None', 'med', 'high'].each do |l|
                     expect(assigns(:names).include? l).to be(true)
                 end
                 expect(assigns(:memberships)).to be_nil
@@ -412,10 +412,10 @@ RSpec.describe UsersController do
 
             it 'should remember the memberships selected after a call to generate' do
                 get :get_emails
-                get :generate_email_list, params: { subset: {"memberships" => ['none', 'med'] } }
+                get :generate_email_list, params: { subset: {"memberships" => ['None', 'med'] } }
 
                 get :get_emails
-                ['none', 'med'].each do |l|
+                ['None', 'med'].each do |l|
                     expect(assigns(:memberships).include? l).to be(true)
                 end
             end
@@ -443,7 +443,7 @@ RSpec.describe UsersController do
                 get :generate_email_list
                 expect(response).not_to redirect_to(new_session_path)
 
-                ['none', 'med', 'high'].each do |l|
+                ['None', 'med', 'high'].each do |l|
                     expect(assigns(:memberships).include? l).to be(true)
                 end
                 

@@ -33,3 +33,27 @@ three:
   zip_code: "77840"
   password_digest: <%= BCrypt::Password.create('user') %>
   admin: true
+
+four:
+  first_name: "John"
+  last_name: "Mink"
+  email: "john@fake.com"
+  street_address_line_1: "Home"
+  street_address_line_2: ""
+  city: "College Station"
+  state: "TX"
+  zip_code: "77840"
+  password_digest: <%= BCrypt::Password.create('user') %>
+  membership: "None"
+
+five:
+  first_name: "Jane"
+  last_name: "Mink"
+  email: "jane@fake.com"
+  street_address_line_1: "Home"
+  street_address_line_2: ""
+  city: "College Station"
+  state: "TX"
+  zip_code: "77840"
+  password_digest: <%= BCrypt::Password.create('user') %>
+  membership: "med"

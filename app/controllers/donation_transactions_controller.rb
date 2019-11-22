@@ -97,26 +97,29 @@ class DonationTransactionsController < ApplicationController
   end
 
   def recurring
+    # @redirect_url = nil
     this_t = :authenticate_user! unless !params.has_key?(:user_id)
     puts "#{params}"
     @user = current_user
     if not params["cancel_id"].nil?
-      @recurring_id = params["cancel_id"].clone
-      puts "cancelling id $$$ #{@recurring_id}"
+      @recurring_id = params["cancel_id"]
       handle_user_agreement_cancellation
       @redirect_url=user_path(@user.id)
       do_redirect and return
     end
     @membership = @user.membership_name
+    not_subscribed = @membership.eql?("None")
     # membership - billing agreement id stored for membership
     @recurring_id = @user.membership_id
     subscribe_to = params[:subscription]
-    handle_no_subscription_change and return if subscribe_to["subscribe"].eql?(@membership)
+    no_changes = subscribe_to["subscribe"].eql?(@membership)
+    doing_unsubscribe = subscribe_to["subscribe"].eql?("None")
+    handle_no_subscription_change and do_redirect and return if no_changes
     # else the user is changing the membership, so cancel and update profile
-    handle_user_agreement_cancellation unless @membership.eql?("None")
+    handle_user_agreement_cancellation unless not_subscribed
     @user.update(membership: "None")
     @redirect_url = edit_donation_transaction_path(current_user.id) 
-    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone and run_recurring_setup unless subscribe_to["subscribe"].eql?("None")
+    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone and run_recurring_setup unless doing_unsubscribe or no_changes
     do_redirect and return
   end
 
@@ -234,7 +237,8 @@ class DonationTransactionsController < ApplicationController
         # You should save the @subscription_change.token in your transaction
         # puts "VALUE of AMONUT!^^", "#{@transaction["payment_definitions"][0]["amount"]["value"]}"
         # puts "^^SUB ID^^", "#{@subscription_change.token}"
-        @transaction.update(payment_no: @subscription_change.token)
+        @transaction.update(payment_id: @subscription_change.token)
+        puts "%% MAKING A RECURRING MEMBERSHIP CHANGE %%%%"
         @donation = MadeDonation.new({user_id: @user.id, 
           payment_id: @subscription_change.token, 
           price: @transaction["payment_definitions"][0]["amount"]["value"],
@@ -252,7 +256,7 @@ class DonationTransactionsController < ApplicationController
         
       else
         @redirect_url = nil
-        flash[:alert] = @payment.error and return
+        flash[:alert] = @subscription_change.error and return
       end
       # set up recurring donation!
       # if updating existing user, authenticate
@@ -282,7 +286,9 @@ class DonationTransactionsController < ApplicationController
     end
 
     def handle_no_subscription_change
-      redirect_to edit_donation_transaction_path(current_user.id)
+      # redirect_to
+      @redirect_url = edit_donation_transaction_path(current_user.id)
+      #do_redirect
       # fix this 
       flash[:alert] = "No changes made"
     end

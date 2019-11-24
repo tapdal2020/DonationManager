@@ -280,10 +280,10 @@ RSpec.describe DonationTransactionsController do
       it 'should assign values to cancel any RECURRING PAYMENT after HEAD OK with PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
         donation = MadeDonation.new(payment_id:"0", payer_id: "plan1", recurring: true)
-        allow(@user).to receive(:membership_name).and_return("plan1")
-        allow(@user).to receive(:membership_id).and_return("0")
+        allow_any_instance_of(User).to receive(:membership_name).and_return("plan1")
+        allow_any_instance_of(User).to receive(:membership_id).and_return("0")
         # allow(User).to receive(:made_donations).and_return(donation)
-        allow(@user).to receive(:recurring_record).with("0").and_return(donation)
+        allow_any_instance_of(User).to receive(:recurring_record).with("0").and_return(donation)
         allow(agreement).to receive(:success?).and_return(true)
         allow(MadeDonation).to receive(:update).with(reccuring: false).and_return(donation)
         allow(PaypalService).to receive(:cancel_agreement).with("0").and_return(agreement)

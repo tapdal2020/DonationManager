@@ -1,4 +1,10 @@
 <h1>Manage BVJS Subscription</h1>
+
+<% flash.each do |key, value| %>
+    <div class="flash <%= key %>"><%= value %></div>
+    <br />
+<% end %>
+
 <%= form_for(:donation, url: { controller: 'donation_transaction', action: 'recurring' }) do |f| %>
     <table>
         <thead>

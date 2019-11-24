@@ -2,6 +2,10 @@
 <%= button_to "Made Donations", user_path(current_user.id), :method=>:get%>
 <%= button_to "Logout", session_path(current_user.id), :method=>:delete %>
 
+<% flash.each do |key, value| %>
+    <div class="flash <%= key %>"><%= value %></div>
+    <br />
+<% end %>
                      
 <%= form_for(:donation, url: { controller: 'donation_transactions', action: 'checkout' }) do |f| %>
     <table>

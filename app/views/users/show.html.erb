@@ -1,4 +1,11 @@
 <h1><%=@html_donation_title%></h1>
+
+<% flash.each do |key, value| %>
+    <div class="flash <%= key %>"><%= value %></div>
+    <br />
+<% end %>
+
+
 <%= button_to 'Make a Donation', { controller: 'donation_transactions', action: 'new', user_id: session[:user_id] } , method: :get %>
 <% if is_currently_admin? %>
       <%= button_to 'View Users', { controller: 'users', action: 'index', user_id: session[:user_id] }, method: :get %>

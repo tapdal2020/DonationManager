@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
             session[:rememberme] = session_info["rememberme"]
             redirect_to user_path(user.id)
         else
-            flash.now[:alert] = "Email or password invalid"
+            flash[:now][:notice] = "Email or password invalid"
             flash.keep
             render 'new'
         end

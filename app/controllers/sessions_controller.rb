@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
             redirect_to user_path(user.id)
         else
             flash.now.notice = "Email or password invalid"
-            flash.keep
+           # flash.keep
             render 'new'
         end
     end

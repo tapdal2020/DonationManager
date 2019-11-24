@@ -221,6 +221,7 @@ class DonationTransactionsController < ApplicationController
         else
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
+          e = @payment.error
           @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error["name"] == "INVALID TOKEN"
           flash.now[:alert] = @payment.error
           # @payment.error["name"] = "INVALID TOKEN" when user cancels and returns to store

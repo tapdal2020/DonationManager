@@ -218,7 +218,7 @@ RSpec.describe DonationTransactionsController do
         expect(subject).to redirect_to(assigns(:redirect_url))
       end
 
-      it 'should flash MEMBERSHIP as `active` after heading OK from PayPal' do 
+      it 'should flash MEMBERSHIP as `active` after HEAD OK from PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
         donation = MadeDonation.new(payer_id: "Plan 0")
         allow(@user).to receive(:update).with(membership: "0 ^ O")
@@ -232,6 +232,68 @@ RSpec.describe DonationTransactionsController do
         expect(flash[:alert]).to eq("Plan 0 Active")
       end
 
+      it 'should render `something_wrong` when a recurring token comes across malformed from PayPal' do
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
+        donation = MadeDonation.new(payer_id: "Plan 0")
+        allow(@user).to receive(:update).with(membership: "0 ^ O")
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(nil)
+        allow(@controller).to receive(:execute_recurring_payment).and_return(agreement)
+
+        get :edit, params: {id: @user.id, token: "0"}
+        expect(assigns(:handle_token)).to eq("0")
+        expect(assigns(:transaction)).to eq(nil)
+        expect(subject).to render_template('something_wrong')
+      end
+
+      it 'should remove current init payment when a user cancels from PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
+        donation = MadeDonation.new(payer_id: "Plan 0")
+        e = {name: "INVALID TOKEN"}
+        allow(@user).to receive(:update).with(membership: "0 ^ O")
+        allow(agreement).to receive(:success?).and_return(false)
+        allow(agreement).to receive(:error).and_return(e)
+        allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
+        allow(@controller).to receive(:execute_recurring_payment).and_return(agreement)
+
+        get :edit, params: {id: @user.id, token: "0"}
+        expect(assigns(:handle_token)).to eq("0")
+        expect(assigns(:transaction)).to eq(donation)
+        expect(flash[:alert]).to eq(assigns(:payment).error)
+      end
+
+      it 'should assign values to cancel MEMBERSHIP after HEAD OK with PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
+        donation = MadeDonation.new(payer_id: "plan1")
+        allow(@user).to receive(:membership_name).and_return("plan1")
+        allow(@user).to receive(:membership_id).and_return("0")
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:update).with(reccuring: false).and_return(donation)
+        allow(PaypalService).to receive(:cancel_agreement).with("0").and_return(agreement)
+       
+        post :recurring, params: { subscription: { subscribe: "None" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:recurring_id)).to eq(nil)
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
+
+      it 'should assign values to cancel any RECURRING PAYMENT after HEAD OK with PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
+        donation = MadeDonation.new(payment_id:"0", payer_id: "plan1", recurring: true)
+        allow(@user).to receive(:membership_name).and_return("plan1")
+        allow(@user).to receive(:membership_id).and_return("0")
+        # allow(User).to receive(:made_donations).and_return(donation)
+        allow(@user).to receive(:recurring_record).with("0").and_return(donation)
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:update).with(reccuring: false).and_return(donation)
+        allow(PaypalService).to receive(:cancel_agreement).with("0").and_return(agreement)
+       
+        post :recurring, params: { cancel_id: "0" }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:recurring_id)).to eq("0")
+        expect(assigns(:redirect_url)).to eq(user_path(@user.id))
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
     end
 
   end

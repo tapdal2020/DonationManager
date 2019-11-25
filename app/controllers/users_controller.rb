@@ -112,6 +112,13 @@ class UsersController < ApplicationController
         end
 
         @user = User.find(params[:id])
+
+        unless @user.made_donations.where(recurring: true).empty?
+            flash[:now][:notice] = "Please delete your recurring donations before deleting your account."
+            flash.keep
+            render 'edit' and return
+        end
+
         if @user.destroy
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else

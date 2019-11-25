@@ -351,7 +351,13 @@ RSpec.describe UsersController do
             end
 
             it 'should not allow a user to delete themself if they have recurring donations' do
-                
+                # make a recurring donation
+                old_controller = @controller
+                @controller = DonationTransactionsController.new
+                get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: 'WEEK' } }
+                @controller = old_controller
+
+                expect { delete :destroy, params: { id: @tuser.id } }.to change(User, :count).by(0)
             end
         end
 

@@ -295,9 +295,5 @@ RSpec.describe DonationTransactionsController do
         expect(subject).to redirect_to(assigns(:redirect_url))
       end
     end
-
   end
-
-  
-
 end

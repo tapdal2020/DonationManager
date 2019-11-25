@@ -349,6 +349,10 @@ RSpec.describe UsersController do
                 delete :destroy, params: { id: @tuser.id }
                 expect(subject).to render_template('edit')
             end
+
+            it 'should not allow a user to delete themself if they have recurring donations' do
+                
+            end
         end
 
         context 'given an admin is logged in' do

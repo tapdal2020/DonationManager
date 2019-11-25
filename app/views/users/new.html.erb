@@ -36,6 +36,17 @@
                 <td>Admin?</td><td><%= f.check_box :admin %></td>
             </tr>
         <% end %>
+        <% f.hidden_field :membership, value: '' %>
+        <% unless is_currently_admin? %>
+            <tr>
+                <td>Membership Type</td>
+            </tr>
+            <tr>
+                <% membership_types.each do |m, c, label| %>
+                    <td><%= f.radio_button :membership, m, checked: c %><%= f.label "membership_#{label}".to_sym, label %></td>
+                <% end %>
+            </tr>
+        <% end %>
     </table>
     <br />
     <%= f.submit "Save" %>

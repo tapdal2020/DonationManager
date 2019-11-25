@@ -40,7 +40,7 @@ end
 
 Given("paypal will authorize payment of {int} dollars") do |int|
     Rails.application.routes.append do
-      get '/cgi-bin/webscr' => "donation_transaction#new"
+      get '/cgi-bin/webscr' => "donation_transactions#new"
     end
 
     payment = PayPal::SDK::REST::Payment.new({
@@ -53,8 +53,8 @@ Given("paypal will authorize payment of {int} dollars") do |int|
                 price: int
               }]
           },
-        return_url: 'http://localhost:3000/donation_transaction/new',
-        cancel_url: 'http://localhost:3000/donation_transaction/new',
+        return_url: 'http://localhost:3000/donation_transactions/new',
+        cancel_url: 'http://localhost:3000/donation_transactions/new',
         money: int
     })
     payment.create
@@ -76,7 +76,7 @@ end
 
 Given "I have made a donation of {int} dollars" do |int|
     Rails.application.routes.append do
-        get '/cgi-bin/webscr' => "donation_transaction#new"
+        get '/cgi-bin/webscr' => "donation_transactions#new"
     end
   
     payment = PayPal::SDK::REST::Payment.new({
@@ -89,8 +89,8 @@ Given "I have made a donation of {int} dollars" do |int|
                 price: int
             }]
         },
-        return_url: 'http://localhost:3000/donation_transaction/new',
-        cancel_url: 'http://localhost:3000/donation_transaction/new',
+        return_url: 'http://localhost:3000/donation_transactions/new',
+        cancel_url: 'http://localhost:3000/donation_transactions/new',
         money: int
     })
 

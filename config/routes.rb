@@ -2,6 +2,10 @@ Rails.application.routes.draw do
 
   resources :password_resets
   resources :users do
+    collection do
+      get :get_emails
+      get :generate_email_list
+    end
     member do
       get :change_password, to: 'users#change_password'
       patch :update_password, to: 'users#update_password'
@@ -9,9 +13,14 @@ Rails.application.routes.draw do
   end
   resources :sessions, only: [:new, :create, :destroy]
   resources :receipts, only: [:index, :show]
-  resources :donation_transaction do
+  resources :donation_transactions, only: [:index, :new, :edit] do
+    collection do
+      post '/', to: 'donation_transactions#index', as: ''
+    end
+      # post '/donation_transactions', to: 'donation_transactions#index'
     collection do
       post :checkout
+      post :recurring
     end
   end
 

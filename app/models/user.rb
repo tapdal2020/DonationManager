@@ -1,3 +1,5 @@
+require 'csv'
+
 class User < ApplicationRecord
     has_secure_password
     
@@ -29,5 +31,42 @@ class User < ApplicationRecord
       begin
         self[column] = SecureRandom.urlsafe_base64
       end while User.exists?(column => self[column])
+    end
+
+    def self.to_csv
+      attributes = %w{email name membership}
+      CSV.generate(headers: true) do |csv|
+        csv << attributes
+
+        all.each do |user|
+          csv << attributes.map{ |attr| user.send(attr) }
+        end
+      end
+    end
+
+    def recurring_id(id)
+      made_donations.each do |donation|
+        return donation.payment_id if donation.payment_id.eql?(id) and donation.recurring
+      end
+      nil
+    end
+
+    def recurring_record(id)
+      made_donations.each do |donation|
+        return donation if donation.recurring and donation.payment_id.eql?(id)
+      end
+      nil
+    end
+
+    def membership_name
+      membership.split(' ^ ')[0]
+    end
+
+    def membership_id
+      (not membership.eql?("None")) ? membership.split(' ^ ')[1] : nil
+    end
+
+    def name
+      "#{first_name} #{last_name}"
     end
 end

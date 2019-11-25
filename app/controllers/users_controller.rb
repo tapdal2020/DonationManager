@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
     before_action :authenticate_user!, except: [:new, :create]
-    before_action :authenticate_admin!, only: [:index]
+    before_action :authenticate_admin!, only: [:index, :get_emails, :generate_email_list]
     helper_method :sort_column, :sort_direction
     
     def new
@@ -19,6 +19,8 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         
         if @user.save(context: current_admin ? :admin : :user)
+            redirect_to recurring_donation_transactions_path(from: 'create') and return unless @user.membership == "" || @user.membership.nil?
+            
             if current_admin
                 redirect_to user_path(current_admin.id) and return
             else
@@ -117,6 +119,28 @@ class UsersController < ApplicationController
         end
     end
 
+    def get_emails
+        @users = User.all
+        @user = current_admin
+        @names = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        @memberships = session[:memberships]
+    end
+
+    def generate_email_list
+        if params[:subset]
+            @memberships = params[:subset]["memberships"]
+        else
+            @memberships = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        end
+        session[:memberships] = @memberships
+
+        @users = User.where({ membership: @memberships.collect { |m| m } })
+        respond_to do |format|
+            format.html
+            format.csv { render text: @users.to_csv }
+        end
+    end
+
     helper_method :is_currently_admin?
     def is_currently_admin?
         User.find(params[:id]).admin?
@@ -141,17 +165,17 @@ class UsersController < ApplicationController
 
     def user_params
         if current_admin
-            params.require("user").permit(:email, :password, :password_confirmation, :admin)
+            params.require("user").permit(:email, :password, :password_confirmation, :membership, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
+            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
     end
 
     def update_params
         if current_admin
-            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :admin)
+            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
+            params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
     end
 

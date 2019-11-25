@@ -104,6 +104,24 @@ RSpec.describe UsersController do
                 end
             end
         end
+
+        context 'given membership info' do
+            ['', 'low', 'mid', 'high'].each do |v|
+                let(:m_params) { user_params }
+                it "should accept and assign a membership of #{v}" do
+                    m_params[:membership] = v
+                    
+                    expect { post :create, params: { "user" => m_params } }.to change(User, :count).by(1)
+                    expect(assigns(:user).membership).to eq(v)
+                    
+                    if v != ''
+                        expect(response).to redirect_to(recurring_donation_transactions_path(from: 'create'))
+                    else
+                        expect(response).to redirect_to(new_session_path)
+                    end
+                end
+            end
+        end
     end
 
     describe 'Session Expiry' do
@@ -368,6 +386,49 @@ RSpec.describe UsersController do
         end
     end
 
+    describe 'GET get_emails' do
+        it 'should not allow access if no user is signed in' do
+            get :get_emails
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        it 'should not allow a user to access' do
+            user = login_user
+            get :get_emails
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given an admin is signed in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to access' do
+                get :get_emails
+                expect(response).not_to redirect_to(new_session_path)
+                
+                expect(assigns(:users)).to eq(User.all)
+                expect(assigns(:user).id).to eq(@main_admin.id)
+                ['None', 'med', 'high'].each do |l|
+                    expect(assigns(:names).include? l).to be(true)
+                end
+                expect(assigns(:memberships)).to be_nil
+
+                expect(response).to render_template('get_emails')
+            end
+
+            it 'should remember the memberships selected after a call to generate' do
+                get :get_emails
+                get :generate_email_list, params: { subset: {"memberships" => ['None', 'med'] } }
+
+                get :get_emails
+                ['None', 'med'].each do |l|
+                    expect(assigns(:memberships).include? l).to be(true)
+                end
+            end
+        end
+    end
+    
     describe 'GET change_password' do
         it 'should not allow a user to change password if not logged in' do
             get :change_password, params: { id: 0 }
@@ -400,6 +461,51 @@ RSpec.describe UsersController do
         end
     end
 
+    describe 'GET generate_email_list' do
+        it 'should not allow access if no user is signed in' do
+            get :generate_email_list
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        it 'should not allow a user to access' do
+            user = login_user
+            get :generate_email_list
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given an admin is logged in' do
+            before do
+                @main_admin = login_admin
+            end
+
+            it 'should allow an admin to access' do
+                get :generate_email_list
+                expect(response).not_to redirect_to(new_session_path)
+
+                ['None', 'med', 'high'].each do |l|
+                    expect(assigns(:memberships).include? l).to be(true)
+                end
+                
+                User.all.each do |u|
+                    expect(assigns(:users).include? u).to be(true)
+                end
+            end
+
+            ['None', 'med', 'high'].each do |m|
+                it "should return only the #{m} subset" do
+                    get :generate_email_list, params: { subset: {"memberships" => [m] } }
+
+                    expect(assigns(:memberships).include? m).to be(true)
+                    expect(assigns(:memberships).length).to eq(1)
+
+                    User.where({ membership: m }).each do |u|
+                        expect(assigns(:users).include? u).to be(true)
+                    end
+                end
+            end
+        end
+    end
+    
     describe 'PATCH update_password' do
         it 'should not allow a user to change password if not logged in' do
             patch :update_password, params: { id: 0 }

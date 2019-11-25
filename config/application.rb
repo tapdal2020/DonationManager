@@ -10,6 +10,7 @@ module Csce431Fall2019
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+    # config.hosts << "a6e494c4.ngrok.io"
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', 'app_deploy_env.yml')
       YAML.load(File.open(env_file)).each do |key, value|

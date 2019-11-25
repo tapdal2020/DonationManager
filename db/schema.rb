@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2019_11_19_014208) do
 
-  create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
     t.string "payment_id", null: false
     t.decimal "price", precision: 6, scale: 2, default: "0.0"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_11_19_014208) do
     t.index ["user_id"], name: "index_made_donations_on_user_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "email"

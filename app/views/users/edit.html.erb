@@ -1,8 +1,11 @@
+<h1>Edit Profile</h1>
+
 <%= form_for @user, url: { controller: 'users', action: 'update', id: @user.id } do |f| %>
     <table>
         <tr>
             <td>First name:</td><td><%= f.text_field :first_name %></td>
         </tr>
+        <tr>
             <td>Last name:</td><td><%= f.text_field :last_name %></td>
         </tr>
         <tr>
@@ -18,7 +21,7 @@
             <td>City:</td><td><%= f.text_field :city %></td>
         </tr>
         <tr>
-            <td>State:</td><td><%= f.text_field :state %></td>
+            <td>State:</td><td><%= f.select :state, options_for_select(us_states, selected: @user.state), { include_blank: true } %></td>
         </tr>
         <tr>
             <td>Zip Code:</td><td><%= f.text_field :zip_code %></td>
@@ -33,4 +36,7 @@
     <%= f.submit "Save" %>
 <% end %>
 
+<%= button_to "Change Password", change_password_user_path(@user.id), method: :get %>
+<br />
+<br />
 <%= button_to "DELETE", user_path(@user.id), method: :delete %>

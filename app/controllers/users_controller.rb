@@ -61,6 +61,10 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
     end
 
+    def change_password
+        edit
+    end
+
     def update
         request = params[:id].to_i
         with = session[:user_id].to_i
@@ -73,6 +77,30 @@ class UsersController < ApplicationController
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
             render 'edit' and return
+        end
+    end
+
+    def update_password
+        request = params[:id].to_i
+        with = session[:user_id].to_i
+        if request != with
+            render 'unauthorized' and return
+        end
+
+        @user = User.find(params[:id])
+        new_info = params["user"]
+        if @user && @user.authenticate(new_info[:old_password])
+            if new_info[:password] == new_info[:password_confirmation]
+                if @user.update(new_password_params)
+                    redirect_to user_path(@user.id) and return
+                else
+                    render 'change_password' and return
+                end
+            else
+                render 'change_password' and return
+            end
+        else
+            render 'change_password' and return
         end
     end
 
@@ -149,6 +177,10 @@ class UsersController < ApplicationController
         else
             params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
+    end
+
+    def new_password_params
+        params.require("user").permit(:password, :password_confirmation)
     end
     
 end

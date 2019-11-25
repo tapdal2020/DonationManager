@@ -4,7 +4,7 @@ class User < ApplicationRecord
     has_secure_password
     
     validates :first_name, :last_name, :street_address_line_1, :city, :state, :zip_code, presence: true, on: :user
-    validates_numericality_of :zip_code, on: [:create, :update], unless: lambda{ |user| user.admin? }, greater_than_or_equal_to: 0, only_integer: true
+    validates :zip_code, numericality: { greater_than_or_equal_to: 0, only_integer: true }, on: [:create, :user]
     
     validates :email, presence: true, uniqueness: { case_sensitive: true }
     validates_email_format_of :email, message: "Invalid email"
@@ -21,6 +21,10 @@ class User < ApplicationRecord
       self.password_reset_sent_at = Time.zone.now
       save!
       UserMailer.forgot_password(self).deliver# This sends an e-mail with a link for the user to reset the password
+    end
+
+    def send_donation_confirmation(money)
+      UserMailer.donation_confirmation(self, money).deliver
     end
       # This generates a random password reset token for the user
     def generate_token(column)

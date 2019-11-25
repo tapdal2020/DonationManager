@@ -14,6 +14,10 @@ Given(/^I have clicked "(.*)"$/) do |link|
     click_link link
 end
 
+Given(/^I have pressed "(.*)"$/) do |button|
+    click_button button
+end
+
 Given(/^I am signed in as a (user|admin)$/) do |role|
     visit root_path
     fill_in 'user_email', with: "#{role}@test.com"
@@ -122,7 +126,11 @@ Given "I have received and followed a password reset link" do
 end
 
 When(/^I fill in "(.*)" with "(.*)"$/) do |label, entry|
-    fill_in(label, with: entry)
+    if label == 'user_state'
+        find(:select, label).find(:option, entry).select_option
+    else
+        fill_in(label, with: entry)
+    end
 end
 
 When(/^I press "(.*)"$/) do |button|
@@ -138,6 +146,16 @@ When (/^I fill in new (user|admin) information$/) do |role|
     
     check('user_admin') if role == 'admin'
     find(:select, 'user_state').find(:option, 'TX').select_option
+
+    entries.each do |item, value|
+        fill_in item, with: value
+    end
+end
+
+When (/^I fill in update user information$/) do 
+    entries = { 'user_first_name' => 'FirstName', 'user_last_name' => 'LastName', 'user_email' => 'firstlast@email.com', 'user_street_address_line_1' => 'home', 'user_city' => 'College Station', 'user_zip_code' => '77840' }
+    
+    find(:select, 'user_state').find(:option, 'AZ').select_option
 
     entries.each do |item, value|
         fill_in item, with: value

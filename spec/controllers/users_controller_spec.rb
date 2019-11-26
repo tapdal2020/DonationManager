@@ -104,24 +104,6 @@ RSpec.describe UsersController do
                 end
             end
         end
-
-        context 'given membership info' do
-            ['', 'low', 'mid', 'high'].each do |v|
-                let(:m_params) { user_params }
-                it "should accept and assign a membership of #{v}" do
-                    m_params[:membership] = v
-                    
-                    expect { post :create, params: { "user" => m_params } }.to change(User, :count).by(1)
-                    expect(assigns(:user).membership).to eq(v)
-                    
-                    if v != ''
-                        expect(response).to redirect_to(recurring_donation_transactions_path(from: 'create'))
-                    else
-                        expect(response).to redirect_to(new_session_path)
-                    end
-                end
-            end
-        end
     end
 
     describe 'Session Expiry' do
@@ -348,6 +330,16 @@ RSpec.describe UsersController do
                 allow_any_instance_of(User).to receive(:destroy).and_return(nil)
                 delete :destroy, params: { id: @tuser.id }
                 expect(subject).to render_template('edit')
+            end
+
+            it 'should not allow a user to delete themself if they have recurring donations' do
+                # make a recurring donation
+                old_controller = @controller
+                @controller = DonationTransactionsController.new
+                get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: 'WEEK' } }
+                @controller = old_controller
+
+                expect { delete :destroy, params: { id: @tuser.id } }.to change(User, :count).by(0)
             end
         end
 

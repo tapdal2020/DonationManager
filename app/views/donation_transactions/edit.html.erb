@@ -1,22 +1,22 @@
 <h1>Manage BVJS Subscription</h1>
 
-
-
-<%= form_for(:donation, url: { controller: 'donation_transaction', action: 'recurring' }) do |f| %>
+<%= button_to "Home", user_path(current_user.id), :method => :get%>
+<%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
+<%= button_to "Logout", session_path(current_user.id), :method => :delete %>
+<h3>Current Subscription</h3>
+<h4><b><%=@subscribed_to%></b></h4>
+<%= form_for(:subscription, url: { controller: 'donation_transactions', action: 'recurring' }) do |membership| %>
     <table>
-        <thead>
-            <tr>
-                <th><b>Subscription Types:</b></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                    <td><%= f.radio_button :donation_type, 'low', :checked => true %> Low Subscription Tier</td>
-                    <td><%= f.radio_button :donation_type, 'med'%> Medium Subscription Tier</td>
-                    <td> <%= f.radio_button :donation_type, 'high' %> High Subscription Tier</td>
-                    <td> <%= f.radio_button :donation_type, 'none' %> No Subscription</td>
-            </tr>
-        </tbody>
+        <tr>
+            <th><b>Subscription Tiers:</b></th>
+        </tr>
+        <% @subscription_plans.each do |plan_key, plan_val| %>
+        <%# get each key value %>
+            <tr><td><%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"])%> <%=plan_val.to_s()%></td></tr>
+        <% end %>
+        <tr>
+            <td><%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
+        </tr>
     </table>
-    <%= f.submit "Submit Changes" %>
+    <%= membership.submit "Submit Changes" %>
 <%end%>

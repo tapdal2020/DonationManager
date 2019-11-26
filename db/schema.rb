@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_212936) do
+ActiveRecord::Schema.define(version: 2019_11_19_014208) do
 
   create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_212936) do
     t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "recurring", default: false
     t.index ["user_id"], name: "index_made_donations_on_user_id"
   end
 
@@ -38,7 +39,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_212936) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "password_reset_token"
     t.datetime "password_reset_sent_at"
-    t.string "membership"
+    t.string "membership", default: "None"
   end
 
 end

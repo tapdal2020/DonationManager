@@ -19,8 +19,6 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         
         if @user.save(context: current_admin ? :admin : :user)
-            redirect_to recurring_donation_transactions_path(from: 'create') and return unless @user.membership == "" || @user.membership.nil?
-            
             if current_admin
                 redirect_to user_path(current_admin.id) and return
             else
@@ -61,6 +59,10 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
     end
 
+    def change_password
+        edit
+    end
+
     def update
         request = params[:id].to_i
         with = session[:user_id].to_i
@@ -76,6 +78,30 @@ class UsersController < ApplicationController
         end
     end
 
+    def update_password
+        request = params[:id].to_i
+        with = session[:user_id].to_i
+        if request != with
+            render 'unauthorized' and return
+        end
+
+        @user = User.find(params[:id])
+        new_info = params["user"]
+        if @user && @user.authenticate(new_info[:old_password])
+            if new_info[:password] == new_info[:password_confirmation]
+                if @user.update(new_password_params)
+                    redirect_to user_path(@user.id) and return
+                else
+                    render 'change_password' and return
+                end
+            else
+                render 'change_password' and return
+            end
+        else
+            render 'change_password' and return
+        end
+    end
+
     def destroy
         request = params[:id].to_i
         with = session[:user_id].to_i
@@ -84,6 +110,13 @@ class UsersController < ApplicationController
         end
 
         @user = User.find(params[:id])
+
+        unless @user.made_donations.where(recurring: true).empty?
+            flash[:notice] = "Please delete your recurring donations before deleting your account."
+            flash.keep
+            render 'edit' and return
+        end
+
         if @user.destroy
             redirect_to (is_currently_admin?) ? users_path : user_path(current_user.id) and return
         else
@@ -94,7 +127,7 @@ class UsersController < ApplicationController
     def get_emails
         @users = User.all
         @user = current_admin
-        @names = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+        @names = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
         @memberships = session[:memberships]
     end
 
@@ -102,11 +135,11 @@ class UsersController < ApplicationController
         if params[:subset]
             @memberships = params[:subset]["memberships"]
         else
-            @memberships = ['none'] + PLAN_CONFIG.collect { |h, v| v["name"] }
+            @memberships = ['None'] + PLAN_CONFIG.collect { |h, v| v["name"] }
         end
         session[:memberships] = @memberships
 
-        @users = User.where({ membership: @memberships.collect { |m| (m == 'none') ? nil : m } })
+        @users = User.where({ membership: @memberships.collect { |m| m } })
         respond_to do |format|
             format.html
             format.csv { render text: @users.to_csv }
@@ -137,9 +170,9 @@ class UsersController < ApplicationController
 
     def user_params
         if current_admin
-            params.require("user").permit(:email, :password, :password_confirmation, :membership, :admin)
+            params.require("user").permit(:email, :password, :password_confirmation, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
+            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
         end
     end
 
@@ -149,6 +182,10 @@ class UsersController < ApplicationController
         else
             params.require("user").permit(:first_name, :last_name, :email, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
         end
+    end
+
+    def new_password_params
+        params.require("user").permit(:password, :password_confirmation)
     end
     
 end

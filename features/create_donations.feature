@@ -12,14 +12,14 @@ Feature: Create Donations
 
     Scenario:
         When I press "Make a Donation"
-        Then I should see "Made Donations" button
+        Then I should see "Home" button
         And I should see "Donate" button
         And I should see "Donation Amount:"
 
     Scenario:
         Given paypal will authorize payment of 4 dollars
         When I press "Make a Donation"
-        And I fill in "donation_donation_amount" with "4"
+        And I fill in "make_donation_donation_amount" with "4"
         And I press "Donate"
         # Do this because WebMock or Paypal SDK clear session (???)
         And I fill in "user_email" with "user@test.com"

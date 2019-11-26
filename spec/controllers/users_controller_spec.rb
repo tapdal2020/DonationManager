@@ -1,4 +1,5 @@
 require "rails_helper"
+require "bcrypt"
 
 RSpec.describe UsersController do
     fixtures :users
@@ -40,6 +41,12 @@ RSpec.describe UsersController do
         it 'should not create user when email is invalid' do
             bad_params = user_params
             bad_params[:email] = 'thisisnotemail@tamu'
+            expect { post :create, params: { "user" => bad_params } }.to change(User, :count).by(0)
+        end
+
+        it 'should not create a user when zipcode is non-numerical' do
+            bad_params = user_params
+            bad_params[:zip_code] = 'abcde'
             expect { post :create, params: { "user" => bad_params } }.to change(User, :count).by(0)
         end
 
@@ -94,24 +101,6 @@ RSpec.describe UsersController do
                     incomplete_params[item] = nil
     
                     expect { post :create, params: { "user" => incomplete_params } }.to change(User, :count).by(0)
-                end
-            end
-        end
-
-        context 'given membership info' do
-            ['', 'low', 'mid', 'high'].each do |v|
-                let(:m_params) { user_params }
-                it "should accept and assign a membership of #{v}" do
-                    m_params[:membership] = v
-                    
-                    expect { post :create, params: { "user" => m_params } }.to change(User, :count).by(1)
-                    expect(assigns(:user).membership).to eq(v)
-                    
-                    if v != ''
-                        expect(response).to redirect_to(recurring_donation_transactions_path(from: 'create'))
-                    else
-                        expect(response).to redirect_to(new_session_path)
-                    end
                 end
             end
         end
@@ -342,6 +331,16 @@ RSpec.describe UsersController do
                 delete :destroy, params: { id: @tuser.id }
                 expect(subject).to render_template('edit')
             end
+
+            it 'should not allow a user to delete themself if they have recurring donations' do
+                # make a recurring donation
+                old_controller = @controller
+                @controller = DonationTransactionsController.new
+                get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: 'WEEK' } }
+                @controller = old_controller
+
+                expect { delete :destroy, params: { id: @tuser.id } }.to change(User, :count).by(0)
+            end
         end
 
         context 'given an admin is logged in' do
@@ -402,7 +401,7 @@ RSpec.describe UsersController do
                 
                 expect(assigns(:users)).to eq(User.all)
                 expect(assigns(:user).id).to eq(@main_admin.id)
-                ['none', 'med', 'high'].each do |l|
+                ['None', 'med', 'high'].each do |l|
                     expect(assigns(:names).include? l).to be(true)
                 end
                 expect(assigns(:memberships)).to be_nil
@@ -412,12 +411,44 @@ RSpec.describe UsersController do
 
             it 'should remember the memberships selected after a call to generate' do
                 get :get_emails
-                get :generate_email_list, params: { subset: {"memberships" => ['none', 'med'] } }
+                get :generate_email_list, params: { subset: {"memberships" => ['None', 'med'] } }
 
                 get :get_emails
-                ['none', 'med'].each do |l|
+                ['None', 'med'].each do |l|
                     expect(assigns(:memberships).include? l).to be(true)
                 end
+            end
+        end
+    end
+    
+    describe 'GET change_password' do
+        it 'should not allow a user to change password if not logged in' do
+            get :change_password, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        describe 'given a user is logged in' do
+            before do
+                @user = users(:two)
+                old_controller = @controller
+                @controller = SessionsController.new
+                post :create, params: { "user" => { email: @user.email, password: 'user' } }
+                @controller = old_controller
+            end
+
+            it 'should show the change_password page' do
+                get :change_password, params: { id: @user.id }
+                expect(response).to render_template('change_password')
+            end
+
+            it 'should not allow a user to change another user\'s password' do
+                get :change_password, params: { id: users(:one).id }
+                expect(response).to render_template('unauthorized')
+            end
+
+            it 'should find the user' do
+                get :change_password, params: { id: @user.id }
+                expect(assigns(:user).id).to eq(@user.id)
             end
         end
     end
@@ -443,7 +474,7 @@ RSpec.describe UsersController do
                 get :generate_email_list
                 expect(response).not_to redirect_to(new_session_path)
 
-                ['none', 'med', 'high'].each do |l|
+                ['None', 'med', 'high'].each do |l|
                     expect(assigns(:memberships).include? l).to be(true)
                 end
                 
@@ -452,7 +483,7 @@ RSpec.describe UsersController do
                 end
             end
 
-            ['none', 'med', 'high'].each do |m|
+            ['None', 'med', 'high'].each do |m|
                 it "should return only the #{m} subset" do
                     get :generate_email_list, params: { subset: {"memberships" => [m] } }
 
@@ -466,4 +497,67 @@ RSpec.describe UsersController do
             end
         end
     end
+    
+    describe 'PATCH update_password' do
+        it 'should not allow a user to change password if not logged in' do
+            patch :update_password, params: { id: 0 }
+            expect(response).to redirect_to(new_session_path)
+        end
+
+        context 'given a user is signed in' do
+            before do
+                @user = users(:two)
+                old_controller = @controller
+                @controller = SessionsController.new
+                post :create, params: { "user" => { email: @user.email, password: 'user' } }
+                @controller = old_controller
+            end
+
+            it 'should allow a user to change their password' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to redirect_to(user_path(@user.id))
+                @user.reload
+                expect(@user.authenticate('user')).to be(false)
+                expect(@user.authenticate('newpass123').id).to eq(@user.id)
+            end
+
+            it 'should not allow a user to change another user\'s password' do
+                patch :update_password, params: { id: users(:one).id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('unauthorized')
+            end            
+
+            it 'should not allow a user to change their password if they don\'t know their password' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'notmypassword', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass123')).to be(false)
+            end
+
+            it 'should not allow a user to change their password if they don\'t match the new password and password confirmation' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass321' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass123')).to be(false)
+            end
+
+            it 'should not allow a user to change their password if they don\'t match the new password and password confirmation' do
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass321', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                @user.reload
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass321')).to be(false)
+            end
+
+            it 'should re-render the change_password template if the update fails' do
+                allow_any_instance_of(User).to receive(:update).and_return(nil)
+                patch :update_password, params: { id: @user.id, "user" => { old_password: 'user', password: 'newpass123', password_confirmation: 'newpass123' } }
+                expect(response).to render_template('change_password')
+                expect(@user.authenticate('user').id).to eq(@user.id)
+                expect(@user.authenticate('newpass321')).to be(false)
+            end
+        end
+    end
+
 end

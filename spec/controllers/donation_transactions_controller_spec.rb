@@ -5,6 +5,24 @@ RSpec.describe DonationTransactionsController do
 
   let(:mock_payment) { double('PayPal::SDK::REST::DataTypes::Payment') }
 
+  def login_jacob
+    @user = users(:four)
+    old_controller = @controller
+    @controller = SessionsController.new
+    post :create, params: { "user" => { email: @user.email, password: 'user' } }
+    @controller = old_controller
+    @user
+  end
+
+  def login_jane
+    @user = users(:five)
+    old_controller = @controller
+    @controller = SessionsController.new
+    post :create, params: { "user" => { email: @user.email, password: 'user' } }
+    @controller = old_controller
+    @user
+  end
+
   describe 'GET index' do
     before do
       old_controller = @controller
@@ -113,10 +131,11 @@ RSpec.describe DonationTransactionsController do
         @controller = old_controller
       end
 
-      it 'should assign values to create payment' do
-        get :checkout, params: { donation: { donation_amount: 4 } }
+      it 'should assign values to create ONE-TIME payment' do
+        get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: "ONE" } }
         expect(assigns(:user)).not_to be_nil
         expect(assigns(:money)).to eq("4")
+        expect(assigns(:payment_frequency)).to eq("ONE")
 
         [:name, :quantity, :currency, :price].each do |k|
           expect(assigns(:item)).to have_key(k)
@@ -131,7 +150,150 @@ RSpec.describe DonationTransactionsController do
         expect(assigns(:donation)[:payment_id]).to eq(assigns(:transaction)[:payment_id])
         expect(subject).to redirect_to(assigns(:redirect_url))
       end
+
+      it 'should assign values to create CUSTOM recurring payment' do
+        get :checkout, params: { make_donation: { donation_amount: 4, payment_freq: "WEEK" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:money)).to eq("4")
+        expect(assigns(:payment_frequency)).to eq("WEEK")
+        expect(assigns(:transaction)["payment_definitions"][0]["amount"]["value"]).not_to be_nil
+        expect(assigns(:transaction)["payment_definitions"][0]["frequency"]).not_to be_nil
+        expect(assigns(:subscription_change)).not_to be_nil
+        expect(assigns(:donation)).not_to be_nil
+        expect(assigns(:donation)[:payment_id]).to eq(assigns(:subscription_change).token)
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
     end
   end
 
+  describe 'GET edit & POST recurring' do
+    it 'should redirect if no user is signed in' do
+      get :edit, params: { id: 0 }
+      expect(response).to redirect_to(new_session_path)    
+    end
+    
+    context 'given an existing user is signed in with `None` as the subscription' do
+      before do
+        @user = login_jacob
+      end
+
+      it 'should assign values to show USER what memberships are avaliable' do
+        get :edit, params: {id: @user.id }
+        expect(assigns(:subscription_plans)).to eq(PLAN_CONFIG.except("Custom"))
+        expect(assigns(:handle_token)).to be_nil
+        expect(assigns(:subscribed_to)).to eq(@user.membership_name)
+      end
+
+      it 'should redirect the user to edit if changes were NOT made' do
+        post :recurring, params: { subscription: { subscribe: "None" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:membership)).to eq(@user.membership_name)
+        expect(assigns(:recurring_id)).to be_nil
+        expect(assigns(:redirect_url)).not_to be_nil
+        expect(flash[:alert]).to eq("No changes made")
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
+
+      it 'should assign values to create A {BAD} MEMBERSHIP recurring payment when coming from `None`' do
+        post :recurring, params: { subscription: { subscribe: "plan0" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:membership)).to eq(@user.membership_name)
+        expect(assigns(:recurring_id)).to be_nil
+        expect(assigns(:transaction)).not_to be_nil
+        expect(assigns(:subscription_change)).not_to be_nil
+        expect(assigns(:donation)).to be_nil
+        expect(assigns(:redirect_url)).to be_nil
+        expect(flash[:alert]).to eq(assigns(:subscription_change).error)
+      end
+
+      it 'should assign values to create MEMBERSHIP recurring payment when coming from `None` and redirect the user to PayPal' do
+        post :recurring, params: { subscription: { subscribe: "plan1" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:membership)).to eq(@user.membership_name)
+        expect(assigns(:recurring_id)).to be_nil
+        expect(assigns(:transaction)).not_to be_nil
+        expect(assigns(:subscription_change)).not_to be_nil
+        expect(assigns(:donation)).not_to be_nil
+        expect(assigns(:donation)[:payment_id]).to eq(assigns(:subscription_change).token)
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
+
+      it 'should flash MEMBERSHIP as `active` after HEAD OK from PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
+        donation = MadeDonation.new(payer_id: "Plan 0")
+        allow(@user).to receive(:update).with(membership: "0 ^ O")
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
+        allow(@controller).to receive(:execute_recurring_payment).and_return(agreement)
+
+        get :edit, params: {id: @user.id, token: "0"}
+        expect(assigns(:handle_token)).to eq("0")
+        expect(assigns(:transaction)).to eq(donation)
+        expect(flash[:alert]).to eq("Plan 0 Active")
+      end
+
+      it 'should render `something_wrong` when a recurring token comes across malformed from PayPal' do
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
+        donation = MadeDonation.new(payer_id: "Plan 0")
+        allow(@user).to receive(:update).with(membership: "0 ^ O")
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(nil)
+        allow(@controller).to receive(:execute_recurring_payment).and_return(agreement)
+
+        get :edit, params: {id: @user.id, token: "0"}
+        expect(assigns(:handle_token)).to eq("0")
+        expect(assigns(:transaction)).to eq(nil)
+        expect(subject).to render_template('something_wrong')
+      end
+
+      it 'should remove current init payment when a user cancels from PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
+        donation = MadeDonation.new(payer_id: "Plan 0")
+        e = {name: "INVALID TOKEN"}
+        allow(@user).to receive(:update).with(membership: "0 ^ O")
+        allow(agreement).to receive(:success?).and_return(false)
+        allow(agreement).to receive(:error).and_return(e)
+        allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
+        allow(@controller).to receive(:execute_recurring_payment).and_return(agreement)
+
+        get :edit, params: {id: @user.id, token: "0"}
+        expect(assigns(:handle_token)).to eq("0")
+        expect(assigns(:transaction)).to eq(donation)
+        expect(flash[:alert]).to eq(assigns(:payment).error)
+      end
+
+      it 'should assign values to cancel MEMBERSHIP after HEAD OK with PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
+        donation = MadeDonation.new(payer_id: "plan1")
+        allow(@user).to receive(:membership_name).and_return("plan1")
+        allow(@user).to receive(:membership_id).and_return("0")
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:update).with(reccuring: false).and_return(donation)
+        allow(PaypalService).to receive(:cancel_agreement).with("0").and_return(agreement)
+       
+        post :recurring, params: { subscription: { subscribe: "None" } }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:recurring_id)).to eq(nil)
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
+
+      it 'should assign values to cancel any RECURRING PAYMENT after HEAD OK with PayPal' do 
+        agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
+        donation = MadeDonation.new(payment_id:"0", payer_id: "plan1", recurring: true)
+        allow_any_instance_of(User).to receive(:membership_name).and_return("plan1")
+        allow_any_instance_of(User).to receive(:membership_id).and_return("0")
+        # allow(User).to receive(:made_donations).and_return(donation)
+        allow_any_instance_of(User).to receive(:recurring_record).with("0").and_return(donation)
+        allow(agreement).to receive(:success?).and_return(true)
+        allow(MadeDonation).to receive(:update).with(reccuring: false).and_return(donation)
+        allow(PaypalService).to receive(:cancel_agreement).with("0").and_return(agreement)
+       
+        post :recurring, params: { cancel_id: "0" }
+        expect(assigns(:user)).not_to be_nil
+        expect(assigns(:recurring_id)).to eq("0")
+        expect(assigns(:redirect_url)).to eq(user_path(@user.id))
+        expect(subject).to redirect_to(assigns(:redirect_url))
+      end
+    end
+  end
 end

@@ -6,10 +6,18 @@ Rails.application.routes.draw do
       get :get_emails
       get :generate_email_list
     end
+    member do
+      get :change_password, to: 'users#change_password'
+      patch :update_password, to: 'users#update_password'
+    end
   end
   resources :sessions, only: [:new, :create, :destroy]
   resources :receipts, only: [:index, :show]
   resources :donation_transactions, only: [:index, :new, :edit] do
+    collection do
+      post '/', to: 'donation_transactions#index', as: ''
+    end
+      # post '/donation_transactions', to: 'donation_transactions#index'
     collection do
       post :checkout
       post :recurring

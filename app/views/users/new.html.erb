@@ -26,7 +26,7 @@
             <td>City:</td><td><%= f.text_field :city %></td>
         </tr>
         <tr>
-            <td>State:</td><td><%= f.select :state, options_for_select(us_states) %></td>
+            <td>State:</td><td><%= f.select :state, options_for_select(us_states, selected: (params["user"]) ? params["user"][:state] : nil), { include_blank: true } %></td>
         </tr>
         <tr>
             <td>Zip Code:</td><td><%= f.text_field :zip_code %></td>
@@ -34,17 +34,6 @@
         <% if is_currently_admin? %>
             <tr>
                 <td>Admin?</td><td><%= f.check_box :admin %></td>
-            </tr>
-        <% end %>
-        <% f.hidden_field :membership, value: '' %>
-        <% unless is_currently_admin? %>
-            <tr>
-                <td>Membership Type</td>
-            </tr>
-            <tr>
-                <% membership_types.each do |m, c, label| %>
-                    <td><%= f.radio_button :membership, m, checked: c %><%= f.label "membership_#{label}".to_sym, label %></td>
-                <% end %>
             </tr>
         <% end %>
     </table>
@@ -57,3 +46,5 @@
         <li>* <%= message_error %></li>
     <% end %>
 <% end %>
+
+<%= puts  %>

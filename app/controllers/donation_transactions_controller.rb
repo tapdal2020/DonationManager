@@ -126,7 +126,8 @@ class DonationTransactionsController < ApplicationController
     handle_user_agreement_cancellation unless not_subscribed
     @user.update(membership: "None")
     @redirect_url = edit_donation_transaction_path(current_user.id) 
-    @transaction = PLAN_CONFIG[subscribe_to["subscribe"]].clone and run_recurring_setup unless doing_unsubscribe or no_changes
+    @transaction = deep_copy(PLAN_CONFIG[subscribe_to["subscribe"]]) and
+    set_membership_timestamp and run_recurring_setup unless doing_unsubscribe or no_changes
     do_redirect and return
   end
 
@@ -173,6 +174,10 @@ class DonationTransactionsController < ApplicationController
       redirect_to @redirect_url if not @redirect_url.nil?
     end
     
+    def set_membership_timestamp
+      @transaction["agreement"]["start_date"] = (Time.parse(ENV['APP_MEMBERSHIP_RECURRING_AT']) + 1.year).iso8601
+    end
+
     def handle_normal_donation
       # get the amount from the forms
       @item = build_item(@money)

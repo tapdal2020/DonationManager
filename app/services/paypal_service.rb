@@ -209,7 +209,7 @@ class PaypalService
     puts  "****BEFORE TIME OF AGREEMENT****", Time.now.iso8601
     only_agreement = deep_copy(@transaction)
     only_agreement = only_agreement["agreement"]
-    only_agreement["start_date"] = (Time.now + 15.minutes).iso8601
+    only_agreement["start_date"] = (Time.now + 15.minutes).iso8601 if only_agreement["start_date"].blank?
     only_agreement["plan"]["id"] = plan_id
     puts "%%%%AGREEMENT PARAMERTERS%%%","#{only_agreement}"
     only_agreement

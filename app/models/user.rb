@@ -4,7 +4,7 @@ class User < ApplicationRecord
     has_secure_password
     
     validates :first_name, :last_name, :street_address_line_1, :city, :state, :zip_code, presence: true, on: :user
-    validates :zip_code, numericality: { greater_than_or_equal_to: 0, only_integer: true }, on: [:create, :user]
+    validates :zip_code, numericality: { greater_than_or_equal_to: 0, only_integer: true }, on: [:create, :user], unless: lambda{ |user| user.admin? }
     
     validates :email, presence: true, uniqueness: { case_sensitive: true }
     validates_email_format_of :email, message: "Invalid email"

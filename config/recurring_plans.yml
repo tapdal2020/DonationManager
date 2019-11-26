@@ -30,6 +30,8 @@ production: &default
     agreement:
       name: "agreement to plan0" # max len. 128
       description: "description of agreement plan0" # max len. 128
+      # set memberships will have 
+      # `../app_deploy_env.yml` ~> APP_MEMBERSHIP_RECURRING_AT set
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
         payment_method: "paypal"

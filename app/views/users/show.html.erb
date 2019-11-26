@@ -1,4 +1,5 @@
 <h1><%=@html_donation_title%></h1>
+
 <%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
 <% if is_currently_admin? %>

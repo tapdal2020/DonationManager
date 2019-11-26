@@ -1,4 +1,5 @@
 <h1>Manage BVJS Subscription</h1>
+
 <%= button_to "Home", user_path(current_user.id), :method => :get%>
 <%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to "Logout", session_path(current_user.id), :method => :delete %>

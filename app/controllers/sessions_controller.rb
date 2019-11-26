@@ -13,11 +13,10 @@ class SessionsController < ApplicationController
             session[:last_access] = Time.now
             # if checkbox is checked then the value returned is 1, else 0
             session[:rememberme] = session_info["rememberme"]
-            redirect_to user_path(user.id)
+            redirect_to user_path(user.id) and return
         else
-            flash.now[:alert] = "Email or password invalid"
-            flash.keep
-            render 'new'
+            flash[:alert] = "Invalid email or password"
+            redirect_to new_session_path and return
         end
     end
 

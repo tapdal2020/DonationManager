@@ -16,6 +16,14 @@ class User < ApplicationRecord
 
     has_many :made_donations
 
+    def first_name=(f)
+      write_attribute(:first_name, f.to_s.titleize)
+    end
+
+    def last_name=(l)
+      write_attribute(:last_name, l.to_s.titleize)
+    end
+
     def send_password_reset
       generate_token(:password_reset_token)
       self.password_reset_sent_at = Time.zone.now

@@ -41,10 +41,9 @@
     <%= f.submit "Save" %>
 <% end %>
 
+<br />
 <% if @user.errors.any? %>
     <% for message_error in @user.errors.full_messages %>
         <li>* <%= message_error %></li>
     <% end %>
 <% end %>
-
-<%= puts  %>

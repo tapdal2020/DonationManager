@@ -289,8 +289,8 @@ RSpec.describe UsersController do
                 @main_admin.reload
 
                 expect(response).to redirect_to(users_path)
-                expect(@main_admin.first_name).to eq('updated')
-                expect(@main_admin.last_name).to eq('admin')
+                expect(@main_admin.first_name).to eq('Updated')
+                expect(@main_admin.last_name).to eq('Admin')
             end
 
             it 'should allow admin to update another user to an admin' do

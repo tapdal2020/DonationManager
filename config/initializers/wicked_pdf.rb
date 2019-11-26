@@ -14,7 +14,7 @@ WickedPdf.config.merge!({
   # one of the wkhtmltopdf-binary family of gems.
   # exe_path:  'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe',
   #   or
-  exe_path: ENV.fetch("RAILS_WKHTMLTOPDF") { Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf') }
+  exe_path: ENV.fetch("RAILS_WKHTMLTOPDF") { Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf') } + ((ENV.fetch("RAILS_WKHTMLTOPDF") { '' } != '' && Rails.env.test?) ? 'wkhtmltopdf.exe' : '')
 
   # Layout file to be used for all PDFs
   # (but can be overridden in `render :pdf` calls)

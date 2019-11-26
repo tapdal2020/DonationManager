@@ -11,9 +11,9 @@ Feature: Login
             | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
 
     Scenario:
-        Then I should see "Log In"
-        And I should see "Email address:"
-        And I should see "Password:"
+        Then I should see "Account Login"
+        And I should see "Email address"
+        And I should see "Password"
         And I should see "Log In" button
 
     Scenario Outline:

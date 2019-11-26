@@ -11,18 +11,18 @@ Feature: Email List
         And I am signed in as a admin
 
     Scenario:
-        When I press "Get Emails"
+        When I click "Get Emails"
         Then I should see "User Emails"
         And I should see "Membership Type"
         And I should see "Generate" button
 
     Scenario:
-        When I press "Get Emails"
+        When I click "Get Emails"
         And I press "Generate"
         Then I should see "Email,Name,Membership"
         And I should see "high"
 
     Scenario:
-        When I press "Get Emails"
+        When I click "Get Emails"
         And I press "Back"
         Then I should see "Donation Administrator"

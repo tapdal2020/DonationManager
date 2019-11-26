@@ -11,7 +11,7 @@ Feature: Admin Create New Admin
         And I am signed in as a admin
 
     Scenario Outline:
-        When I press "Create New User"
+        When I click "Create New User"
         Then I should see "Create New User"
         And I should see "Admin?"
         When I fill in new admin information

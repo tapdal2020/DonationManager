@@ -11,7 +11,7 @@ Feature: Admin View Users
         And I am signed in as a admin
 
     Scenario Outline:
-        When I press "View Users"
+        When I click "View Users"
         Then I should see "<header>"
         And I should see "EDIT" button
 
@@ -24,5 +24,5 @@ Feature: Admin View Users
 
     Scenario:
         Given I have not interacted with my account for 1 hours
-        When I press "View Users"
+        When I click "View Users"
         Then I should be redirected to the login page

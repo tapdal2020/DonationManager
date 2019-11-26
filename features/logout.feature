@@ -11,8 +11,8 @@ Feature: Logout
     
     Scenario Outline:
         Given I am signed in as a <role>
-        When I press "Logout"
-        Then I should see "Log In"
+        When I click "Logout"
+        Then I should see "Account Login"
 
         Examples:
             | role |

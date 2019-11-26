@@ -9,7 +9,7 @@ Feature: Change Password
             | user | test | user@test.com | user | user | home | austin | tx | 78726 | false |
             | admin | test | admin@test.com | admin | admin | home | austin | tx | 78726 | true |
         And I am signed in as a user
-        And I have pressed "Edit Profile"
+        And I have clicked "Edit Profile"
 
     Scenario Outline:
         When I press "Change Password"

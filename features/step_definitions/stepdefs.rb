@@ -110,7 +110,7 @@ Given "I have made a donation of {int} dollars" do |int|
         'User-Agent'=>'PayPalSDK/PayPal-Ruby-SDK 1.7.3 (paypal-sdk-core 1.7.3; ruby 2.5.5p157-x64-mingw32;OpenSSL 1.1.1b  26 Feb 2019)'
         }).to_return(status: 200, body: "", headers: {})
 
-    click_button "Make a Donation"
+    click_link "Make a Donation"
     fill_in("make_donation_donation_amount", with: 4)
     click_button "Donate"    
 end
@@ -177,7 +177,7 @@ When(/^I fill in new user information missing (.*)?$/) do |item|
 end
 
 When(/^I try to make a donation$/) do
-    click_button 'Make a Donation'
+    click_link 'Make a Donation'
     allow(Time).to receive(:now).and_call_original
 end
 
@@ -198,7 +198,7 @@ Then(/^I should see "(.*)" button$/) do |button|
 end
 
 Then(/^the login should fail$/) do
-    expect(page).to have_content('Email or password invalid')
+    expect(page).to have_content('Invalid email or password')
 end
 
 Then(/^I should be redirected to the (.*) page$/) do |role|
@@ -207,7 +207,7 @@ Then(/^I should be redirected to the (.*) page$/) do |role|
     elsif role == 'admin'
         expect(page).to have_content('Donation Administrator')
     elsif role == 'login'
-        expect(page).to have_content('Log In')
+        expect(page).to have_content('Account Login')
     elsif role == 'donations'
         expect(page).to have_content('Donate to Brazos Valley Jazz Society')
     end

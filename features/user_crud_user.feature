@@ -11,7 +11,7 @@ Feature: User CRUD User
         And I am signed in as a user
 
     Scenario:
-        When I press "Edit Profile"
+        When I click "Edit Profile"
         Then I should see "Edit Profile"
         When I fill in update user information
         And I press "Save"

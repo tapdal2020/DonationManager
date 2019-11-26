@@ -10,8 +10,47 @@
   </head>
 
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href= <%= (current_user) ? "/" : "https://bvjazz.org" %>><%= image_tag "logo.png", size: "16x10", alt: "Brazos Valley Jazz Society" %></a>
+      <% if current_user %>
+        <button class='navbar-toggler' type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li>
+              <%= link_to 'Manage Subscription', { controller: 'donation_transactions', action: 'edit', id: current_user.id }, { class: "nav-link", method: :get } %>
+            </li>
+            <li>
+              <%= link_to "Make a Donation", { controller: 'donation_transactions', action: 'new', id: current_user.id }, { class: "nav-link", method: :get } %>
+            </li>
+            <li>
+              <%= link_to "Edit Profile", { controller: 'users', action: 'edit', id: current_user.id }, { class: "nav-link", method: :get } %>
+            </li>
+            <% if current_admin %>
+              <li>
+                <%= link_to 'View Users', { controller: 'users', action: 'index', id: current_user.id }, { class: "nav-link", method: :get } %>
+              </li>
+              <li>
+                <%= link_to 'Create New User', { controller: 'users', action: 'new' }, { class: "nav-link", method: :get } %>
+              </li>
+              <li>
+                <%= link_to 'Get Emails', { controller: 'users', action: 'get_emails'}, { class: "nav-link", :method => :get } %>
+              </li>
+            <% end %>
+            <li>
+              <%= link_to "Logout", { controller: 'sessions', action: 'destroy', id: current_user.id }, { class: "nav-link", method: :delete } %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </nav>
+    <% if notice %>
+      <p class="notice"><%= notice %></p>
+    <% end %>
+    <% if alert %>
+      <p class="alert"><%= alert %></p>
+    <% end %>
     <%= yield %>
   </body>
 </html>

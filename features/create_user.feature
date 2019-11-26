@@ -17,7 +17,7 @@ Feature: Create User
         Given I have clicked "Register"
         When I fill in new user information
         And I press "Save"
-        Then I should see "Log In"
+        Then I should see "Account Login"
 
     Scenario Outline:
         Given I have clicked "Register"

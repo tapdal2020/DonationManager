@@ -11,7 +11,7 @@ Feature: Admin CRUD Users
         And I am signed in as a admin
 
     Scenario:
-        When I press "Create New User"
+        When I click "Create New User"
         Then I should see "Create New User"
         And I should see "Admin?"
         When I fill in new user information
@@ -19,7 +19,7 @@ Feature: Admin CRUD Users
         Then I should see "Donation Administrator"
 
     Scenario Outline:
-        When I press "View Users"
+        When I click "View Users"
         And I press "EDIT_0"
         Then I should see "<label>"
 
@@ -35,7 +35,7 @@ Feature: Admin CRUD Users
             | Admin? | 
 
     Scenario Outline:
-        When I press "View Users"
+        When I click "View Users"
         And I press "EDIT_1"
         And I fill in "<field>" with "<value>"
         And I press "Save"
@@ -53,7 +53,7 @@ Feature: Admin CRUD Users
             | user_zip_code | 77101 |
 
     Scenario:
-        When I press "View Users"
+        When I click "View Users"
         And I press "EDIT_1"
         And I check "user_admin"
         And I press "Save"
@@ -64,7 +64,7 @@ Feature: Admin CRUD Users
         Then I should see "All Users"
 
     Scenario:
-        When I press "View Users"
+        When I click "View Users"
         And I press "EDIT_1"
         And I press "DELETE"
         Then I should see "All Users"

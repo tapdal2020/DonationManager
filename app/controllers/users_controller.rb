@@ -19,8 +19,6 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
         
         if @user.save(context: current_admin ? :admin : :user)
-            redirect_to recurring_donation_transactions_path(from: 'create') and return unless @user.membership == "" || @user.membership.nil?
-            
             if current_admin
                 redirect_to user_path(current_admin.id) and return
             else
@@ -114,7 +112,7 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
 
         unless @user.made_donations.where(recurring: true).empty?
-            flash[:now][:notice] = "Please delete your recurring donations before deleting your account."
+            flash[:notice] = "Please delete your recurring donations before deleting your account."
             flash.keep
             render 'edit' and return
         end
@@ -172,9 +170,9 @@ class UsersController < ApplicationController
 
     def user_params
         if current_admin
-            params.require("user").permit(:email, :password, :password_confirmation, :membership, :admin)
+            params.require("user").permit(:email, :password, :password_confirmation, :admin)
         else
-            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2, :membership)
+            params.require("user").permit(:first_name, :last_name, :email, :password, :password_confirmation, :street_address_line_1, :city, :state, :zip_code, :street_address_line_2)
         end
     end
 

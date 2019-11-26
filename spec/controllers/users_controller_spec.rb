@@ -104,24 +104,6 @@ RSpec.describe UsersController do
                 end
             end
         end
-
-        context 'given membership info' do
-            ['', 'low', 'mid', 'high'].each do |v|
-                let(:m_params) { user_params }
-                it "should accept and assign a membership of #{v}" do
-                    m_params[:membership] = v
-                    
-                    expect { post :create, params: { "user" => m_params } }.to change(User, :count).by(1)
-                    expect(assigns(:user).membership).to eq(v)
-                    
-                    if v != ''
-                        expect(response).to redirect_to(recurring_donation_transactions_path(from: 'create'))
-                    else
-                        expect(response).to redirect_to(new_session_path)
-                    end
-                end
-            end
-        end
     end
 
     describe 'Session Expiry' do

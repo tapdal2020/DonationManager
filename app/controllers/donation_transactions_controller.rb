@@ -1,5 +1,5 @@
 class DonationTransactionsController < ApplicationController
-  before_action :authenticate_user!, except: [:recurring, :index]
+  before_action :authenticate_user!, except: [:edit, :index]
   protect_from_forgery :except => [:index] #Otherwise the request from PayPal wouldn't make it to the controller
   def index
     # puts "&&&INDEX PARAMS&&====","#{permitted_paypal_params}"
@@ -90,6 +90,13 @@ class DonationTransactionsController < ApplicationController
   def edit
     # puts "&&EDIT PARAMS&&==","#{params}"
     # to show the current plans
+
+    if current_user.nil? && params[:from] != 'create'
+      redirect_to new_session_path and return
+    elsif params[:from] == 'create'
+      recurring and return
+    end
+
     @subscription_plans = PLAN_CONFIG.except("Custom")
     @handle_token = params[:token]
     handle_recur_token if @handle_token
@@ -213,6 +220,7 @@ class DonationTransactionsController < ApplicationController
           # we will not update the membership field of the user, given
           # the user has ran a custom recurring payment
           @user.update(membership: mem_db) unless update_membership.eql?(custom_plan_name)
+          puts "Membership: #{@user.membership}"
           @transaction.update(payment_id: @payment.id)
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
           flash.now[:alert] = update_membership + " " + @payment.state

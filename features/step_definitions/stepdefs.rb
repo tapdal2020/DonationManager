@@ -111,7 +111,7 @@ Given "I have made a donation of {int} dollars" do |int|
         }).to_return(status: 200, body: "", headers: {})
 
     click_button "Make a Donation"
-    fill_in("donation_donation_amount", with: 4)
+    fill_in("make_donation_donation_amount", with: 4)
     click_button "Donate"    
 end
 

@@ -1,14 +1,5 @@
 module UsersHelper
 
-  def membership_types
-    [
-      ['', true, 'None'],
-      ['low', false, 'Low'],
-      ['mid', false, 'Middle'],
-      ['high', false, 'High']
-    ]
-  end
-
   def us_states
     [
       [nil, ''],

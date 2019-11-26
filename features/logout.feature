@@ -12,7 +12,7 @@ Feature: Logout
     Scenario Outline:
         Given I am signed in as a <role>
         When I click "Logout"
-        Then I should see "Account Login"
+        Then I should see "BVJS Donor Portal"
 
         Examples:
             | role |

@@ -28,7 +28,7 @@ Feature: Password Reset
         When I fill in "email" with "user@test.com"
         And I press "Reset Password"
         Then I should see "E-mail sent with password reset instructions."
-        And I should see "Account Login"
+        And I should see "BVJS Donor Portal"
 
     Scenario Outline:
         Given I have received and followed a password reset link
@@ -53,7 +53,7 @@ Feature: Password Reset
 
         Examples:
             | confirm | result |
-            | newpass | Account Login |
+            | newpass | BVJS Donor Portal |
             | wrong | Reset Password |
 
 

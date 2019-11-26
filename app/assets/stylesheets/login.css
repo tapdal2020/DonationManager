@@ -1,4 +1,21 @@
 /*//////////////////////////////////////////////////////////////////
+[ Global Variables =+= COLORS ]*/
+  /*
+  orange : #ba6239
+  purple : #764191 ... #9841c4
+  blue : #458fa1
+  green : #8c9b43
+  */
+:root {
+  --bvjs-blue: #458fa1; 
+  --bjvs-green: #8c9b43;
+  --bvjs-orange: #ba6239;
+  --bvjs-purple: #764191;
+  --off-white: #cccccc;
+  --off-white2: #ececec;
+}
+
+/*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
 * {
@@ -118,9 +135,24 @@ iframe {
   font-family: Arial;
   font-size: 13px;
   line-height: 1.4;
-  color: #cccccc;
+  color: var(--off-white);
 }
 
+.txt2 {
+  font-family: Arial;
+  font-size: 18px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--off-white2);
+}
+
+.txt3 {
+  font-family: Arial;
+  font-size: 16px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--off-white2);
+}
 
 
 /*//////////////////////////////////////////////////////////////////
@@ -143,12 +175,7 @@ iframe {
   align-items: center;
   padding: 15px;
 
-  /*
-  orange : #ba6239
-  purple : #764191 ... #9841c4
-  blue : #458fa1
-  green : #8c9b43
-  */
+
   background: url('jazz_slider.jpg');
   /* background: #764191; */
   background-repeat: no-repeat;
@@ -182,14 +209,24 @@ iframe {
 .login100-form-title {
   width: 100%;
   display: block;
-  font-family: Arial, sans-serif;
-  font-size: 30px;
+  font-family: 'Arial Bold', sans-serif;
+  font-size: 70px;
   color: #fefefe;
   line-height: 1.2;
   text-transform: uppercase;
   text-align: center;
 }
 
+.login100-form-2nd-title {
+  width: 100%;
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 40px;
+  color: #fefefe;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-align: center;
+}
 
 
 /*------------------------------------------------------------------
@@ -234,6 +271,7 @@ iframe {
   left: 0;
   top: 28px;
 
+  text-transform: uppercase;
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
@@ -281,7 +319,24 @@ input.input100 {
   color: #111111;
 }
 
+/*-----------------------------------------------------------------
+[ Checkbox ]*/
 
+.custom-checkbox .custom-control-input:checked~.custom-control-label::after{
+  background-color: var(--bjvs-green);
+}
+.custom-control-lg .custom-control-label::before,
+.custom-control-lg .custom-control-label::after {
+    top: 0.1rem !important;
+    left: -2rem !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+.custom-control-lg .custom-control-label {
+    margin-left: 0.5rem !important;
+    font-size: 1rem !important;
+}
 
 /*------------------------------------------------------------------
 [ Button ]*/
@@ -298,7 +353,7 @@ input.input100 {
 
 .login100-form-btn {
   font-family: 'Arial Bold', sans-serif;
-  font-size: 15px;
+  font-size: 20px;
   color: #fff;
   line-height: 1.2;
   text-transform: uppercase;
@@ -316,7 +371,7 @@ input.input100 {
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   overflow: hidden;
-  background: #ba6239;
+  background: var(--bvjs-orange);
 
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
@@ -335,7 +390,7 @@ input.input100 {
   height: 100%;
   opacity: 0;
 
-  background: #2575fc;
+  background: var(--bvjs-orange);
   background: -webkit-linear-gradient(right, #6a11cb, #2575fc);
   background: -o-linear-gradient(right, #6a11cb, #2575fc);
   background: -moz-linear-gradient(right, #6a11cb, #2575fc);

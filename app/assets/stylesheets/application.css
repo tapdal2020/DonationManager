@@ -14,3 +14,58 @@
  *= require_self
  *= require bootstrap/scss/bootstrap
  */
+
+ .navbar.navbar-expand-lg {
+    /*color: rgb(126,59,150);*/
+    background-color: rgb(126,59,150);
+ }
+
+ p.notice, p.alert {
+     color: rgb(255, 255, 255);
+     margin: 0px;
+     background-color: rgb(35, 145, 163);
+     text-align: center;
+     border-radius: 0px;
+     font-size: 30px;
+     font-family: "Lato", sans-serif;
+ }
+
+ .navbar.navbar-expand-lg.navbar-light a.navbar-brand:hover img {
+     background-color: rgb(35, 145, 163);
+ }
+
+ .navbar.navbar-expand-lg.navbar-light .navbar-toggler {
+     color: rgb(255, 255, 255);
+ }
+
+ .navbar.navbar-expand-lg.navbar-light .navbar-nav li .nav-link{
+     color: rgb(255, 255, 255);
+ }
+
+ .navbar.navbar-expand-lg.navbar-light .navbar-nav li:hover .nav-link {
+    color: rgb(35, 145, 163);
+}
+
+ img {
+    max-width: 100%;
+    width: 150px;
+    height: auto;
+    vertical-align: middle;
+    border: 0;
+ }
+
+ .btn {
+     outline-color: rgb(35, 145, 163);
+ }
+ 
+ .btn.btn-primary {
+     color: rgb(255, 255, 255);
+     outline-color: rgb(35, 145, 163);
+     background-color: rgb(35, 145, 163);
+ }
+
+ .btn.btn-info.btn-lg {
+     color: rgb(255, 255, 255);
+     outline-color: rgb(255, 0, 0);
+     background-color: rgb(255, 0, 0);
+ }

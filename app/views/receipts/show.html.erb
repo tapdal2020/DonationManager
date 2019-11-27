@@ -6,7 +6,7 @@
         <th>Amount</th>
     </tr>
     <tr>
-        <td><%= @donation.created_at %></td>
+        <td><%= @donation.created_at.to_formatted_s(:long) %></td>
         <td><%= @donation.price %></td>
     </tr>
 </table>

@@ -38,6 +38,8 @@
                 <%= link_to 'Get Emails', { controller: 'users', action: 'get_emails'}, { class: "nav-link", :method => :get } %>
               </li>
             <% end %>
+          </ul>
+          <ul class="navbar-nav ml-auto">
             <li>
               <%= link_to "Logout", { controller: 'sessions', action: 'destroy', id: current_user.id }, { class: "nav-link", method: :delete } %>
             </li>

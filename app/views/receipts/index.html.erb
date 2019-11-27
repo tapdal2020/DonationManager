@@ -7,7 +7,7 @@
     </tr>
     <% @donations.each do |d| %>
         <tr>
-            <td><%= d.created_at %></td>
+            <td><%= d.created_at.to_formatted_s(:long) %></td>
             <td><%= d.price %></td>
         </tr>
     <% end %>

@@ -1,3 +1,7 @@
+<head>
+  <%= stylesheet_link_tag 'application' %>
+</head>
+<body>
 <h1><%=@html_donation_title%></h1>
 
 <!--<%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
@@ -10,43 +14,46 @@
 <%= button_to 'Edit Profile', { controller: 'users', action: 'edit', user_id: session[:user_id] }, method: :get %>
 <%= button_to "Logout", session_path(current_user.id), method: :delete %>-->
 
-<style>
-table, th, td {
-  border: 0.5px solid black;
-}
-</style>
-<table>
-  <thead>
+<table class="table table-striped">
+  <thead class="thead-dark">
     <tr>
-      <th><b><%= sortable "created_at", "Timestamp"%></b></th>
+      <th class="timestamp-col"><b><%= sortable "created_at", "Timestamp" %></b></th>
       <% if is_currently_admin? %>
-      <th><b><%= sortable "email", "User Account"%></b></th>
+        <th><b><%= sortable "email", "User Account" %></b></th>
       <% end %>
-      <th><b><%= sortable "price", "Donated Amount"%></b></th>
-      <th><b><%= sortable "payment_id", "Paypal Transaction ID"%></b></th>
-      <th><b><%= sortable "payer_id","Paypal Payer ID"%></b></th>
-      <th><b><%= sortable "recurring","Recurring Payment"%></b></th>
-      <th><b>Receipt</b></th>
+      <th class="amount-col"><b><%= sortable "price", "Donated Amount" %></b></th>
+      <% if current_admin %>
+        <th><b><%= sortable "payment_id", "Paypal Transaction ID" %></b></th>
+        <th><b><%= sortable "payer_id","Paypal Payer ID" %></b></th>
+      <% end %>
+      <th class="recurring-col" colspan="2"><b><%= sortable "recurring","Recurring Payment" %></b></th>
+      <th class="receipt-col"><b>Receipt</b></th>
     </tr>
   </thead>
- 
+
   <tbody>
     <% @my_donations.each_with_index do |donation, i| %>
       <tr>
-        <td><%= donation.created_at %></td>
+        <td><%= donation.created_at.to_formatted_s(:long) %></td>
         <% if is_currently_admin? %>
-        <td><%= donation.user.email %></td>
+          <td><%= donation.user.email %></td>
         <% end %>
         <td><%= number_to_currency(donation.price) %></td>
-        <td><%= donation.payment_id %></td>
-        <td><%= donation.payer_id %></td>
-         <td><%= donation.recurring%>  <%=button_to "Cancel", {controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id}, hidden: !donation.recurring%></td>
-        <td><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, method: :get, name: "VIEW_#{i}" %>
+        <% if current_admin %>
+          <td><%= donation.payment_id %></td>
+          <td><%= donation.payer_id %></td>
+        <% end %>
+        <td><%= donation.recurring%></td><td style="text-align:center"><%=button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id }, { class: "btn btn-primary", hidden: !donation.recurring, disabled: (current_user.id == donation.user.id) ? false : true }%></td>
+        <td style="text-align:center"><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, { class: "btn btn-primary", method: :get, name: "VIEW_#{i}", disabled: (current_user.id == donation.user.id) ? false : true } %>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, method: :get %></br>
+<%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, { class: "btn btn-primary", method: :get } %></br>
 
-<%=line_chart @donations_chart, prefix: "$",width: "800px", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#581818']%>
+<div style="margin:0 auto;width:600px;">
+  <%= line_chart @donations_chart, prefix: "$",width: "600px", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#581818'] %>
+</div>
+
+</body>

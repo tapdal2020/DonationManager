@@ -32,6 +32,7 @@
 
  .navbar.navbar-expand-lg.navbar-light a.navbar-brand:hover img {
      background-color: rgb(35, 145, 163);
+     transition: all .4s ease;
  }
 
  .navbar.navbar-expand-lg.navbar-light .navbar-toggler {
@@ -62,10 +63,63 @@
      color: rgb(255, 255, 255);
      outline-color: rgb(35, 145, 163);
      background-color: rgb(35, 145, 163);
+     border-color: rgb(35, 145, 163);
+ }
+
+ .btn.btn-primary.my-red {
+     color: rgb(255, 255, 255);
+     background-color: rgb(255, 0, 0);
+     border-color: rgb(255, 0, 0);
+ }
+
+ .btn.btn-primary.my-red:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 0, 0);
+    border-color: rgb(255, 0, 0);
+ }
+
+ .btn.btn-primary:hover {
+     background-color: #ba6239;
+     border-color: rgb(35, 145, 163);
+ }
+
+ .btn.btn-primary:disabled {
+     background-color: rgb(35, 145, 163);
+     border-color: rgb(35, 145, 163);
  }
 
  .btn.btn-info.btn-lg {
      color: rgb(255, 255, 255);
      outline-color: rgb(255, 0, 0);
      background-color: rgb(255, 0, 0);
+ }
+
+ table, th, td {
+    border: 0.5px solid black;
+    width: auto;
+    text-align: center;
+ }
+
+ table.table.table-striped thead.thead-dark tr th {
+    background-color: rgb(35, 145, 163);
+  }
+
+ table.button-table, table.button-table td {
+    border-collapse: separate;
+    border: none;
+    border-spacing: 10px;
+    text-align: left;
+ }
+
+ .sortable {
+    color: rgb(255, 255, 255); 
+ }
+ .sortable:hover {
+    color: rgb(255, 255, 255);
+    text-decoration: underline;
+ }
+
+ .current.asc, .current.desc {
+    color: rgb(255, 255, 255);
+    text-decoration: underline;
  }

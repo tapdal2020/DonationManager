@@ -4,13 +4,17 @@
 <%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to "Logout", session_path(current_user.id), :method => :delete %>   -->                 
 <%= form_for(:make_donation, url: { controller: 'donation_transactions', action: 'checkout' }) do |f| %>
-    <table>
-        <tr>
+        <div class="form-group">
             <%# This area for user to fill out, given they chose custom recurring Payment %>
-            <td>Frequency: </td><td><%=f.select :payment_freq, options_for_select(pay_custom_frequency)%></td>
-            <td>Donation Amount: $</td><td><%= f.number_field :donation_amount, :value => 1, :min => 1.00, :step => 0.01%></td>
-        </tr>
-    </table>
-    <br />
-    <%= f.submit "Donate" %>
+            <label for="make_donation_payment_freq">Frequency:</label>
+            <%=f.select :payment_freq, options_for_select(pay_custom_frequency), class: "form-control"%>
+        </div>
+        <div class="form-group">
+            <label for="make_donation_donation_amount">Donation Amount: $</label>
+            <%= f.number_field :donation_amount, :value => 1, :min => 1.00, :step => 0.01, class: "form-control"%>
+        </div>
+    <!-- <br /> -->
+    <div class="form-group">
+    <%= f.submit "Donate", class: "btn btn-primary" %>
+    </div>
 <% end %>

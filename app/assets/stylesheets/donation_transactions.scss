@@ -1,3 +1,76 @@
 // Place all the styles related to the DonationTransactions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.limiter {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.container-ds {
+    width: 100%;  
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+  
+  
+    background: url('bvjs-error.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .85;
+  }
+
+  .container-unauth {
+    width: 100%;  
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: url('bvjs-unauth.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .85;
+  }
+
+  .err-title {
+    width: 100%;
+    display: block;
+    font-family: 'Arial Bold', sans-serif;
+    font-size: 70px;
+    color: #fefefe;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  
+  .err-2nd-title {
+    width: 100%;
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    color: #fefefe;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .txt-faint {
+    font-family: Arial;
+    font-size: 8px;
+    opacity: .3;
+    line-height: 1.4;
+    color: var(--off-white);
+  }

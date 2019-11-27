@@ -15,6 +15,7 @@ class DonationTransactionsController < ApplicationController
     # http query of this is
     # "amount=1.00&amount_per_cycle=1.00&charset=windows-1252&currency_code=USD&first_name=DMS&initial_payment_amount=0.00&ipn_track_id=b0d58559a2730&last_name=User&next_payment_date=N%2FA&notify_version=3.9&outstanding_balance=0.00&payer_email=user%40dms-user.com&payer_id=D7MH32PSBP23C&payer_status=verified&payment_cycle=Monthly&period_type=%20Regular&product_name=description%20of%20agreement%20plan1&product_type=1&profile_status=Cancelled&receiver_email=root%40dms-user.com&recurring_payment_id=I-EE5J6KLNXG90&residence_country=US&shipping=0.00&tax=0.00&test_ipn=1&time_created=18%3A43%3A45%20Nov%2018%2C%202019%20PST&txn_type=recurring_payment_profile_cancel&verify_sign=ASai6Zx.zbenDTXHaNV6Igqh3h3aAuBzmJvNMWdwZCz1vrYpZghjQh8y"
     PaypalService.paypal_ipn(permitted_paypal_params) and head :ok if permitted_paypal_params["verify_sign"]
+    # render 'something_wrong'
     redirect_to new_donation_transaction_path
   end
 

@@ -27,7 +27,7 @@
         <th><b><%= sortable "payer_id","Paypal Payer ID" %></b></th>
       <% end %>
       <th class="recurring-col" colspan="2"><b><%= sortable "recurring","Recurring Payment" %></b></th>
-      <th class="receipt-col"><b>Receipt</b></th>
+      <th >Receipt</th>
     </tr>
   </thead>
 
@@ -52,8 +52,8 @@
 
 <%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, { class: "btn btn-primary", method: :get } %></br>
 
-<div style="margin:0 auto;width:600px;">
-  <%= line_chart @donations_chart, prefix: "$",width: "600px", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#581818'] %>
+<div style="margin:0 auto;">
+  <%= line_chart @donations_chart, prefix: "$", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#8c9b43'] %>
 </div>
 
 </body>

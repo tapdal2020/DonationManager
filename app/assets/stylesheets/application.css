@@ -31,7 +31,7 @@
  }
 
  .navbar.navbar-expand-lg.navbar-light a.navbar-brand:hover img {
-     background-color: rgb(35, 145, 163);
+     background-color: var(--bvjs-blue);
      transition: all .4s ease;
  }
 
@@ -44,7 +44,7 @@
  }
 
  .navbar.navbar-expand-lg.navbar-light .navbar-nav li:hover .nav-link {
-    color: rgb(35, 145, 163);
+    color: var(--bvjs-blue);
 }
 
  img {
@@ -56,14 +56,14 @@
  }
 
  .btn {
-     outline-color: rgb(35, 145, 163);
+     outline-color: var(--bvjs-blue);
  }
  
  .btn.btn-primary {
      color: rgb(255, 255, 255);
-     outline-color: rgb(35, 145, 163);
-     background-color: rgb(35, 145, 163);
-     border-color: rgb(35, 145, 163);
+     outline-color: var(--bvjs-blue);
+     background-color: var(--bvjs-blue);
+     border-color: var(--bvjs-blue);
  }
 
  .btn.btn-primary.my-red {
@@ -73,19 +73,19 @@
  }
 
  .btn.btn-primary.my-red:hover {
-    color: rgb(255, 255, 255);
-    background-color: rgb(255, 0, 0);
+    color: rgb(255, 0, 0);
+    background-color: #fff;
     border-color: rgb(255, 0, 0);
  }
 
  .btn.btn-primary:hover {
-     background-color: #ba6239;
-     border-color: rgb(35, 145, 163);
+     background-color: var(--bvjs-orange);
+     border-color: var(--bvjs-blue);
  }
 
  .btn.btn-primary:disabled {
-     background-color: rgb(35, 145, 163);
-     border-color: rgb(35, 145, 163);
+     background-color: var(--bvjs-blue);
+     border-color: var(--bvjs-blue);
  }
 
  .btn.btn-info.btn-lg {
@@ -97,11 +97,13 @@
  table, th, td {
     border: 0.5px solid black;
     width: auto;
+    table-layout: fixed;
     text-align: center;
+    font-size: auto;
  }
 
  table.table.table-striped thead.thead-dark tr th {
-    background-color: rgb(35, 145, 163);
+    background-color: var(--bvjs-blue);
   }
 
  table.button-table, table.button-table td {
@@ -112,14 +114,17 @@
  }
 
  .sortable {
-    color: rgb(255, 255, 255); 
+    font-size: auto;
+    color: rgb(255, 255, 255);
  }
  .sortable:hover {
+    font-size: auto;
     color: rgb(255, 255, 255);
     text-decoration: underline;
  }
 
  .current.asc, .current.desc {
+    font-size: auto;
     color: rgb(255, 255, 255);
     text-decoration: underline;
  }

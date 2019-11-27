@@ -154,6 +154,10 @@ iframe {
   color: var(--off-white2);
 }
 
+.txt3:hover{
+  color: #fff;
+}
+
 
 /*//////////////////////////////////////////////////////////////////
 [ login ]*/
@@ -185,6 +189,24 @@ iframe {
   background: -moz-linear-gradient(top, #9841c4, #458fa1);
   background: linear-gradient(top, #9841c4, #458fa1); */
 
+}
+
+.container-login100-donate{
+  width: 100%;  
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: -webkit-linear-gradient(top, #764191, #458fa1);
+  background: -o-linear-gradient(top, #764191, #458fa1);
+  background: -moz-linear-gradient(top, #764191, #458fa1);
+  background: linear-gradient(top, #764191, #458fa1);
 }
 
 .wrap-login100 {

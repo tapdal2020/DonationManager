@@ -6,6 +6,7 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
@@ -53,6 +54,26 @@
     <% if alert %>
       <p class="alert"><%= alert %></p>
     <% end %>
+
     <%= yield %>
+    
+    <footer>
+      <div class="footer">
+        <%= image_tag "logo.png", alt: "BVJS", width: 100 %>
+        <br/>
+        <p>© 2019 Brazos Valley Jazz Society</p>
+        <div class="social-media">
+          <%= link_to "http://facebook.com/brazosjazz/" do %> 
+            <%= fa_icon "facebook-square" %>
+          <% end %>
+          <%= link_to "http://twitter.com/brazosjazz/" do %>
+            <%= fa_icon "twitter-square" %>
+          <% end %>
+          <%= link_to "http://instagram.com/brazosjazz/" do %>
+            <%= fa_icon "instagram" %>
+          <% end %>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

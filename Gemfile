@@ -87,3 +87,5 @@ gem 'wkhtmltopdf-heroku', '2.12.5.0', group: :production
 
 # email validation
 gem 'validates_email_format_of'
+
+gem 'font-awesome-rails'

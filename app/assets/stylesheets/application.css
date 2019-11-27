@@ -13,6 +13,8 @@
  *= require_tree .
  *= require_self
  *= require bootstrap/scss/bootstrap
+ *= require font-awesome
+ *
  */
 
  .navbar.navbar-expand-lg {
@@ -128,3 +130,40 @@
     color: rgb(255, 255, 255);
     text-decoration: underline;
  }
+
+ .footer {
+     position: relative;
+     left: 0;
+     bottom: 0;
+     width: 100%;
+     height: auto;
+     background-color: var(--bvjs-orange);
+     text-align: center;
+ }
+ .footer img {
+    max-width:960px;
+    margin:0 auto;
+    padding:20px;
+ }
+
+ .footer p {
+     color: white;
+     text-transform: uppercase;
+     margin: 0 auto;
+ }
+
+ .footer .social-media {
+    margin: 0 auto;
+    padding: 20px;
+ }
+
+ .footer .social-media a {
+     color: rgba(255,255,255,0.25);
+     margin: 0 1%;
+     font-size: 18px;
+ }
+
+ .footer .social-media a:hover {
+    color: white;
+    text-decoration: none;
+}

@@ -39,3 +39,5 @@ db/schema.rb
 coverage/*
 db/schema.rb
 coverage/.last_run.json
+
+bin/wkhtmltopdf

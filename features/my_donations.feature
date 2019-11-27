@@ -17,5 +17,3 @@ Feature: My Donations
             | header |
             | Timestamp |
             | Donated Amount |
-            | Paypal Transaction ID |
-            | Paypal Payer ID |

@@ -25,13 +25,13 @@ Feature: Admin CRUD Users
 
         Examples:
             | label |
-            | First name: |
-            | Last name: |
-            | Email address: |
-            | Street Address: |
-            | City: |
-            | State: |
-            | Zip Code: |
+            | First name |
+            | Last name |
+            | Email address |
+            | Street Address |
+            | City |
+            | State |
+            | Zip code |
             | Admin? | 
 
     Scenario Outline:

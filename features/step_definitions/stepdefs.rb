@@ -209,7 +209,7 @@ Then(/^I should be redirected to the (.*) page$/) do |role|
     elsif role == 'login'
         expect(page).to have_content('BVJS Donor Portal')
     elsif role == 'donations'
-        expect(page).to have_content('Donate to Brazos Valley Jazz Society')
+        expect(page).to have_content("Donate to\nBrazos Valley Jazz Society")
     end
 end
 

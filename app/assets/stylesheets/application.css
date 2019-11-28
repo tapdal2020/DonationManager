@@ -102,6 +102,8 @@
     table-layout: fixed;
     text-align: center;
     font-size: auto;
+    /* color: #fff; */
+    background-color: #fff;
  }
 
  table.table.table-striped thead.thead-dark tr th {
@@ -113,6 +115,7 @@
     border: none;
     border-spacing: 10px;
     text-align: left;
+    background: transparent;
  }
 
  .sortable {

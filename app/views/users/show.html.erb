@@ -2,7 +2,9 @@
   <%= stylesheet_link_tag 'application' %>
 </head>
 <body>
-<h1><%=@html_donation_title%></h1>
+<div class="container-login100-donate show">
+<div class="wrap-login100 show p-b-100"> 
+<h1 class="text-white text-center text-middle p-b-20"><%=@html_donation_title%></h1>
 
 <!--<%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
@@ -54,6 +56,8 @@
 
 <div style="margin:0 auto;">
   <%= line_chart @donations_chart, prefix: "$", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#8c9b43'] %>
+</div>
+</div>
 </div>
 
 </body>

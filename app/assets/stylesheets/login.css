@@ -154,6 +154,10 @@ iframe {
   color: var(--off-white2);
 }
 
+.txt3.lower{
+  text-transform: none;
+  color: #fff;
+}
 .txt3:hover{
   color: #fff;
 }
@@ -209,8 +213,20 @@ iframe {
   background: linear-gradient(top, #764191, #458fa1);
 }
 
+.dms-font{
+  font-family: Arial, sans-serif !important;
+}
+
+.container-login100-donate.show{
+  padding: flex;
+  align-items: flex-start;
+}
+
 .wrap-login100 {
   width: 560px;
+}
+.wrap-login100.show{
+  width: fit-content;
 }
 
 

@@ -1,42 +1,41 @@
-<h1>Edit Profile</h1>
 
-<div style="margin:10px">
+<div class="container-login100-donate">
+<div class="wrap-login100 p-b-160 p-t-50"> 
+<h1 class="text-white text-center text-middle p-b-1">Edit Profile</h1>
     <%= form_for @user, url: { controller: 'users', action: 'update', id: @user.id } do |f| %>
         <div class="form-group">
-            <label for="user_first_name">First name</label>
+            <label class="txt3 lower" for="user_first_name">First name</label>
             <%= f.text_field :first_name, class: "form-control" %>
         </div>
         <div class="form-group">
-            <label for="user_last_name">Last name</label>
+            <label class="txt3 lower" for="user_last_name">Last name</label>
             <%= f.text_field :last_name, class: "form-control" %>
         </div>
         <div class="form-group">
-            <label for="user_email">Email address</label>
+            <label class="txt3 lower" for="user_email">Email address</label>
             <%= f.email_field :email, class: "form-control"%>
         </div>
         <div class="form-group">
-            <label for="user_street_address_line_1">Street Address</label>
+            <label class="txt3 lower" for="user_street_address_line_1">Street Address</label>
             <%= f.text_field :street_address_line_1, class: "form-control" %>
             <%= f.text_field :street_address_line_2, class: "form-control" %>
-            <label for="user_city">City</label>
+            <label class="p-t-18 txt3 lower" for="user_city">City</label>
             <%= f.text_field :city, class: "form-control" %>
-            <label for="user_state">State</label>
+            <label class="txt3 lower" for="user_state">State</label>
             <%= f.select :state, options_for_select(us_states, selected: @user.state), { include_blank: false }, class: "form-control" %>
-            <label for="user_zip_code">Zip code</label>
+            <label class="txt3 lower" for="user_zip_code">Zip code</label>
             <%= f.text_field :zip_code, class: "form-control" %>
         </div>
         <% if is_currently_admin? %>
             <div class="custom-control-lg custom-control custom-checkbox">
                 <%= f.check_box :admin, class: "custom-control-input" %>
-                <label class="custom-control-label" for="user_admin">Admin?</label>
+                <label class="txt3 lower custom-control-label" for="user_admin">Admin?</label>
             </div>
         <% end %>
         <br />
         <%= f.submit "Save", class: "btn btn-primary" %>
     <% end %>
-</div>
-
-<br />
+    <br />
 <br />
 <table class="button-table">
     <tr>
@@ -45,4 +44,6 @@
     <tr>
         <td><%= button_to "DELETE", user_path(@user.id), { class: "btn btn-primary my-red", method: :delete } %></td>
     </tr>
-<table>
+</table>
+</div>
+</div>

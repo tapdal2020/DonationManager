@@ -1,15 +1,12 @@
-<h2> All Users</h2>
 <%#= button_to "Home", user_path(current_user.id), :method=>:get%>
 <%#= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
 <%#= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
 <%# = button_to "Logout", session_path(current_user.id), :method => :delete %> 
-<style>
-table, th, td {
-  border: 0.5px solid black;
-}
-</style>
-<table>
-  <thead>
+<div class="container-login100-donate show">
+<div class="wrap-login100 show"> 
+<h1 class="text-white text-center text-middle p-b-20">All Users</h1>
+<table class="table table-striped">
+  <thead class="thead-dark">
     <tr>
       <th><b><%= sortable "first_name", "First Name"%></b></th>
       <th><b><%= sortable "last name", "Last Name"%></b></th>
@@ -27,8 +24,10 @@ table, th, td {
         <td><%= u.last_name %></td>
         <td><%= u.email %></td>
        	<td><%= u.admin %></td>
-        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get, name: "EDIT_#{i}" %></td>
+        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, { class: "btn btn-primary", method: :get, name: "EDIT_#{i}"} %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+</div>
+</div>

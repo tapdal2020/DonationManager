@@ -1,18 +1,20 @@
-<h1>Donate to Brazos Valley Jazz Society</h1>
+
 
 <!-- <%= button_to "Home", user_path(current_user.id), :method => :get%>
 <%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to "Logout", session_path(current_user.id), :method => :delete %>   -->   
 <div class="container-login100-donate">
-<div class="wrap-login100 p-b-160 p-t-50">              
+<div class="wrap-login100 p-b-160 p-t-50"> 
+<h1 class="text-white text-center text-middle p-b-1">Donate to</h1>          
+<h1 class="text-white text-center text-middle p-b-50">Brazos Valley Jazz Society</h1>
 <%= form_for(:make_donation, url: { controller: 'donation_transactions', action: 'checkout' }) do |f| %>
         <div class="form-group">
             <%# This area for user to fill out, given they chose custom recurring Payment %>
-            <label class="txt3" for="make_donation_payment_freq">Frequency:</label>
+            <label class="txt3 lower" for="make_donation_payment_freq">Frequency:</label>
             <%=f.select :payment_freq, options_for_select(pay_custom_frequency), { include_blank: false }, class: "form-control" %>
         </div>
         <div class="form-group">
-            <label class="txt3" for="make_donation_donation_amount">Donation Amount: $</label>
+            <label class="txt3 lower" for="make_donation_donation_amount">Donation Amount: $</label>
             <%= f.number_field :donation_amount, :value => 1.00, :min => 1.00, :step => 1, class: "form-control"%>
         </div>
     <!-- <br /> -->

@@ -1,22 +1,68 @@
-<h1>Manage BVJS Subscription</h1>
-
+<div class="container-login100-donate show">
+<div class="wrap-login100 show p-b-160 p-t-50"> 
+<h1 class="text-white text-center text-middle p-b-1">Manage BVJS Subscription</h1>
 <!--- <%= button_to "Home", user_path(current_user.id), :method => :get%>
 <%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
 <%= button_to "Logout", session_path(current_user.id), :method => :delete %> ---->
-<h3>Current Subscription</h3>
-<h4><b><%=@subscribed_to%></b></h4>
+<div class="row p-t-25 p-b-50">
+<div class="col-sm">
+<div class="card">
+    <div class="card-header dms-font">
+        <label class="text-black fs-26"><b>Current Subscription: </b> <%=@subscribed_to%></label>
+    </div>
+  </div>
+</div>
+</div>
 <%= form_for(:subscription, url: { controller: 'donation_transactions', action: 'recurring' }) do |membership| %>
-    <table>
+  <!---  <table>
         <tr>
             <th><b>Subscription Tiers:</b></th>
-        </tr>
-        <% @subscription_plans.each do |plan_key, plan_val| %>
-        <%# get each key value %>
-            <tr><td><%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"])%> <%=plan_val.to_s()%></td></tr>
-        <% end %>
-        <tr>
-            <td><%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
-        </tr>
-    </table>
-    <%= membership.submit "Submit Changes" %>
+        </tr> -->
+        <div class="row">
+            <% @subscription_plans.each do |plan_key, plan_val| %>
+            <%# get each key value %>
+                <div class="col-sm">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title dms-font"><b><%=plan_val["name"]%></b></h5>
+                            <p class="card-text dms-font"><%=plan_val["description"]%></p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item dms-font"><b><%=plan_val["agreement"]["name"]%>: </b> <%=plan_val["agreement"]["description"]%></li>
+                            <li class="list-group-item dms-font"><b><%=plan_val["payment_definitions"][0]["amount"]["currency"]%> <%=plan_val["payment_definitions"][0]["amount"]["value"]%></b>, <b><%=plan_val["payment_definitions"][0]["frequency_interval"]%></b> time(s) / <i><%=plan_val["payment_definitions"][0]["frequency"].to_s().downcase%></i></li>
+                            <li class="list-group-item dms-font"><b>Charge occurs on:</b> <%=ENV['APP_MEMBERSHIP_RECURRING_AT']%></li>
+                        </ul>
+                        <div class="card-body">
+                            <div class="custom-control-lg custom-control custom-checkbox">
+                                <%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"]), class: "custom-control-input"%>
+                                <%= label(:subscription, html_label_id("subscribe", plan_key.to_s()), "",class: "txt3 lower custom-control-label")%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+        <div class="row p-t-50 p-b-30">
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title dms-font"><b>No Subscription</b></h5>
+                    <div class="custom-control-lg custom-control custom-checkbox">
+                                <%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None'), class: "custom-control-input" %>
+                                <label class="txt3 lower custom-control-label" for="subscription_subscribe_none"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    <%= membership.submit "Submit Changes", class: "btn btn-primary" %>
 <%end%>
+
+
+
+</div>
+
+
+
+</div>
+</div>

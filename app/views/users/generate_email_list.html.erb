@@ -1,10 +1,17 @@
-<table>
+<div class="jumbotron">
+    <h1>All Memberships</h1>
+</div>
+<table class = "table table-striped table-hover table-bordered", style="width:75%; margin-top:35px;">
     <tr>
-        <th>Email,Name,Membership</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Membership</th>
     </tr>
     <% @users.each do |u| %>
         <tr>
-            <td><%= "#{u.email},#{u.name},#{u.membership}" %></td>
+            <td><%= "#{u.email}" %></td>
+            <td><%= "#{u.name}" %></td>
+            <td><%= "#{u.membership}" %></td>
         </tr>
     <% end %>
 </table>

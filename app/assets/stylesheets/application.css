@@ -54,18 +54,121 @@
     border: 0;
  }
 
- .btn {
-     outline-color: rgb(35, 145, 163);
- }
- 
- .btn.btn-primary {
-     color: rgb(255, 255, 255);
-     outline-color: rgb(35, 145, 163);
-     background-color: rgb(35, 145, 163);
- }
-
  .btn.btn-info.btn-lg {
      color: rgb(255, 255, 255);
      outline-color: rgb(255, 0, 0);
      background-color: rgb(255, 0, 0);
  }
+
+ .table.table-striped.table-hover.table-bordered{
+     width:75%;
+     text-align: center;
+     vertical-align: middle;
+     margin: auto;
+ }
+
+ .table.table.table-striped.table-hover.table-bordered, th, tr{
+    text-align:center;
+    vertical-align: middle;
+}
+
+ .table.table-striped{
+     margin:auto;
+ }
+
+ .center{
+     margin-top: 50px;
+     display: inline-block;
+ }
+
+ .wrapper{
+     text-align: center;
+ }
+
+ .jumbotron{
+     height:200px;
+     background-image: url("jazz_slider.jpg");
+     background-size: cover;
+     color:white;
+     background-position: center;
+     text-align:center;
+ }
+
+ .table.form-table{
+    width:50%;
+    margin:auto;
+    background-color:#d3d3cc;
+    text-align: center;
+ }
+
+ .form-group{
+     align-content: left;
+ }
+
+ .table-header{
+     background-color: rgb(126,59,150);
+     color:white;
+     text-align:center;
+     vertical-align: auto;
+ }
+
+ .table-body{
+     text-align:center;
+     vertical-align: auto;
+ }
+
+ .table-header-link{
+    color:white;
+ }
+
+ .btn.btn-primary{
+     background-color:rgb(126,59,150);
+     border-color:rgb(126,59,150);
+     color: white;
+     margin-top:20px;
+     margin-bottom:5px;
+ }
+
+ .btn.btn-primary:hover{
+    color:rgb(126,59,150);;
+    background-color: white;
+    border-color: rgb(126,59,150);
+ }
+
+ .btn.btn-primary.btn-delete{
+     background-color: #d11a2a;
+     border-color: #d11a2a;
+ }
+
+ .btn.btn-primary.btn-delete:hover{
+    background-color: white;
+    border-color: #d11a2a;
+    color:#d11a2a
+}
+
+ .object-center{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+ }
+
+.title-container{
+    margin-bottom: 40px;
+    text-align: center;
+    color:black;
+}
+
+.btn.btn-default{
+    border-color:rgb(126,59,150);
+}
+
+.btn.btn-default:hover{
+    background-color:rgb(126,59,150);
+    border-color:white;
+    color:white;
+}
+
+.container{
+  justify-content: center;
+  align-items: center;
+}

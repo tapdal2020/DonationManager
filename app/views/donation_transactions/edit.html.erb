@@ -1,12 +1,10 @@
-<h1>Manage BVJS Subscription</h1>
-
-<%= button_to "Home", user_path(current_user.id), :method => :get%>
-<%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
-<%= button_to "Logout", session_path(current_user.id), :method => :delete %>
+<div class="jumbotron">
+    <h1>Manage BVJS Subscription</h1>
+</div>
 <h3>Current Subscription</h3>
 <h4><b><%=@subscribed_to%></b></h4>
 <%= form_for(:subscription, url: { controller: 'donation_transactions', action: 'recurring' }) do |membership| %>
-    <table>
+    <table class="table form-table">
         <tr>
             <th><b>Subscription Tiers:</b></th>
         </tr>
@@ -18,5 +16,7 @@
             <td><%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None') %> No Subscription</td>
         </tr>
     </table>
-    <%= membership.submit "Submit Changes" %>
+    <div class = "object-center">
+        <%= membership.submit "Submit Changes", class:"btn btn-primary" %>
+    </div>
 <%end%>

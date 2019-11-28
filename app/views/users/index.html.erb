@@ -1,14 +1,9 @@
-<h2> All Users</h2>
-<%= button_to "Home", user_path(current_user.id), :method=>:get%>
-<%= button_to 'Manage Subscription', edit_donation_transaction_path(current_user.id), :method => :get %>
-<%= button_to 'Make a Donation', new_donation_transaction_path(current_user.id), :method => :get %>
-<%= button_to "Logout", session_path(current_user.id), :method => :delete %> 
-<style>
-table, th, td {
-  border: 0.5px solid black;
-}
+<div class="jumbotron">  
+  <h2> All Users</h2>
+</div>
+
 </style>
-<table>
+<table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
       <th><b><%= sortable "first_name", "First Name"%></b></th>
@@ -27,7 +22,7 @@ table, th, td {
         <td><%= u.last_name %></td>
         <td><%= u.email %></td>
        	<td><%= u.admin %></td>
-        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, method: :get, name: "EDIT_#{i}" %></td>
+        <td><%= button_to 'EDIT', { controller: 'users', action: 'edit', id: u.id }, class:"btn btn-primary", style:"margin:0px;",method: :get, name: "EDIT_#{i}" %></td>
       </tr>
     <% end %>
   </tbody>

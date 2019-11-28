@@ -1,7 +1,8 @@
-<h1>Create New User</h1>
-
+<div class="jumbotron">
+    <h1>Create New User</h1>
+</div>
 <%= form_for(:user, url: { controller: 'users', action: 'create' }) do |f| %>
-    <table>
+    <table class="table form-table">
         <tr>
             <td>First name:</td><td><%= f.text_field :first_name %></td>
         </tr>
@@ -38,7 +39,9 @@
         <% end %>
     </table>
     <br />
-    <%= f.submit "Save" %>
+    <div class="object-center">
+        <%= f.submit "Save", class:"btn btn-primary" %>
+    </div>
 <% end %>
 
 <br />

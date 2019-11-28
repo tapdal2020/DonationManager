@@ -217,9 +217,22 @@ iframe {
   font-family: Arial, sans-serif !important;
 }
 
+.dms-font.raw{
+  font-family: none;
+}
+
 .container-login100-donate.show{
   padding: flex;
   align-items: flex-start;
+}
+
+.container-login100-donate.raw{
+  font-family: 'Times New Roman', Times, serif;
+  display: contents;
+  padding: 0px;
+  align-items: 0px;
+  justify-content: 0px;
+  background: #fff;
 }
 
 .wrap-login100 {

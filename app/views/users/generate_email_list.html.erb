@@ -1,23 +1,10 @@
-<div class="container-login100-donate show">
-    <div class="wrap-login100 show p-b-160 p-t-50">
-    <h1 class="text-white text-center text-middle p-b-20">Generated User List</h1>
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Membership</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% @users.each do |u| %>
-                    <tr>
-                        <td><%="#{u.email}"%></td>
-                         <td><%="#{u.name}"%></td>
-                         <td><%="#{u.membership}"%></td>
-                    </tr>
-                <% end %>
-            </tbody>
-        </table>
+<body>
+<div class="container-login100-donate raw">
+    Email,Name,Membership
+    </br>
+    <% @users.each do |u| %>
+        <%= "#{u.email},#{u.name},#{u.membership}" %>
+        </br>
+    <% end %>
     </div>
-</div>
+    </body>

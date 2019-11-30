@@ -104,6 +104,7 @@
     font-size: auto;
     /* color: #fff; */
     background-color: #fff;
+    word-wrap: break-word;
  }
 
  table.table.table-striped thead.thead-dark tr th {

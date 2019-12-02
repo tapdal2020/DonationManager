@@ -24,7 +24,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Paypal SDK
 gem 'paypal-sdk-rest'
 # Donor visualization
-gem 'chartkick'
+gem "chartkick", ">= 3.3.0"
 gem 'highcharts-rails'
 # Easy grouping on data
 gem 'groupdate'

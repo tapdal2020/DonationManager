@@ -25,6 +25,11 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title dms-font"><b><%=plan_val["name"]%></b></h5>
+                            <ul>
+                                <% plan_val["description"].each do |l| %>
+                                    <li><%= l %></li>
+                                <% end %>
+                            </ul>
                             <p class="card-text dms-font"><%=plan_val["description"]%></p>
                         </div>
                         <ul class="list-group list-group-flush">

@@ -6,7 +6,7 @@
 production:
   vip-individual:
     name: "VIP Membership (Individual)"
-    description: "E-News, discounted tickets and/or preferred seating at events"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events"]
     type: "FIXED"
     merchant_preferences:
       setup_fee:
@@ -35,7 +35,7 @@ production:
         id: "" # will be filled in by Ruby Paypal services
   vip-couple:
     name: "VIP Membership (Couple)"
-    description: "E-News, discounted tickets and/or preferred seating at events"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events"]
     type: "FIXED"
     merchant_preferences:
       setup_fee:
@@ -64,7 +64,7 @@ production:
         id: "" # will be filled in by Ruby Paypal services
   bronze:
     name: "Bronze Sponsor"
-    description: "E-News, discounted tickets and/or preferred seating at events, website listing, public acknowledgement at events, business size ad in programs when applicable"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events", "Website listing", "Public acknowledgement at events", "Business size ad in programs when applicable"]
     type: "FIXED"
     merchant_preferences:
       setup_fee:
@@ -93,7 +93,7 @@ production:
         id: "" # will be filled in by Ruby Paypal services
   gold:
     name: "Gold Sponsor"
-    description: "E-News, free tickets and preferred seating at events, banner or stand-alone page on our website (with links and pics), public acknowledgements at events, banner at all events (your banner), full page ad in programs when applicable"
+    description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
     type: "FIXED"
     merchant_preferences:
       setup_fee:
@@ -122,7 +122,7 @@ production:
         id: "" # will be filled in by Ruby Paypal services
   platinum:
     name: "Platinum Sponsor"
-    description: "E-News, free tickets and preferred seating at events, banner or stand-alone page on our website (with links and pics), logo prominently displayed on our website, logo on all publications and advertising, mention in all TV/Radio advertising, public acknowledgements at events, banner at all events (your banner), full page ad in programs when applicable"
+    description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)"", "Logo prominently displayed on our website", "Logo on all publications and advertising", "Mention in all TV/Radio advertising", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
     type: "FIXED"
     merchant_preferences:
       setup_fee:
@@ -152,7 +152,7 @@ production:
   Custom:
     name: "BVJS user-specified Recurring Payment"
     # The plan description. Maximum length is 127 single-byte alphanumeric characters.
-    description: "This recurring payment is modified by the BVJS user."
+    description: ["This recurring payment is modified by the BVJS user"]
     type: "INFINITE" # / INFINITE
     merchant_preferences:
       setup_fee:

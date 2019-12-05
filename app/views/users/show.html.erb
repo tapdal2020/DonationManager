@@ -45,7 +45,7 @@
           <td><%= donation.payment_id %></td>
           <td><%= donation.payer_id %></td>
         <% end %>
-        <td><%= donation.recurring%></td><td style="text-align:center"><%=button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id }, { class: "btn btn-primary", hidden: !donation.recurring, disabled: (current_user.id == donation.user.id) ? false : true }%></td>
+        <td><%= donation.recurring %></td><td style="text-align:center"><%=button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id }, { class: "btn btn-primary", hidden: !donation.recurring, disabled: (current_user.id == donation.user.id) ? false : true }%></td>
         <td style="text-align:center"><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, { class: "btn btn-primary", method: :get, name: "VIEW_#{i}", disabled: (current_user.id == donation.user.id) ? false : true } %>
       </tr>
     <% end %>

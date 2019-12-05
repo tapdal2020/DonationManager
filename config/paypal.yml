@@ -5,10 +5,10 @@ test: &default
   client_secret: EMeAxUV8TzrsJwmZEr78ZqSBkxZOyVpTwbsb1lTDcrPjnd4CYfQSdaNGf5ixLbniQBwOHVHLG3bloIuw
   # with CA File
   # IPNs need a local root CA to check certificate against
-  ssl_options:
-    # this is a windows portion, need SSL_CERT_FILE path to the cert.pem environment variable
-    # https://stackoverflow.com/a/16134586
-    ca_file: <%= ENV.fetch("SSL_CERT_FILE") { "/usr/local/etc/openssl/cert.pem" } %>
+  # ssl_options:
+  #   # this is a windows portion, need SSL_CERT_FILE path to the cert.pem environment variable
+  #   # https://stackoverflow.com/a/16134586
+  #   ca_file: <%= ENV.fetch("SSL_CERT_FILE") { "/usr/local/etc/openssl/cert.pem" } %>
 
   # Mode can be 'live' or 'sandbox'
   mode: sandbox

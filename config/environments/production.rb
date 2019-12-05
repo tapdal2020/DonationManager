@@ -3,6 +3,8 @@ Rails.application.configure do
 
   # for smtp mailing follow
   # https://launchschool.com/blog/handling-emails-in-rails
+  # bvjazz mail user: mail@bvjazz.org
+  # bvjazz mail pwd: JazzBV1976!
   
 
   # Code is not reloaded between requests.

@@ -149,6 +149,38 @@ production:
         payment_method: "paypal"
       plan:
         id: "" # will be filled in by Ruby Paypal services
+  Custom:
+    name: "BVJS user-specified Recurring Payment"
+    # The plan description. Maximum length is 127 single-byte alphanumeric characters.
+    description: "This recurring payment is modified by the BVJS user."
+    type: "INFINITE" # / INFINITE
+    merchant_preferences:
+      setup_fee:
+        #{}
+      cancel_url: "" # added in paypal service ruby
+      return_url: "" # added in paypal service ruby 
+      max_fail_attempts: "0" # default string
+      auto_bill_amount: "YES" # / YES
+      initial_fail_amount_action: "CONTINUE" # / CANCEL
+    payment_definitions:
+      -
+        name: "custom-payment"
+        type: "REGULAR" # / TRIAL
+        frequency_interval: "1" # cannot be > 12
+        frequency: "" # WEEK / DAY / YEAR
+        cycles: "0" # leave for infinite / regular
+        amount: 
+          currency: "USD" # i.e. USD
+          value: "1.00" # i.e. 1.00
+    # plan billing agreement
+    agreement:
+      name: "BVJS Custom Recurring Payment Agreement" # max len. 128
+      description: "The BVJS user agrees to make a user-specified recurring payment infinitely until cancellation." # max len. 128
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal Services
 
 development: &default
   plan0:

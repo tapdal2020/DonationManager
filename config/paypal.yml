@@ -33,4 +33,4 @@ development:
 
 production:
   <<: *default
-  mode: sandbox # live
+  #mode: sandbox # live

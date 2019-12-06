@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_19_014208) do
+ActiveRecord::Schema.define(version: 2019_12_06_194500) do
 
   create_table "made_donations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2019_11_19_014208) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "recurring", default: false
+    t.string "parent_txn", default: ""
     t.index ["user_id"], name: "index_made_donations_on_user_id"
   end
 

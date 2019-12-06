@@ -100,6 +100,7 @@ class DonationTransactionsController < ApplicationController
 
     @subscription_plans = PLAN_CONFIG.except("Custom")
     @handle_token = params[:token]
+    puts "&&==Handling token #{@handle_token}"
     handle_recur_token if @handle_token
     @subscribed_to = current_user.membership_name and return
   end
@@ -238,9 +239,9 @@ class DonationTransactionsController < ApplicationController
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
           e = @payment.error
-          @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error["name"] == "INVALID TOKEN"
-          flash.now[:alert] = @payment.error
-          # @payment.error["name"] = "INVALID TOKEN" when user cancels and returns to store
+          @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error.name == "INVALID_TOKEN"
+          # flash.now[:alert] = @payment.error
+          # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
         end
@@ -295,6 +296,7 @@ class DonationTransactionsController < ApplicationController
       puts "@@ handling #{@recurring_id}"
       response = PaypalService.cancel_agreement(@recurring_id)
       if response.success?
+        @user.update(membership: "None") if @user.membership_id.eql?(@recurring_id)
         @user.recurring_record(@recurring_id).update(recurring: false)
         return true
       else 

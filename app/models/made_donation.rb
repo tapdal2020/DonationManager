@@ -6,8 +6,8 @@ class MadeDonation < ApplicationRecord
     validates :payer_id, presence: false
 
     belongs_to :user
+
     def self.monthly_donations
-        group_by_month(:created_at, last: 12)
-        .sum(:price)
-      end
+      group_by_month(:created_at, last: 12).sum(:price)
+    end
 end

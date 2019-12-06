@@ -241,8 +241,8 @@ class DonationTransactionsController < ApplicationController
           # Show error messages by using @payment.error to the user
           e = @payment.error
           change_type = (@transaction.payer_id.eql?(PLAN_CONFIG["Custom"]["name"])) ? "Reccuring Payment Setup" : "Subscription Change"
-          @transaction.destroy and flash.now[:alert] = change_type+" Cancelled" if @payment.error.name == "INVALID_TOKEN"
-          # flash.now[:alert] = @payment.error
+          @transaction.destroy and flash.now[:alert] = change_type+" Cancelled" if @payment.error["name"] == "INVALID_TOKEN"
+          flash[:alert] = @payment.error
           # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...

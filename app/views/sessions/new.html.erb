@@ -9,11 +9,11 @@
                     <span class="login100-form-title p-b-1">BVJS Donor</span>
                     <span class='login100-form-2nd-title p-b-38'>Portal</span>
                     <div class="wrap-input100 rs1 validate-input" data-validate = "Username is required">
-                        <%= f.text_field :email, class:'input100' %>
+                        <%= f.text_field :email, class:'input100 has-val'%>
                         <span class="label-input100">Email address</span>
                     </div>
                     <div class="wrap-input100 rs2 validate-input" data-validate="Password is required">
-                        <%= f.password_field :password, class: 'input100' %>
+                        <%= f.password_field :password, class: 'input100 has-val' %>
                         <span class="label-input100"> Password </span>
                     </div>
                     <div class="container-login100-form-btn">
@@ -26,10 +26,10 @@
                     </div>
                     </div>
                     <div class= "text-center w-full p-t-27">
-                        <%= link_to 'Forgot password?', new_password_reset_path, class: 'txt3' %>
+                        <%= link_to 'Forgot password?', new_password_reset_path, class: 'txt3 white' %>
                     </div>
                     <div class="text-center w-full p-t-27">
-                        <%= link_to "Register", new_user_path, class: 'txt3' %>
+                        <%= link_to "Register", new_user_path, class: 'txt3 white' %>
                     </div>
                 <% end %>
             

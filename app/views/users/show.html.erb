@@ -78,8 +78,8 @@
         <tr>
           <td><%= d0.payment_id %></td>
           <td><%= number_to_currency(d0.price) %></td>
-          <td><%= d0.created_at %></td>
-          <td><%= d1.created_at %>
+          <td><%= d0.created_at.to_formatted_s(:long) %></td>
+          <td><%= d1.created_at.to_formatted_s(:long) %>
           <td><%= button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: d0.payment_id }, { class: "btn btn-primary",disabled: (current_user.id == d0.user.id) ? false : true } %></td>
         </tr>
       <% end %>

@@ -250,6 +250,7 @@ class DonationTransactionsController < ApplicationController
     end
 
     def run_recurring_setup
+      price_val = @transaction["payment_definitions"][0]["amount"]["value"] if @transaction["name"].downcase.include?("recurring") else nil
       if (@subscription_change = new_recurring_paypal_service).error.nil?
         # Because the agreement's id hasn't been generated yet.
         # (the id will be generated after we execute the agreement)
@@ -260,7 +261,7 @@ class DonationTransactionsController < ApplicationController
         puts "%% MAKING A RECURRING MEMBERSHIP CHANGE %%%%"
         @donation = MadeDonation.new({user_id: @user.id, 
           payment_id: @subscription_change.token, 
-          price: @transaction["payment_definitions"][0]["amount"]["value"],
+          price: price_val,
           token: @subscription_change.token,
           payer_id: @transaction["name"],
           recurring: true})
@@ -284,7 +285,7 @@ class DonationTransactionsController < ApplicationController
 
     def handle_custom_recurrence
       # Clone the custom outline
-      @transaction = PLAN_CONFIG["Custom"].clone
+      @transaction = deep_copy(PLAN_CONFIG["Custom"])
       # set the values of frequency and amount specified from checkout
       @transaction["payment_definitions"][0]["amount"]["value"] = @money
       @transaction["payment_definitions"][0]["frequency"] = @payment_frequency

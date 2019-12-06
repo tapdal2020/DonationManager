@@ -3,11 +3,11 @@
 # customize your own plan parameters with:  https://developer.paypal.com/docs/api/payments.billing-plans/#plan_create
 # customize you own agreement with: https://developer.paypal.com/docs/api/payments.billing-agreements#agreement_create
 
-production:
+production: &default
   vip-individual:
     name: "VIP Membership (Individual)"
     description: ["E-News", "Discounted tickets and/or preferred seating at events"]
-    type: "FIXED"
+    type: "INFINITE"
     merchant_preferences:
       setup_fee:
       cancel_url: ""
@@ -19,14 +19,14 @@ production:
       -
         name: "vip-individual-payment"
         type: "REGULAR"
-        frequency_interval: "12"
-        frequency: "MONTH"
+        frequency_interval: "1"
+        frequency: "YEAR"
         cycles: "0"
         amount:
-          current: "USD"
+          currency: "USD"
           value: "50.00"
     agreement:
-      name: "agreement to vip-individual" # max len. 128
+      name: "Agreement" # max len. 128
       description: "Payment of $50.00 is due on January 1st of each year"
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
@@ -36,7 +36,7 @@ production:
   vip-couple:
     name: "VIP Membership (Couple)"
     description: ["E-News", "Discounted tickets and/or preferred seating at events"]
-    type: "FIXED"
+    type: "INFINITE"
     merchant_preferences:
       setup_fee:
       cancel_url: ""
@@ -48,14 +48,14 @@ production:
       -
         name: "vip-couple-payment"
         type: "REGULAR"
-        frequency_interval: "12"
-        frequency: "MONTH"
+        frequency_interval: "1"
+        frequency: "YEAR"
         cycles: "0"
         amount:
-          current: "USD"
+          currency: "USD"
           value: "75.00"
     agreement:
-      name: "agreement to vip-couple" # max len. 128
+      name: "Agreement" # max len. 128
       description: "Payment of $75.00 is due on January 1st of each year"
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
@@ -65,7 +65,7 @@ production:
   bronze:
     name: "Bronze Sponsor"
     description: ["E-News", "Discounted tickets and/or preferred seating at events", "Website listing", "Public acknowledgement at events", "Business size ad in programs when applicable"]
-    type: "FIXED"
+    type: "INFINITE"
     merchant_preferences:
       setup_fee:
       cancel_url: ""
@@ -77,14 +77,14 @@ production:
       -
         name: "bronze-payment"
         type: "REGULAR"
-        frequency_interval: "12"
-        frequency: "MONTH"
+        frequency_interval: "1"
+        frequency: "YEAR"
         cycles: "0"
         amount:
-          current: "USD"
+          currency: "USD"
           value: "250.00"
     agreement:
-      name: "agreement to bronze" # max len. 128
+      name: "Agreement" # max len. 128
       description: "Payment of $250.00 is due on January 1st of each year"
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
@@ -94,7 +94,7 @@ production:
   gold:
     name: "Gold Sponsor"
     description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
-    type: "FIXED"
+    type: "INFINITE"
     merchant_preferences:
       setup_fee:
       cancel_url: ""
@@ -106,14 +106,14 @@ production:
       -
         name: "gold-payment"
         type: "REGULAR"
-        frequency_interval: "12"
-        frequency: "MONTH"
+        frequency_interval: "1"
+        frequency: "YEAR"
         cycles: "0"
         amount:
-          current: "USD"
+          currency: "USD"
           value: "1000.00"
     agreement:
-      name: "agreement to gold" # max len. 128
+      name: "Agreement" # max len. 128
       description: "Payment of $1000.00 is due on January 1st of each year"
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
@@ -123,7 +123,7 @@ production:
   platinum:
     name: "Platinum Sponsor"
     description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)", "Logo prominently displayed on our website", "Logo on all publications and advertising", "Mention in all TV/Radio advertising", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
-    type: "FIXED"
+    type: "INFINITE"
     merchant_preferences:
       setup_fee:
       cancel_url: ""
@@ -135,14 +135,14 @@ production:
       -
         name: "platinum-payment"
         type: "REGULAR"
-        frequency_interval: "12"
-        frequency: "MONTH"
+        frequency_interval: "1"
+        frequency: "YEAR"
         cycles: "0"
         amount:
-          current: "USD"
-          value: "250.00"
+          currency: "USD"
+          value: "2500.00"
     agreement:
-      name: "agreement to platinum" # max len. 128
+      name: "Agreement" # max len. 128
       description: "Payment of $2500.00 is due on January 1st of each year"
       start_date: "" # i.e. 2017-12-22T09:13:49Z
       payer:
@@ -182,7 +182,7 @@ production:
       plan:
         id: "" # will be filled in by Ruby Paypal Services
 
-development: &default
+test: 
   plan0:
     name: "high"
     # The plan description. Maximum length is 127 single-byte alphanumeric characters.
@@ -201,7 +201,7 @@ development: &default
         name: "high-payment"
         type: "REGULAR" # / TRIAL
         frequency_interval: "3" # cannot be > 12
-        frequency: "MONTH" # WEEK / DAY / YEAR
+        frequency: "YEAR" # WEEK / DAY / YEAR
         cycles: "0" # leave for infinite / regular
         amount: 
           currency: "USD" # i.e. USD
@@ -235,7 +235,7 @@ development: &default
         name: "med-payment"
         type: "REGULAR" # / TRIAL
         frequency_interval: "1" # cannot be > 12
-        frequency: "MONTH" # WEEK / DAY / YEAR
+        frequency: "YEAR" # WEEK / DAY / YEAR
         cycles: "0" # leave for infinite / regular
         amount: 
           currency: "USD" # i.e. USD
@@ -282,5 +282,5 @@ development: &default
       plan:
         id: "" # will be filled in by Ruby Paypal Services
 
-test:
+development:
   <<: *default

@@ -111,9 +111,11 @@ class DonationTransactionsController < ApplicationController
     @user = current_user
     if not params["cancel_id"].nil?
       @recurring_id = params["cancel_id"]
-      handle_user_agreement_cancellation
-      @redirect_url=user_path(@user.id)
-      do_redirect and return
+      if handle_user_agreement_cancellation
+        @redirect_url=user_path(@user.id)
+        do_redirect and return
+      end
+      return
     end
     @membership = @user.membership_name
     not_subscribed = @membership.eql?("None")
@@ -294,10 +296,12 @@ class DonationTransactionsController < ApplicationController
       response = PaypalService.cancel_agreement(@recurring_id)
       if response.success?
         @user.recurring_record(@recurring_id).update(recurring: false)
+        return true
       else 
+        puts "#{response.error}"
         render 'something_wrong'
+        return false
       end
-      return
     end
 
     def handle_no_subscription_change

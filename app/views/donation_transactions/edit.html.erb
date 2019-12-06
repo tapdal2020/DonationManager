@@ -25,12 +25,13 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title dms-font"><b><%=plan_val["name"]%></b></h5>
-                            <ul>
-                                <% plan_val["description"].each do |l| %>
-                                    <li><%= l %></li>
-                                <% end %>
-                            </ul>
-                            <p class="card-text dms-font"><%=plan_val["description"]%></p>
+                            <div class="desc-list">
+                                <ul>
+                                    <% plan_val["description"].each do |l| %>
+                                        <li><%= l %></li>
+                                    <% end %>
+                                </ul>
+                            </div>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item dms-font"><b><%=plan_val["agreement"]["name"]%>: </b> <%=plan_val["agreement"]["description"]%></li>
@@ -38,9 +39,12 @@
                             <li class="list-group-item dms-font"><b>Charge occurs on:</b> <%=ENV['APP_MEMBERSHIP_RECURRING_AT']%></li>
                         </ul>
                         <div class="card-body">
-                            <div class="custom-control-lg custom-control custom-checkbox">
+                            <div class="custom-control-lg custom-control">
+                                <div class="custom-checkbox">
                                 <%=membership.radio_button :subscribe, plan_key.to_s(), :checked => (@subscribed_to == plan_val["name"]), class: "custom-control-input"%>
-                                <%= label(:subscription, html_label_id("subscribe", plan_key.to_s()), "",class: "txt3 lower custom-control-label")%>
+                                <label class="txt3 lower custom-control-label" for=<%= "subscription_subscribe_#{plan_key.to_s().downcase}"%>>Select</label>
+                                <!--<%= label(:subscribe, "Select", "", class: "txt3 lower custom-control-label")%>-->
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -54,13 +58,15 @@
                     <h5 class="card-title dms-font"><b>No Subscription</b></h5>
                     <div class="custom-control-lg custom-control custom-checkbox">
                                 <%= membership.radio_button :subscribe, 'None', :checked => (@subscribed_to == 'None'), class: "custom-control-input" %>
-                                <label class="txt3 lower custom-control-label" for="subscription_subscribe_none"></label>
+                                <label class="txt3 lower custom-control-label" for="subscription_subscribe_none">Select</label>
                     </div>
                 </div>
             </div>
         </div>
         </div>
-    <%= membership.submit "Submit Changes", class: "btn btn-primary" %>
+    <div class="center">
+        <%= membership.submit "Submit Changes", class: "btn btn-success" %>
+    </div>
 <%end%>
 
 

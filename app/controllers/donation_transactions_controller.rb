@@ -230,6 +230,7 @@ class DonationTransactionsController < ApplicationController
           @user.update(membership: mem_db) unless update_membership.eql?(custom_plan_name)
           puts "Membership: #{@user.membership}"
           @transaction.update(payment_id: @payment.id)
+          puts "UPDATED TRANSACTION TO HAVE PAYMENT ID #{@transaction.payment_id}"
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
           flash.now[:alert] = update_membership + " " + @payment.state
           # @transaction.success!

@@ -28,7 +28,7 @@
         <th><b><%= sortable "payment_id", "Paypal Transaction ID" %></b></th>
         <th><b><%= sortable "payer_id","Paypal Payer ID" %></b></th>
       <% end %>
-      <th class="recurring-col" colspan="2"><b><%= sortable "recurring","Recurring Payment" %></b></th>
+      <th class="recurring-col"><b><%= sortable "recurring","Recurring Payment" %></b></th>
       <th >Receipt</th>
     </tr>
   </thead>
@@ -45,7 +45,7 @@
           <td><%= donation.payment_id %></td>
           <td><%= donation.payer_id %></td>
         <% end %>
-        <td><%= donation.recurring %></td><td style="text-align:center"><%=button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: donation.payment_id }, { class: "btn btn-primary", hidden: !donation.recurring, disabled: (current_user.id == donation.user.id) ? false : true }%></td>
+        <td><%= donation.recurring %></td>
         <td style="text-align:center"><%= button_to "View", { controller: 'receipts', action: 'show', id: donation.id, format: :pdf }, { class: "btn btn-primary", method: :get, name: "VIEW_#{i}", disabled: (current_user.id == donation.user.id) ? false : true } %>
       </tr>
     <% end %>
@@ -53,6 +53,27 @@
 </table>
 
 <%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, { class: "btn btn-primary", method: :get } %></br>
+
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th class="timestamp-col">Start Date</th>
+      <th class="amount-col">Amount</th>
+      <th class="timestamp-col">Last Payment Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @my_recurring.each do |d0, d1| %>
+      <tr>
+        <td><%= d0.created_at %></td>
+        <td><%= number_to_currency(d0.price) %></td>
+        <td><%= d1.created_at %>
+        <td><%= button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: d0.payment_id }, { class: "btn btn-primary",disabled: (current_user.id == d0.user.id) ? false : true } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <div style="margin:0 auto;">
   <%= line_chart @donations_chart, prefix: "$", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#8c9b43'] %>

@@ -19,6 +19,9 @@
 <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
+        <th style="background-color:#ba6239;text-align:left;" colspan="7">Donations</th>
+    </tr>
+    <tr>
       <th class="timestamp-col"><b><%= sortable "created_at", "Timestamp" %></b></th>
       <% if is_currently_admin? %>
         <th><b><%= sortable "email", "User Account" %></b></th>
@@ -35,6 +38,7 @@
 
   <tbody>
     <% @my_donations.each_with_index do |donation, i| %>
+      <% next if donation.price.nil? %>
       <tr>
         <td><%= donation.created_at.to_formatted_s(:long) %></td>
         <% if is_currently_admin? %>
@@ -54,26 +58,34 @@
 
 <%= button_to "Print All Receipts", { controller: 'receipts', action: 'index', format: :pdf }, { class: "btn btn-primary", method: :get } %></br>
 
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th class="timestamp-col">Start Date</th>
-      <th class="amount-col">Amount</th>
-      <th class="timestamp-col">Last Payment Date</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @my_recurring.each do |d0, d1| %>
+<% unless @my_recurring.empty? %>
+  <table class="table table-striped">
+    <thead class="thead-dark">
       <tr>
-        <td><%= d0.created_at %></td>
-        <td><%= number_to_currency(d0.price) %></td>
-        <td><%= d1.created_at %>
-        <td><%= button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: d0.payment_id }, { class: "btn btn-primary",disabled: (current_user.id == d0.user.id) ? false : true } %></td>
+        <th style="background-color:#ba6239;text-align:left;" colspan="5">Payment Agreements</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <tr>
+        <th>Payment ID</th>
+        <th class="amount-col">Amount</th>
+        <th class="timestamp-col">Start Date</th>
+        <th class="timestamp-col">Last Payment Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @my_recurring.each do |d0, d1| %>
+        <% next if d0.price.nil? %>
+        <tr>
+          <td><%= d0.payment_id %></td>
+          <td><%= number_to_currency(d0.price) %></td>
+          <td><%= d0.created_at %></td>
+          <td><%= d1.created_at %>
+          <td><%= button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: d0.payment_id }, { class: "btn btn-primary",disabled: (current_user.id == d0.user.id) ? false : true } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
 
 <div style="margin:0 auto;">
   <%= line_chart @donations_chart, prefix: "$", height: "500px",thousands: ",", ytitle:"Total Amount Donated", title: 'Monthly Donations For Last Year', colors: ['#8c9b43'] %>

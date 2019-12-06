@@ -43,11 +43,8 @@ class UsersController < ApplicationController
             # @my_donations = (is_currently_admin?) ? MadeDonation.all : MadeDonation.where("user_id = ?", request)
             # @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
             # if and admin bring in users to show their email on table
-            @my_donations = (is_currently_admin?) ? MadeDonation.joins(:user) : MadeDonation.where("user_id = ?", request)
-            @my_recurring = current_user.made_donations.select(:payment_id).where(recurring: true).group(:payment_id).collect { |m| current_user.made_donations.where(payment_id: m.payment_id).order(created_at: :desc).to_a.values_at(0, -1) }
-            @my_recurring.each do |m0, m1|
-                puts "#{m0.id} #{m1.id}"
-            end
+            @my_donations = (is_currently_admin?) ? MadeDonation.joins(:user) : MadeDonation.where("user_id = ?", request).where.not(payment: nil)
+            @my_recurring = current_user.made_donations.select(:payment_id).where(recurring: true).group(:payment_id).collect { |m| current_user.made_donations.where(parent_txn: m.payment_id).or(current_user.made_donations.where(payment_id: m.payment_id)).order(created_at: :desc).to_a.values_at(0, -1) }
             @donations_chart = @my_donations.monthly_donations
             @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
         end

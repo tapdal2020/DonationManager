@@ -62,13 +62,14 @@
   <table class="table table-striped">
     <thead class="thead-dark">
       <tr>
-        <th style="background-color:#ba6239;text-align:left;" colspan="5">Payment Agreements</th>
+        <th style="background-color:#ba6239;text-align:left;" colspan="6">Payment Agreements</th>
       </tr>
       <tr>
         <th>Payment ID</th>
         <th class="amount-col">Amount</th>
         <th class="timestamp-col">Start Date</th>
         <th class="timestamp-col">Last Payment Date</th>
+        <th>Frequency</th>
         <th></th>
       </tr>
     </thead>
@@ -80,6 +81,7 @@
           <td><%= number_to_currency(d0.price) %></td>
           <td><%= d0.created_at.to_formatted_s(:long) %></td>
           <td><%= d1.created_at.to_formatted_s(:long) %>
+          <td><%= d0.frequency.downcase %></td>
           <td><%= button_to "Cancel", { controller: 'donation_transactions', action: 'recurring', cancel_id: d0.payment_id }, { class: "btn btn-primary",disabled: (current_user.id == d0.user.id) ? false : true } %></td>
         </tr>
       <% end %>

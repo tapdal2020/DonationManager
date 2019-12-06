@@ -71,10 +71,11 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: "mail.bvjazz.org",
-    port: 465,
+    port: '465',
     user_name: "mail@bvjazz.org",
     password: "JazzBV1976!",
-    authentication: "plain",
+    authentication: :plain,
+    tls: true,
     enable_starttls_auto: true
   }
 

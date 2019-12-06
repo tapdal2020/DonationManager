@@ -240,7 +240,8 @@ class DonationTransactionsController < ApplicationController
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
           e = @payment.error
-          @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error.name == "INVALID_TOKEN"
+          change_type = (@transaction.payer_id.eql?(PLAN_CONFIG["Custom"]["name"])) ? "Reccuring Payment Setup" : "Subscription Change"
+          @transaction.destroy and flash.now[:alert] = change_type+" Cancelled" if @payment.error.name == "INVALID_TOKEN"
           # flash.now[:alert] = @payment.error
           # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
@@ -262,6 +263,7 @@ class DonationTransactionsController < ApplicationController
         @donation = MadeDonation.new({user_id: @user.id, 
           payment_id: @subscription_change.token, 
           price: price_val,
+          frequency: @transaction["payment_definitions"][0]["frequency"],
           token: @subscription_change.token,
           payer_id: @transaction["name"],
           recurring: true})

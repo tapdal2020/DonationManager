@@ -250,7 +250,7 @@ class DonationTransactionsController < ApplicationController
     end
 
     def run_recurring_setup
-      price_val = @transaction["payment_definitions"][0]["amount"]["value"] if @transaction["name"].downcase.include?("recurring") else nil
+      price_val = @transaction["payment_definitions"][0]["amount"]["value"] if @transaction["name"].eql?(PLAN_CONFIG["Custom"]["name"]) else nil
       if (@subscription_change = new_recurring_paypal_service).error.nil?
         # Because the agreement's id hasn't been generated yet.
         # (the id will be generated after we execute the agreement)

@@ -75,7 +75,7 @@ Rails.application.configure do
     user_name: "mail@bvjazz.org",
     password: "JazzBV1976!",
     authentication: :plain,
-    enable_starttls_auto: true
+    enable_starttls_auto: false
   }
 
   config.action_mailer.default_url_options = { host: 'mail.bvjazz.org' }

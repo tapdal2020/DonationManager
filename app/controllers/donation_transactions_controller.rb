@@ -131,7 +131,8 @@ class DonationTransactionsController < ApplicationController
     @user.update(membership: "None")
     @redirect_url = edit_donation_transaction_path(current_user.id) 
     @transaction = deep_copy(PLAN_CONFIG[subscribe_to["subscribe"]]) and
-    set_membership_timestamp and run_recurring_setup unless doing_unsubscribe or no_changes
+    validate_descriptions and set_membership_timestamp and 
+    run_recurring_setup unless doing_unsubscribe or no_changes
     do_redirect and return
   end
 
@@ -304,6 +305,7 @@ class DonationTransactionsController < ApplicationController
       if response.success?
         @user.update(membership: "None") if @user.membership_id.eql?(@recurring_id)
         @user.recurring_record(@recurring_id).update(recurring: false)
+        flash[:alert] = "Agreement Cancelled"
         return true
       else 
         puts "#{response.error}"
@@ -373,6 +375,16 @@ class DonationTransactionsController < ApplicationController
       :recurring_payment_id, 
       :product_name, 
       :ipn_track_id)
+    end
+
+    def validate_descriptions
+        puts "^^in validate descriptions^^"
+        plan_description = @transaction["description"]
+        plan_description = plan_description.join(", ") if plan_description.respond_to?('join')
+        puts "#{plan_description}"
+        plan_description = plan_description[0..123]+'...' if plan_description.length > 127
+        puts "#{plan_description}"
+        @transaction["description"] = plan_description
     end
     
 end

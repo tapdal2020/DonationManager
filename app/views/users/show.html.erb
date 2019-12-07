@@ -19,7 +19,7 @@
 <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
-        <th style="background-color:#ba6239;text-align:left;" colspan="7">Donations</th>
+        <th style="background-color:#ba6239;text-align:left;" colspan=<%= (is_currently_admin?) ? "7" : "4"%>>Donations</th>
     </tr>
     <tr>
       <th class="timestamp-col"><b><%= sortable "created_at", "Timestamp" %></b></th>

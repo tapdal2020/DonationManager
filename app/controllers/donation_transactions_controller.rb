@@ -263,13 +263,13 @@ class DonationTransactionsController < ApplicationController
         # puts "^^SUB ID^^", "#{@subscription_change.token}"
         @transaction.update(payment_id: @subscription_change.token)
         puts "%% MAKING A RECURRING MEMBERSHIP CHANGE %%%%"
-        @donation = MadeDonation.new({user_id: @user.id, 
+        @donation = MadeDonation.new(user_id: @user.id, 
           payment_id: @subscription_change.token, 
           price: price_val,
           frequency: @transaction["payment_definitions"][0]["frequency"],
           token: @subscription_change.token,
           payer_id: @transaction["name"],
-          recurring: true})
+          recurring: true)
         # validate the user before saving
         @donation.save(context: :user)
         # The url to redirect the buyer

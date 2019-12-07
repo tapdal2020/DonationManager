@@ -170,6 +170,17 @@ iframe {
   color: #000000;
 }
 
+.txt3.white {
+  color: var(--off-white2) !important;
+}
+
+.bvjs-btn-suc{
+  background-color: var(--bjvs-green) !important;
+  border-color: var(--bjvs-green) !important;
+}
+.bvjs-btn-suc:hover, .bvjs-btn-suc:active{
+  background-color: var(--bvjs-orange) !important;
+}
 
 /*//////////////////////////////////////////////////////////////////
 [ login ]*/

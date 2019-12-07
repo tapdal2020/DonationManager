@@ -131,7 +131,8 @@ class DonationTransactionsController < ApplicationController
     @user.update(membership: "None")
     @redirect_url = edit_donation_transaction_path(current_user.id) 
     @transaction = deep_copy(PLAN_CONFIG[subscribe_to["subscribe"]]) and
-    set_membership_timestamp and run_recurring_setup unless doing_unsubscribe or no_changes
+    validate_descriptions and set_membership_timestamp and 
+    run_recurring_setup unless doing_unsubscribe or no_changes
     do_redirect and return
   end
 
@@ -216,6 +217,7 @@ class DonationTransactionsController < ApplicationController
       if @transaction.nil?
         render 'something_wrong' and return
       else
+        plan_was_custom = @transaction.payer_id.eql?(PLAN_CONFIG["Custom"]["name"])
         # execute the payment
         @payment = execute_recurring_payment(@handle_token)
         if @payment.success?
@@ -233,20 +235,21 @@ class DonationTransactionsController < ApplicationController
           @transaction.update(payment_id: @payment.id)
           puts "UPDATED TRANSACTION TO HAVE PAYMENT ID #{@transaction.payment_id}"
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
-          flash.now[:alert] = update_membership + " " + @payment.state
+          flash.keep[:alert] = update_membership + " " + @payment.state
           # @transaction.success!
           # save other data if need
         else
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
           e = @payment.error
-          change_type = (@transaction.payer_id.eql?(PLAN_CONFIG["Custom"]["name"])) ? "Reccuring Payment Setup" : "Subscription Change"
-          @transaction.destroy and flash.now[:alert] = change_type+" Cancelled" if @payment.error["name"] == "INVALID_TOKEN"
-          flash[:alert] = @payment.error
+          change_type = (plan_was_custom) ? "Reccuring Payment Setup" : "Subscription Change"
+          @transaction.destroy and flash.keep[:alert] = change_type+" Cancelled" if @payment.error.name == "INVALID_TOKEN"
+          # flash.now[:alert] = @payment.error
           # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
         end
+        redirect_to new_donation_transaction_path(id: @user.id) if plan_was_custom
       end
     end
 
@@ -302,6 +305,7 @@ class DonationTransactionsController < ApplicationController
       if response.success?
         @user.update(membership: "None") if @user.membership_id.eql?(@recurring_id)
         @user.recurring_record(@recurring_id).update(recurring: false)
+        flash[:alert] = "Agreement Cancelled"
         return true
       else 
         puts "#{response.error}"
@@ -371,6 +375,16 @@ class DonationTransactionsController < ApplicationController
       :recurring_payment_id, 
       :product_name, 
       :ipn_track_id)
+    end
+
+    def validate_descriptions
+        puts "^^in validate descriptions^^"
+        plan_description = @transaction["description"]
+        plan_description = plan_description.join(", ") if plan_description.respond_to?('join')
+        puts "#{plan_description}"
+        plan_description = plan_description[0..123]+'...' if plan_description.length > 127
+        puts "#{plan_description}"
+        @transaction["description"] = plan_description
     end
     
 end

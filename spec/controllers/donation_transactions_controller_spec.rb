@@ -59,7 +59,7 @@ RSpec.describe DonationTransactionsController do
       it 'should call success when token, paymentId, and PayerID are in params' do
         payment = PayPal::SDK::REST::Payment.new
         success_payment = PayPal::SDK::REST::Payment.new(success: true)
-        donation = MadeDonation.new
+        donation = MadeDonation.new(user: users(:two))
         allow(PayPal::SDK::REST::Payment).to receive(:find).and_return(payment)
         allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
         allow(@controller).to receive(:execute_paypal_payment).and_return(success_payment)
@@ -86,7 +86,7 @@ RSpec.describe DonationTransactionsController do
       it 'should flash an alert when the payment is not a success' do
         payment = PayPal::SDK::REST::Payment.new
         fail_payment = PayPal::SDK::REST::Payment.new
-        donation = MadeDonation.new
+        donation = MadeDonation.new(user: users(:two))
         allow(PayPal::SDK::REST::Payment).to receive(:find).and_return(payment)
         allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
         allow(@controller).to receive(:execute_paypal_payment).and_return(fail_payment)
@@ -101,7 +101,7 @@ RSpec.describe DonationTransactionsController do
       end
 
       it 'should call cancelled when only a token is passed' do
-        donation = MadeDonation.new
+        donation = MadeDonation.new(user: users(:two))
         allow(MadeDonation).to receive(:find_by).with(token: "0").and_return(donation)
 
         get :new, params: { token: "0" }
@@ -220,7 +220,7 @@ RSpec.describe DonationTransactionsController do
 
       it 'should flash MEMBERSHIP as `active` after HEAD OK from PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
-        donation = MadeDonation.new(payer_id: "Plan 0")
+        donation = MadeDonation.new(payer_id: "Plan 0", user: @user)
         allow(@user).to receive(:update).with(membership: "0 ^ O")
         allow(agreement).to receive(:success?).and_return(true)
         allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(donation)
@@ -234,7 +234,7 @@ RSpec.describe DonationTransactionsController do
 
       it 'should render `something_wrong` when a recurring token comes across malformed from PayPal' do
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
-        donation = MadeDonation.new(payer_id: "Plan 0")
+        donation = MadeDonation.new(payer_id: "Plan 0", user: @user)
         allow(@user).to receive(:update).with(membership: "0 ^ O")
         allow(agreement).to receive(:success?).and_return(true)
         allow(MadeDonation).to receive(:find_by).with(payment_id: "0").and_return(nil)
@@ -248,7 +248,7 @@ RSpec.describe DonationTransactionsController do
 
       it 'should remove current init payment when a user cancels from PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Active")
-        donation = MadeDonation.new(payer_id: "Plan 0")
+        donation = MadeDonation.new(payer_id: "Plan 0", user: @user)
         e = {name: "INVALID TOKEN"}
         allow(@user).to receive(:update).with(membership: "0 ^ O")
         allow(agreement).to receive(:success?).and_return(false)
@@ -264,7 +264,7 @@ RSpec.describe DonationTransactionsController do
 
       it 'should assign values to cancel MEMBERSHIP after HEAD OK with PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
-        donation = MadeDonation.new(payer_id: "plan1")
+        donation = MadeDonation.new(payer_id: "plan1", user: @user)
         allow(@user).to receive(:membership_name).and_return("plan1")
         allow(@user).to receive(:membership_id).and_return("0")
         allow(agreement).to receive(:success?).and_return(true)
@@ -279,7 +279,7 @@ RSpec.describe DonationTransactionsController do
 
       it 'should assign values to cancel any RECURRING PAYMENT after HEAD OK with PayPal' do 
         agreement = PayPal::SDK::REST::Agreement.new(id: "0", token: "0", state: "Cancelled")
-        donation = MadeDonation.new(payment_id:"0", payer_id: "plan1", recurring: true)
+        donation = MadeDonation.new(payment_id:"0", payer_id: "plan1", recurring: true, user: @user)
         allow_any_instance_of(User).to receive(:membership_name).and_return("plan1")
         allow_any_instance_of(User).to receive(:membership_id).and_return("0")
         # allow(User).to receive(:made_donations).and_return(donation)

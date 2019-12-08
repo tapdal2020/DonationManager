@@ -37,8 +37,8 @@ Feature: Password Reset
         Examples:
             | item |
             | Reset Password |
-            | Password |
-            | Password confirmation |
+            | New Password |
+            | Confirm Password |
 
     Scenario:
         Given I have received and followed a password reset link

@@ -6,6 +6,6 @@
 # This file overrides ENV variables in the Unix shell.
 # For example, setting:
 
-APP_HOSTNAME_PRODUCTION: 'https://damp-brook-45402.herokuapp.com/'
+APP_HOSTNAME_PRODUCTION: 'https://bjvs-dms.herokuapp.com/'
 APP_HOSTNAME_TEST: 'http://localhost:3000/'
 APP_MEMBERSHIP_RECURRING_AT: 'January 1 12:01AM'

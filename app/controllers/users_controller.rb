@@ -150,7 +150,7 @@ class UsersController < ApplicationController
         @users = User.where({ membership: @memberships.collect { |m| m } })
         respond_to do |format|
             format.html
-            format.csv { render text: @users.to_csv }
+            format.csv { send_data @users.to_csv, filename: "users-#{Date.today}-#{@memberships.join ''}.csv" }
         end
     end
 

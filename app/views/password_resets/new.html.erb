@@ -1,11 +1,22 @@
-<h1>Reset Password</h1>
+<head>
+    <%= stylesheet_link_tag 'application' %>
+</head>
+<body>
+<div class="container-login100-donate show">
+<div class="wrap-login100 show p-b-100">
+
+<h1 class="text-white text-center text-middle p-b-20">Reset Password</h1>
 
 <%= form_tag password_resets_path, :method => :post do %>
-  <div class='field'>
-    <%= label_tag :email %>
-    <%= text_field_tag :email, params[:email] %>
+  <div class='form-group'>
+    <label class="txt3 lower" for="email">Email</label>
+    <%= text_field_tag :email, params[:email], class: "form-control" %>
   </div>
-  <div class='actions'>
-    <%= submit_tag "Reset Password" %>
+  <div class='center'>
+    <%= submit_tag "Reset Password", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+</div>
+</div>
+</body>

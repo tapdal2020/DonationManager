@@ -2,13 +2,13 @@
 <div class="container-login100-donate show">
 <div class="wrap-login100 show p-b-100"> 
 <h1 class="text-white text-center text-middle p-b-20">User Emails</h1>
-<%= form_for :subset, url: { controller: 'users', action: 'generate_email_list' }, method: :get do |f| %>
+<%= form_for :subset, url: { controller: 'users', action: 'generate_email_list', format: :csv }, method: :get do |f| %>
             <label class="text-white fs-24">Membership Type: </label>
             <br/>
             <% @names.each do |m| %>
                 <div class="custom-control-lg custom-control custom-control-inline custom-checkbox">
                     <%= f.check_box "memberships", { class: "custom-control-input", multiple: true, checked: @memberships.nil? || @memberships.include?(m) }, m, false%>
-                    <%= label(:subset, html_label_id("memberships", m), m,class: "txt3 lower custom-control-label")%>
+                    <%= label('subset_memberships_', m.downcase.gsub('(','').gsub(')','').split(' ').join('_'), m, class: "txt3 lower custom-control-label")%>
                 </div>
             <% end %>
             <div class="p-b-20 p-t-20">
@@ -36,6 +36,6 @@
 <% end %>
 
 <br />
-<%= button_to 'Back', user_path(@user.id), {class: "btn btn-primary", method: :get } %>
+<%= button_to 'Start Over', get_emails_users_path, {class: "btn btn-primary", method: :get } %>
 </div>
 </div>

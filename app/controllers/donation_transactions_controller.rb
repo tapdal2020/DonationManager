@@ -69,6 +69,7 @@ class DonationTransactionsController < ApplicationController
     if @transaction && @payment && @payment.success?
       # set transaction status to success and save some data
       @transaction.update(payer_id: @PayerID)
+      UserMailer.donation_confirmation(@transaction.user, @transaction.price).deliver
       flash.now[:alert] = "Donation Succeeded"
     else
       # show error message
@@ -100,6 +101,7 @@ class DonationTransactionsController < ApplicationController
 
     @subscription_plans = PLAN_CONFIG.except("Custom")
     @handle_token = params[:token]
+    puts "&&==Handling token #{@handle_token}"
     handle_recur_token if @handle_token
     @subscribed_to = current_user.membership_name and return
   end
@@ -111,9 +113,11 @@ class DonationTransactionsController < ApplicationController
     @user = current_user
     if not params["cancel_id"].nil?
       @recurring_id = params["cancel_id"]
-      handle_user_agreement_cancellation
-      @redirect_url=user_path(@user.id)
-      do_redirect and return
+      if handle_user_agreement_cancellation
+        @redirect_url=user_path(@user.id)
+        do_redirect and return
+      end
+      return
     end
     @membership = @user.membership_name
     not_subscribed = @membership.eql?("None")
@@ -128,7 +132,8 @@ class DonationTransactionsController < ApplicationController
     @user.update(membership: "None")
     @redirect_url = edit_donation_transaction_path(current_user.id) 
     @transaction = deep_copy(PLAN_CONFIG[subscribe_to["subscribe"]]) and
-    set_membership_timestamp and run_recurring_setup unless doing_unsubscribe or no_changes
+    validate_descriptions and set_membership_timestamp and 
+    run_recurring_setup unless doing_unsubscribe or no_changes
     do_redirect and return
   end
 
@@ -213,6 +218,7 @@ class DonationTransactionsController < ApplicationController
       if @transaction.nil?
         render 'something_wrong' and return
       else
+        plan_was_custom = @transaction.payer_id.eql?(PLAN_CONFIG["Custom"]["name"])
         # execute the payment
         @payment = execute_recurring_payment(@handle_token)
         if @payment.success?
@@ -228,24 +234,29 @@ class DonationTransactionsController < ApplicationController
           @user.update(membership: mem_db) unless update_membership.eql?(custom_plan_name)
           puts "Membership: #{@user.membership}"
           @transaction.update(payment_id: @payment.id)
+          puts "UPDATED TRANSACTION TO HAVE PAYMENT ID #{@transaction.payment_id}"
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
-          flash.now[:alert] = update_membership + " " + @payment.state
+          UserMailer.donation_confirmation(@transaction.user, @transaction.price).deliver
+          flash.keep[:alert] = update_membership + " " + @payment.state
           # @transaction.success!
           # save other data if need
         else
           # @transaction.fail!
           # Show error messages by using @payment.error to the user
           e = @payment.error
-          @transaction.destroy and flash.now[:alert] = "Subscription Change Cancelled" if @payment.error["name"] == "INVALID TOKEN"
+          change_type = (plan_was_custom) ? "Reccuring Payment Setup" : "Subscription Change"
+          @transaction.destroy and flash.keep[:alert] = change_type+" Cancelled" if @payment.error[:name] == "INVALID_TOKEN"
           flash.now[:alert] = @payment.error
-          # @payment.error["name"] = "INVALID TOKEN" when user cancels and returns to store
+          # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
         end
+        redirect_to new_donation_transaction_path(id: @user.id) if plan_was_custom
       end
     end
 
     def run_recurring_setup
+      price_val = @transaction["payment_definitions"][0]["amount"]["value"] if @transaction["name"].eql?(PLAN_CONFIG["Custom"]["name"]) else nil
       if (@subscription_change = new_recurring_paypal_service).error.nil?
         # Because the agreement's id hasn't been generated yet.
         # (the id will be generated after we execute the agreement)
@@ -254,12 +265,13 @@ class DonationTransactionsController < ApplicationController
         # puts "^^SUB ID^^", "#{@subscription_change.token}"
         @transaction.update(payment_id: @subscription_change.token)
         puts "%% MAKING A RECURRING MEMBERSHIP CHANGE %%%%"
-        @donation = MadeDonation.new({user_id: @user.id, 
+        @donation = MadeDonation.new(user_id: @user.id, 
           payment_id: @subscription_change.token, 
-          price: @transaction["payment_definitions"][0]["amount"]["value"],
+          price: price_val,
+          frequency: @transaction["payment_definitions"][0]["frequency"],
           token: @subscription_change.token,
           payer_id: @transaction["name"],
-          recurring: true})
+          recurring: true)
         # validate the user before saving
         @donation.save(context: :user)
         # The url to redirect the buyer
@@ -280,7 +292,7 @@ class DonationTransactionsController < ApplicationController
 
     def handle_custom_recurrence
       # Clone the custom outline
-      @transaction = PLAN_CONFIG["Custom"].clone
+      @transaction = deep_copy(PLAN_CONFIG["Custom"])
       # set the values of frequency and amount specified from checkout
       @transaction["payment_definitions"][0]["amount"]["value"] = @money
       @transaction["payment_definitions"][0]["frequency"] = @payment_frequency
@@ -293,11 +305,15 @@ class DonationTransactionsController < ApplicationController
       puts "@@ handling #{@recurring_id}"
       response = PaypalService.cancel_agreement(@recurring_id)
       if response.success?
+        @user.update(membership: "None") if @user.membership_id.eql?(@recurring_id)
         @user.recurring_record(@recurring_id).update(recurring: false)
+        flash[:alert] = "Agreement Cancelled"
+        return true
       else 
+        puts "#{response.error}"
         render 'something_wrong'
+        return false
       end
-      return
     end
 
     def handle_no_subscription_change
@@ -361,6 +377,16 @@ class DonationTransactionsController < ApplicationController
       :recurring_payment_id, 
       :product_name, 
       :ipn_track_id)
+    end
+
+    def validate_descriptions
+        puts "^^in validate descriptions^^"
+        plan_description = @transaction["description"]
+        plan_description = plan_description.join(", ") if plan_description.respond_to?('join')
+        puts "#{plan_description}"
+        plan_description = plan_description[0..123]+'...' if plan_description.length > 127
+        puts "#{plan_description}"
+        @transaction["description"] = plan_description
     end
     
 end

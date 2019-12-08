@@ -87,7 +87,9 @@ class PaypalService
         # create a new transaction for the user after we know that the
         # payment has been completed
         MadeDonation.create({user_id: user_of_recurring_txn, 
-          payment_id: params["txn_id"], 
+          payment_id: params["txn_id"],
+          parent_txn: recurring_transaction.payment_id,
+          recurring: true,
           payer_id: params["payer_id"], 
           price: params["amount"]}) if params["payment_status"].eql?("Completed")
         # transaction = recurring_transaction.add_recurring_payment(params)

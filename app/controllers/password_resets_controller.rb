@@ -23,6 +23,7 @@ class PasswordResetsController < ApplicationController
       flash[:notice] = 'Password has been reset!'
       redirect_to new_session_path
     else
+      flash.now["alert"] = @user.errors.full_messages.join '\n'
       render :edit
     end
   end

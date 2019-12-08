@@ -8,7 +8,7 @@ test: &default
   ssl_options:
     # this is a windows portion, need SSL_CERT_FILE path to the cert.pem environment variable
     # https://stackoverflow.com/a/16134586
-    ca_file: <%= ENV.fetch("SSL_CERT_FILE") { "/usr/local/etc/openssl/cert.pem" } %>
+    ca_file: <%= ENV.fetch("SSL_CERT_FILE") { "./config/cacert.pem" } %>
 
   # Mode can be 'live' or 'sandbox'
   mode: sandbox
@@ -32,4 +32,4 @@ development:
 
 production:
   <<: *default
-  mode: sandbox # live
+  #mode: sandbox # live

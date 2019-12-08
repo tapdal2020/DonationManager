@@ -43,7 +43,12 @@ class UsersController < ApplicationController
             # @my_donations = (is_currently_admin?) ? MadeDonation.all : MadeDonation.where("user_id = ?", request)
             # @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
             # if and admin bring in users to show their email on table
-            @my_donations = (is_currently_admin?) ? MadeDonation.joins(:user) : MadeDonation.where("user_id = ?", request)
+            @my_donations = (is_currently_admin?) ? MadeDonation.joins(:user) : MadeDonation.where("user_id = ?", request).where.not(price: nil)
+            @my_recurring = current_user.made_donations.select(:payment_id).where(recurring: true).group(:payment_id).collect { |m| current_user.made_donations.where(parent_txn: m.payment_id).or(current_user.made_donations.where(payment_id: m.payment_id)).order(created_at: :desc).to_a.values_at(0, -1) }
+            current_user.made_donations.select(:payment_id).where(recurring: true).group(:payment_id).each do |m|
+                puts "#{m.payment_id}"
+            end
+            puts @my_recurring.empty?
             @donations_chart = @my_donations.monthly_donations
             @my_donations = @my_donations.order(sort_column + ' ' + sort_direction)
         end
@@ -92,12 +97,15 @@ class UsersController < ApplicationController
                 if @user.update(new_password_params)
                     redirect_to user_path(@user.id) and return
                 else
+                    flash.now["alert"] = "Failed to update password"
                     render 'change_password' and return
                 end
             else
+                flash.now["alert"] = "Failed to update password"
                 render 'change_password' and return
             end
         else
+            flash.now["alert"] = "Failed to update password"
             render 'change_password' and return
         end
     end
@@ -142,7 +150,7 @@ class UsersController < ApplicationController
         @users = User.where({ membership: @memberships.collect { |m| m } })
         respond_to do |format|
             format.html
-            format.csv { render text: @users.to_csv }
+            format.csv { send_data @users.to_csv, filename: "users-#{Date.today}-#{@memberships.join ''}.csv" }
         end
     end
 

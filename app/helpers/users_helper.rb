@@ -60,5 +60,5 @@ module UsersHelper
 end
 
 def html_label_id(key, ext)
-  key+"_"+ext.squish.downcase.tr(" ","_")
+  key+"_"+ext.squish.tr(" ","_")
 end

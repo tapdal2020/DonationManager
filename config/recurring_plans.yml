@@ -2,7 +2,187 @@
 # please investigate the following urls below for more information
 # customize your own plan parameters with:  https://developer.paypal.com/docs/api/payments.billing-plans/#plan_create
 # customize you own agreement with: https://developer.paypal.com/docs/api/payments.billing-agreements#agreement_create
+
 production: &default
+  vip-individual:
+    name: "VIP Membership (Individual)"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events"]
+    type: "INFINITE"
+    merchant_preferences:
+      setup_fee:
+      cancel_url: ""
+      return_url: ""
+      max_fail_attempts: "0"
+      auto_bill_amount: "NO"
+      initial_fail_amount_action: "CONTINUE"
+    payment_definitions:
+      -
+        name: "vip-individual-payment"
+        type: "REGULAR"
+        frequency_interval: "1"
+        frequency: "YEAR"
+        cycles: "0"
+        amount:
+          currency: "USD"
+          value: "50.00"
+    agreement:
+      name: "Agreement" # max len. 128
+      description: "Payment of $50.00 is due on January 1st of each year"
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
+  vip-couple:
+    name: "VIP Membership (Couple)"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events"]
+    type: "INFINITE"
+    merchant_preferences:
+      setup_fee:
+      cancel_url: ""
+      return_url: ""
+      max_fail_attempts: "0"
+      auto_bill_amount: "NO"
+      initial_fail_amount_action: "CONTINUE"
+    payment_definitions:
+      -
+        name: "vip-couple-payment"
+        type: "REGULAR"
+        frequency_interval: "1"
+        frequency: "YEAR"
+        cycles: "0"
+        amount:
+          currency: "USD"
+          value: "75.00"
+    agreement:
+      name: "Agreement" # max len. 128
+      description: "Payment of $75.00 is due on January 1st of each year"
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
+  bronze:
+    name: "Bronze Sponsor"
+    description: ["E-News", "Discounted tickets and/or preferred seating at events", "Website listing", "Public acknowledgement at events", "Business size ad in programs when applicable"]
+    type: "INFINITE"
+    merchant_preferences:
+      setup_fee:
+      cancel_url: ""
+      return_url: ""
+      max_fail_attempts: "0"
+      auto_bill_amount: "NO"
+      initial_fail_amount_action: "CONTINUE"
+    payment_definitions:
+      -
+        name: "bronze-payment"
+        type: "REGULAR"
+        frequency_interval: "1"
+        frequency: "YEAR"
+        cycles: "0"
+        amount:
+          currency: "USD"
+          value: "250.00"
+    agreement:
+      name: "Agreement" # max len. 128
+      description: "Payment of $250.00 is due on January 1st of each year"
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
+  gold:
+    name: "Gold Sponsor"
+    description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
+    type: "INFINITE"
+    merchant_preferences:
+      setup_fee:
+      cancel_url: ""
+      return_url: ""
+      max_fail_attempts: "0"
+      auto_bill_amount: "NO"
+      initial_fail_amount_action: "CONTINUE"
+    payment_definitions:
+      -
+        name: "gold-payment"
+        type: "REGULAR"
+        frequency_interval: "1"
+        frequency: "YEAR"
+        cycles: "0"
+        amount:
+          currency: "USD"
+          value: "1000.00"
+    agreement:
+      name: "Agreement" # max len. 128
+      description: "Payment of $1000.00 is due on January 1st of each year"
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
+  platinum:
+    name: "Platinum Sponsor"
+    description: ["E-News", "Free tickets and preferred seating at events", "Banner or stand-alone page on our website (with links and pics)", "Logo prominently displayed on our website", "Logo on all publications and advertising", "Mention in all TV/Radio advertising", "Public acknowledgements at events", "Banner at all events (your banner)", "Full page ad in programs when applicable"]
+    type: "INFINITE"
+    merchant_preferences:
+      setup_fee:
+      cancel_url: ""
+      return_url: ""
+      max_fail_attempts: "0"
+      auto_bill_amount: "NO"
+      initial_fail_amount_action: "CONTINUE"
+    payment_definitions:
+      -
+        name: "platinum-payment"
+        type: "REGULAR"
+        frequency_interval: "1"
+        frequency: "YEAR"
+        cycles: "0"
+        amount:
+          currency: "USD"
+          value: "2500.00"
+    agreement:
+      name: "Agreement" # max len. 128
+      description: "Payment of $2500.00 is due on January 1st of each year"
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal services
+  Custom:
+    name: "BVJS user-specified Recurring Payment"
+    # The plan description. Maximum length is 127 single-byte alphanumeric characters.
+    description: ["This recurring payment is modified by the BVJS user"]
+    type: "INFINITE" # / INFINITE
+    merchant_preferences:
+      setup_fee:
+        #{}
+      cancel_url: "" # added in paypal service ruby
+      return_url: "" # added in paypal service ruby 
+      max_fail_attempts: "0" # default string
+      auto_bill_amount: "YES" # / YES
+      initial_fail_amount_action: "CONTINUE" # / CANCEL
+    payment_definitions:
+      -
+        name: "custom-payment"
+        type: "REGULAR" # / TRIAL
+        frequency_interval: "1" # cannot be > 12
+        frequency: "" # WEEK / DAY / YEAR
+        cycles: "0" # leave for infinite / regular
+        amount: 
+          currency: "USD" # i.e. USD
+          value: "1.00" # i.e. 1.00
+    # plan billing agreement
+    agreement:
+      name: "BVJS Custom Recurring Payment Agreement" # max len. 128
+      description: "The BVJS user agrees to make a user-specified recurring payment infinitely until cancellation." # max len. 128
+      start_date: "" # i.e. 2017-12-22T09:13:49Z
+      payer:
+        payment_method: "paypal"
+      plan:
+        id: "" # will be filled in by Ruby Paypal Services
+
+test: 
   plan0:
     name: "high"
     # The plan description. Maximum length is 127 single-byte alphanumeric characters.
@@ -21,7 +201,7 @@ production: &default
         name: "high-payment"
         type: "REGULAR" # / TRIAL
         frequency_interval: "3" # cannot be > 12
-        frequency: "MONTH" # WEEK / DAY / YEAR
+        frequency: "YEAR" # WEEK / DAY / YEAR
         cycles: "0" # leave for infinite / regular
         amount: 
           currency: "USD" # i.e. USD
@@ -55,7 +235,7 @@ production: &default
         name: "med-payment"
         type: "REGULAR" # / TRIAL
         frequency_interval: "1" # cannot be > 12
-        frequency: "MONTH" # WEEK / DAY / YEAR
+        frequency: "YEAR" # WEEK / DAY / YEAR
         cycles: "0" # leave for infinite / regular
         amount: 
           currency: "USD" # i.e. USD
@@ -103,7 +283,4 @@ production: &default
         id: "" # will be filled in by Ruby Paypal Services
 
 development:
-  <<: *default
-
-test:
   <<: *default

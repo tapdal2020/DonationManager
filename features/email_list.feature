@@ -18,11 +18,5 @@ Feature: Email List
 
     Scenario:
         When I click "Get Emails"
-        And I press "Generate"
-        Then I should see "Email,Name,Membership"
-        And I should see "high"
-
-    Scenario:
-        When I click "Get Emails"
-        And I press "Back"
-        Then I should see "Donation Administrator"
+        And I press "Start Over"
+        Then I should see "User Emails"

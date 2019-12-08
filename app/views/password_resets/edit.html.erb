@@ -1,24 +1,24 @@
-<h1>Reset Password</h1>
+<head>
+    <%= stylesheet_link_tag 'application' %>
+</head>
+<body>
+<div class="container-login100-donate show">
+<div class="wrap-login100 show p-b-100">
+
+<h1 class="text-white text-center text-middle p-b-20">Reset Password</h1>
 
 <%= form_for @user, :url => password_reset_path(params[:id]) do |f| %>
-  <% if @user.errors.any? %>
-    <div class='error_messages'>
-      <h2>Form is invalid</h2>
-      <ul>
-        <% for message in @user.errors.full_messages %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class='field'>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
+  <div class='form-group'>
+    <label class="txt3 lower" for="user_password">New Password</label>
+    <%= f.password_field :password, class: "form-control" %>
   </div>
-  <div class='field'>
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
+  <div class='form-group'>
+    <label class="txt3 lower" for="user_password_confirmation">Confirm Password</label>
+    <%= f.password_field :password_confirmation, class: "form-control" %>
   </div>
-  <div class='actions'><%= f.submit 'Update password' %></div>
+  <div class='center'><%= f.submit 'Update password', class: "btn btn-primary" %></div>
 <% end %>
+
+</div>
+</div>
+</body>

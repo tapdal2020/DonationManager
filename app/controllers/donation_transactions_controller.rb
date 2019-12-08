@@ -69,6 +69,7 @@ class DonationTransactionsController < ApplicationController
     if @transaction && @payment && @payment.success?
       # set transaction status to success and save some data
       @transaction.update(payer_id: @PayerID)
+      UserMailer.donation_confirmation(@transaction.user, @transaction.price).deliver
       flash.now[:alert] = "Donation Succeeded"
     else
       # show error message
@@ -235,6 +236,7 @@ class DonationTransactionsController < ApplicationController
           @transaction.update(payment_id: @payment.id)
           puts "UPDATED TRANSACTION TO HAVE PAYMENT ID #{@transaction.payment_id}"
           @transaction.update(payer_id: @payment.payer.payer_info.payer_id)
+          UserMailer.donation_confirmation(@transaction.user, @transaction.price).deliver
           flash.keep[:alert] = update_membership + " " + @payment.state
           # @transaction.success!
           # save other data if need

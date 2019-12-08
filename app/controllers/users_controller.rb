@@ -97,12 +97,15 @@ class UsersController < ApplicationController
                 if @user.update(new_password_params)
                     redirect_to user_path(@user.id) and return
                 else
+                    flash.now["alert"] = "Failed to update password"
                     render 'change_password' and return
                 end
             else
+                flash.now["alert"] = "Failed to update password"
                 render 'change_password' and return
             end
         else
+            flash.now["alert"] = "Failed to update password"
             render 'change_password' and return
         end
     end

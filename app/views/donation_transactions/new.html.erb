@@ -15,7 +15,7 @@
         </div>
         <div class="form-group">
             <label class="txt3 lower" for="make_donation_donation_amount">Donation Amount: $</label>
-            <%= f.number_field :donation_amount, :value => 1.00, :min => 1.00, :step => 1, class: "form-control"%>
+            <%= f.number_field :donation_amount, :value => 1.00, :min => 1.00, :step => 0.01, class: "form-control"%>
         </div>
     <!-- <br /> -->
     <%= f.submit "Donate", class: "btn btn-primary" %>

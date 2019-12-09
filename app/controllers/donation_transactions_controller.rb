@@ -246,7 +246,7 @@ class DonationTransactionsController < ApplicationController
           e = @payment.error
           change_type = (plan_was_custom) ? "Reccuring Payment Setup" : "Subscription Change"
           @transaction.destroy and flash.keep[:alert] = change_type+" Cancelled" if @payment.error[:name] == "INVALID_TOKEN"
-          flash.now[:alert] = @payment.error
+          # flash.now[:alert] = @payment.error
           # @payment.error["name"] = "INVALID_TOKEN" when user cancels and returns to store
           puts "&&PLAN AGREEMENT STATUS&&==", @payment.state
           # ...
